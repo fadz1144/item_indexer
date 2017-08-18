@@ -1,0 +1,21 @@
+LineLength:
+  Max: 120
+Documentation:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+AllCops:
+  Include:
+    - config.ru
+  Exclude:
+    - bin/**/*
+    - config/**/*
+    - db/**/*
+    - test/**/*
+    - Gemfile
+    - Guardfile
+    - Rakefile
+    - vendor/**/*
+
+inherit_from: .rubocop_todo.yml
