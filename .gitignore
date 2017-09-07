@@ -21,3 +21,6 @@
 /yarn-error.log
 
 .byebug_history
+
+# files checked in with the .deploy version
+/config/database.yml

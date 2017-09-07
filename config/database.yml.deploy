@@ -1,0 +1,25 @@
+pg_defaults: &pg_defaults
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  database: catalog
+  username: bbb_admin
+  password: xojJo6VyUo
+
+docker: &docker
+  <<: *pg_defaults
+  host: db_postgres
+  port: 5432
+
+development:
+  <<: *docker
+
+test:
+  <<: *docker
+  database: catalog_test
+
+production:
+  <<: *pg_defaults
+  host: <%= ENV.fetch('DATABASE_HOST') %>
+  username: <%= ENV.fetch('DATABASE_USER') %>
+password: "<%= ENV.fetch('DATABASE_PASSWORD') %>"
