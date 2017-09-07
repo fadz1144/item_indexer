@@ -24,3 +24,5 @@
 
 # files checked in with the .deploy version
 /config/database.yml
+/config/secrets.yml
+/config/settings.yml

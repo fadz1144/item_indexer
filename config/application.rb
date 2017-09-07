@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module ItemIndexer
   class Application < Rails::Application
+    # custom settings
+    config.settings = config_for(:settings)
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
