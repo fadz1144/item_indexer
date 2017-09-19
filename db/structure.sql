@@ -549,6 +549,158 @@ ALTER SEQUENCE concepts_concept_id_seq OWNED BY concepts.concept_id;
 
 
 --
+-- Name: inbound_batches; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_batches (
+    inbound_batch_id bigint NOT NULL,
+    source character varying(10) NOT NULL,
+    data_type character varying(40) NOT NULL,
+    status character varying(30) DEFAULT 'in progress'::character varying NOT NULL,
+    status_reason character varying(255),
+    file_name character varying(255),
+    start_datetime timestamp without time zone DEFAULT now() NOT NULL,
+    stop_datetime timestamp without time zone
+);
+
+
+--
+-- Name: TABLE inbound_batches; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE inbound_batches IS 'Log of batches received';
+
+
+--
+-- Name: COLUMN inbound_batches.source; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN inbound_batches.source IS 'OKL / PDM / CPWM';
+
+
+--
+-- Name: COLUMN inbound_batches.data_type; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN inbound_batches.data_type IS 'sku / product';
+
+
+--
+-- Name: COLUMN inbound_batches.status; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN inbound_batches.status IS 'in progress / complete / error';
+
+
+--
+-- Name: COLUMN inbound_batches.status_reason; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN inbound_batches.status_reason IS 'Additional status details';
+
+
+--
+-- Name: COLUMN inbound_batches.file_name; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN inbound_batches.file_name IS 'Optional: backup of message or SQL script';
+
+
+--
+-- Name: inbound_batches_inbound_batch_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_batches_inbound_batch_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_batches_inbound_batch_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_batches_inbound_batch_id_seq OWNED BY inbound_batches.inbound_batch_id;
+
+
+--
+-- Name: inbound_okl_product_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_okl_product_revisions (
+    id bigint NOT NULL,
+    inbound_batch_id bigint NOT NULL,
+    product_id bigint NOT NULL,
+    status character varying(40),
+    name character varying(255),
+    description text,
+    pdp_url character varying(512)
+);
+
+
+--
+-- Name: inbound_okl_product_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_okl_product_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_okl_product_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_okl_product_revisions_id_seq OWNED BY inbound_okl_product_revisions.id;
+
+
+--
+-- Name: inbound_okl_sku_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_okl_sku_revisions (
+    id bigint NOT NULL,
+    inbound_batch_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
+    jda_id bigint NOT NULL,
+    upc bigint,
+    name character varying(255),
+    description text,
+    product_id bigint,
+    cost numeric(8,2),
+    price numeric(8,2),
+    color character varying(255),
+    size character varying(255),
+    material character varying(255),
+    shipping_method character varying(40)
+);
+
+
+--
+-- Name: inbound_okl_sku_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_okl_sku_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_okl_sku_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_okl_sku_revisions_id_seq OWNED BY inbound_okl_sku_revisions.id;
+
+
+--
 -- Name: product_memberships; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -776,6 +928,27 @@ ALTER TABLE ONLY concepts ALTER COLUMN concept_id SET DEFAULT nextval('concepts_
 
 
 --
+-- Name: inbound_batches inbound_batch_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_batches ALTER COLUMN inbound_batch_id SET DEFAULT nextval('inbound_batches_inbound_batch_id_seq'::regclass);
+
+
+--
+-- Name: inbound_okl_product_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_product_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_product_revisions_id_seq'::regclass);
+
+
+--
+-- Name: inbound_okl_sku_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_sku_revisions_id_seq'::regclass);
+
+
+--
 -- Name: product_memberships product_membership_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -850,6 +1023,30 @@ ALTER TABLE ONLY concept_skus
 
 ALTER TABLE ONLY concepts
     ADD CONSTRAINT concepts_pkey PRIMARY KEY (concept_id);
+
+
+--
+-- Name: inbound_batches inbound_batches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_batches
+    ADD CONSTRAINT inbound_batches_pkey PRIMARY KEY (inbound_batch_id);
+
+
+--
+-- Name: inbound_okl_product_revisions inbound_okl_product_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_product_revisions
+    ADD CONSTRAINT inbound_okl_product_revisions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inbound_okl_sku_revisions inbound_okl_sku_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_revisions
+    ADD CONSTRAINT inbound_okl_sku_revisions_pkey PRIMARY KEY (id);
 
 
 --
@@ -945,6 +1142,20 @@ CREATE INDEX index_concept_skus_on_concept_id ON concept_skus USING btree (conce
 --
 
 CREATE INDEX index_concept_skus_on_sku_id ON concept_skus USING btree (sku_id);
+
+
+--
+-- Name: index_inbound_okl_product_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inbound_okl_product_revisions_on_inbound_batch_id ON inbound_okl_product_revisions USING btree (inbound_batch_id);
+
+
+--
+-- Name: index_inbound_okl_sku_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inbound_okl_sku_revisions_on_inbound_batch_id ON inbound_okl_sku_revisions USING btree (inbound_batch_id);
 
 
 --
@@ -1048,6 +1259,22 @@ ALTER TABLE ONLY concept_sku_attributes
 
 
 --
+-- Name: inbound_okl_sku_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_revisions
+    ADD CONSTRAINT inb_okl_sku_rvn__fk_inbound_batch_id FOREIGN KEY (inbound_batch_id) REFERENCES inbound_batches(inbound_batch_id);
+
+
+--
+-- Name: inbound_okl_product_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_product_revisions
+    ADD CONSTRAINT inb_okl_sku_rvn__fk_inbound_batch_id FOREIGN KEY (inbound_batch_id) REFERENCES inbound_batches(inbound_batch_id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -1062,6 +1289,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170821235948'),
 ('20170822000122'),
 ('20170823172949'),
-('20170825201307');
+('20170825201307'),
+('20170914170447'),
+('20170914175801'),
+('20170914175807');
 
 
