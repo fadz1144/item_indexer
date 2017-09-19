@@ -1,3 +1,11 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  namespace :api do
+    scope module: :inbound do
+      scope module: :v1 do
+        %w[products skus].each do |type|
+          post ":source/#{type}", to: "#{type}#batch", source: Regexp.new(API::APIController::VALID_SOURCES.join('|'))
+        end
+      end
+    end
+  end
 end

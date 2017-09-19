@@ -14,3 +14,10 @@
 # ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.acronym 'RESTful'
 # end
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  # these allow OKL instead of Okl
+  inflect.acronym 'API'
+  inflect.acronym 'OKL'
+  inflect.acronym 'PDM'
+  inflect.acronym 'CPWM'
+end
