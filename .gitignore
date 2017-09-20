@@ -21,3 +21,6 @@
 /config/database.yml
 /config/secrets.yml
 /config/settings.yml
+
+# test coverage reports
+coverage
