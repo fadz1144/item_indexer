@@ -1,6 +1,8 @@
 module API
   module Inbound
     class InboundMessageService
+      attr_accessor :database_service, :flat_file_service
+
       def consume_message(message)
         process_message(message)
         API::Response.build_response(message.message_id, @batch.inbound_batch_id, @errors)
@@ -25,12 +27,14 @@ module API
       end
 
       def save_to_database(message)
-        # TODO: implement database service
+        service = @database_service || API::Inbound::DatabaseService.new
+        service.write_message(message)
       end
 
       def save_to_file(message)
         name = [message.source, message.data_type, @batch.inbound_batch_id].join('_')
-        API::Inbound::FlatFileService.new.write_to_file(name: name, data: message.raw_data)
+        service = @flat_file_service || API::Inbound::FlatFileService.new
+        service.write_to_file(name: name, data: message.data)
       end
 
       def handle_error(error)

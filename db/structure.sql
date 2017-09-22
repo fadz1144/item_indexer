@@ -660,6 +660,116 @@ ALTER SEQUENCE inbound_okl_product_revisions_id_seq OWNED BY inbound_okl_product
 
 
 --
+-- Name: inbound_okl_sku_attribute_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_okl_sku_attribute_revisions (
+    id bigint NOT NULL,
+    inbound_batch_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
+    sku_attribute_id integer,
+    code character varying,
+    value character varying
+);
+
+
+--
+-- Name: inbound_okl_sku_attribute_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_okl_sku_attribute_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_okl_sku_attribute_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_okl_sku_attribute_revisions_id_seq OWNED BY inbound_okl_sku_attribute_revisions.id;
+
+
+--
+-- Name: inbound_okl_sku_dimensions_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_okl_sku_dimensions_revisions (
+    id bigint NOT NULL,
+    inbound_batch_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
+    cost numeric(8,2),
+    item_width numeric(8,2),
+    item_height numeric(8,2),
+    item_length numeric(8,2),
+    item_weight numeric(8,2),
+    shipping_width numeric(8,2),
+    shipping_height numeric(8,2),
+    shipping_length numeric(8,2),
+    shipping_weight numeric(8,2)
+);
+
+
+--
+-- Name: inbound_okl_sku_dimensions_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_okl_sku_dimensions_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_okl_sku_dimensions_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_okl_sku_dimensions_revisions_id_seq OWNED BY inbound_okl_sku_dimensions_revisions.id;
+
+
+--
+-- Name: inbound_okl_sku_image_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_okl_sku_image_revisions (
+    id bigint NOT NULL,
+    inbound_batch_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
+    image_id bigint NOT NULL,
+    hosting_service character varying,
+    resource_folder character varying,
+    resource_path character varying,
+    resource_name character varying,
+    sort_order integer,
+    "primary" boolean,
+    active boolean
+);
+
+
+--
+-- Name: inbound_okl_sku_image_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_okl_sku_image_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_okl_sku_image_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_okl_sku_image_revisions_id_seq OWNED BY inbound_okl_sku_image_revisions.id;
+
+
+--
 -- Name: inbound_okl_sku_revisions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -669,12 +779,15 @@ CREATE TABLE inbound_okl_sku_revisions (
     sku_id bigint NOT NULL,
     jda_id bigint NOT NULL,
     upc bigint,
+    brand_id bigint,
     name character varying(255),
-    description text,
+    line_of_business character varying(255),
     product_id bigint,
     cost numeric(8,2),
     price numeric(8,2),
+    pre_markdown_price numeric(8,2),
     color character varying(255),
+    color_family character varying(255),
     size character varying(255),
     material character varying(255),
     shipping_method character varying(40)
@@ -698,6 +811,86 @@ CREATE SEQUENCE inbound_okl_sku_revisions_id_seq
 --
 
 ALTER SEQUENCE inbound_okl_sku_revisions_id_seq OWNED BY inbound_okl_sku_revisions.id;
+
+
+--
+-- Name: inbound_okl_sku_shipping_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_okl_sku_shipping_revisions (
+    id bigint NOT NULL,
+    inbound_batch_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
+    virtual_delivery boolean,
+    returnable boolean,
+    non_merchandise boolean,
+    perishable boolean,
+    white_glove boolean,
+    entryway boolean,
+    extra_shipping_charge numeric(8,2),
+    vdc boolean,
+    lead_time integer,
+    min_aad_offset_days integer,
+    max_aad_offset_days integer
+);
+
+
+--
+-- Name: inbound_okl_sku_shipping_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_okl_sku_shipping_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_okl_sku_shipping_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_okl_sku_shipping_revisions_id_seq OWNED BY inbound_okl_sku_shipping_revisions.id;
+
+
+--
+-- Name: inbound_okl_sku_state_revisions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE inbound_okl_sku_state_revisions (
+    id bigint NOT NULL,
+    inbound_batch_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
+    content_ready boolean,
+    copy_ready boolean,
+    vetted boolean,
+    exists_in_storefront boolean,
+    exclusivity_tier character varying,
+    inactive_reason_id integer,
+    "obsolete reason id" integer,
+    status_reason character varying,
+    "obsolete reason name" character varying
+);
+
+
+--
+-- Name: inbound_okl_sku_state_revisions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE inbound_okl_sku_state_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: inbound_okl_sku_state_revisions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE inbound_okl_sku_state_revisions_id_seq OWNED BY inbound_okl_sku_state_revisions.id;
 
 
 --
@@ -942,10 +1135,45 @@ ALTER TABLE ONLY inbound_okl_product_revisions ALTER COLUMN id SET DEFAULT nextv
 
 
 --
+-- Name: inbound_okl_sku_attribute_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_attribute_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_sku_attribute_revisions_id_seq'::regclass);
+
+
+--
+-- Name: inbound_okl_sku_dimensions_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_dimensions_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_sku_dimensions_revisions_id_seq'::regclass);
+
+
+--
+-- Name: inbound_okl_sku_image_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_image_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_sku_image_revisions_id_seq'::regclass);
+
+
+--
 -- Name: inbound_okl_sku_revisions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY inbound_okl_sku_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_sku_revisions_id_seq'::regclass);
+
+
+--
+-- Name: inbound_okl_sku_shipping_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_shipping_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_sku_shipping_revisions_id_seq'::regclass);
+
+
+--
+-- Name: inbound_okl_sku_state_revisions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_state_revisions ALTER COLUMN id SET DEFAULT nextval('inbound_okl_sku_state_revisions_id_seq'::regclass);
 
 
 --
@@ -1042,11 +1270,51 @@ ALTER TABLE ONLY inbound_okl_product_revisions
 
 
 --
+-- Name: inbound_okl_sku_attribute_revisions inbound_okl_sku_attribute_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_attribute_revisions
+    ADD CONSTRAINT inbound_okl_sku_attribute_revisions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inbound_okl_sku_dimensions_revisions inbound_okl_sku_dimensions_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_dimensions_revisions
+    ADD CONSTRAINT inbound_okl_sku_dimensions_revisions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inbound_okl_sku_image_revisions inbound_okl_sku_image_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_image_revisions
+    ADD CONSTRAINT inbound_okl_sku_image_revisions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: inbound_okl_sku_revisions inbound_okl_sku_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY inbound_okl_sku_revisions
     ADD CONSTRAINT inbound_okl_sku_revisions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inbound_okl_sku_shipping_revisions inbound_okl_sku_shipping_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_shipping_revisions
+    ADD CONSTRAINT inbound_okl_sku_shipping_revisions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: inbound_okl_sku_state_revisions inbound_okl_sku_state_revisions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_state_revisions
+    ADD CONSTRAINT inbound_okl_sku_state_revisions_pkey PRIMARY KEY (id);
 
 
 --
@@ -1152,10 +1420,45 @@ CREATE INDEX index_inbound_okl_product_revisions_on_inbound_batch_id ON inbound_
 
 
 --
+-- Name: index_inbound_okl_sku_attribute_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inbound_okl_sku_attribute_revisions_on_inbound_batch_id ON inbound_okl_sku_attribute_revisions USING btree (inbound_batch_id);
+
+
+--
+-- Name: index_inbound_okl_sku_dimensions_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inbound_okl_sku_dimensions_revisions_on_inbound_batch_id ON inbound_okl_sku_dimensions_revisions USING btree (inbound_batch_id);
+
+
+--
+-- Name: index_inbound_okl_sku_image_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inbound_okl_sku_image_revisions_on_inbound_batch_id ON inbound_okl_sku_image_revisions USING btree (inbound_batch_id);
+
+
+--
 -- Name: index_inbound_okl_sku_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_inbound_okl_sku_revisions_on_inbound_batch_id ON inbound_okl_sku_revisions USING btree (inbound_batch_id);
+
+
+--
+-- Name: index_inbound_okl_sku_shipping_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inbound_okl_sku_shipping_revisions_on_inbound_batch_id ON inbound_okl_sku_shipping_revisions USING btree (inbound_batch_id);
+
+
+--
+-- Name: index_inbound_okl_sku_state_revisions_on_inbound_batch_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_inbound_okl_sku_state_revisions_on_inbound_batch_id ON inbound_okl_sku_state_revisions USING btree (inbound_batch_id);
 
 
 --
@@ -1267,6 +1570,46 @@ ALTER TABLE ONLY inbound_okl_sku_revisions
 
 
 --
+-- Name: inbound_okl_sku_shipping_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_shipping_revisions
+    ADD CONSTRAINT inb_okl_sku_rvn__fk_inbound_batch_id FOREIGN KEY (inbound_batch_id) REFERENCES inbound_batches(inbound_batch_id);
+
+
+--
+-- Name: inbound_okl_sku_dimensions_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_dimensions_revisions
+    ADD CONSTRAINT inb_okl_sku_rvn__fk_inbound_batch_id FOREIGN KEY (inbound_batch_id) REFERENCES inbound_batches(inbound_batch_id);
+
+
+--
+-- Name: inbound_okl_sku_state_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_state_revisions
+    ADD CONSTRAINT inb_okl_sku_rvn__fk_inbound_batch_id FOREIGN KEY (inbound_batch_id) REFERENCES inbound_batches(inbound_batch_id);
+
+
+--
+-- Name: inbound_okl_sku_attribute_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_attribute_revisions
+    ADD CONSTRAINT inb_okl_sku_rvn__fk_inbound_batch_id FOREIGN KEY (inbound_batch_id) REFERENCES inbound_batches(inbound_batch_id);
+
+
+--
+-- Name: inbound_okl_sku_image_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY inbound_okl_sku_image_revisions
+    ADD CONSTRAINT inb_okl_sku_rvn__fk_inbound_batch_id FOREIGN KEY (inbound_batch_id) REFERENCES inbound_batches(inbound_batch_id);
+
+
+--
 -- Name: inbound_okl_product_revisions inb_okl_sku_rvn__fk_inbound_batch_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1292,6 +1635,11 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170825201307'),
 ('20170914170447'),
 ('20170914175801'),
-('20170914175807');
+('20170914175802'),
+('20170914175803'),
+('20170914175804'),
+('20170914175805'),
+('20170914175806'),
+('20170914175901');
 
 
