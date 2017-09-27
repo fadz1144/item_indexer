@@ -6,7 +6,8 @@ RSpec.describe API::Messages::OKL::Sku do
       brand_id: 234,
       sku_shipping: {},
       sku_dimensions: {},
-      sku_attributes: [{}],
+      sku_states: {},
+      sku_attributes: {},
       images: [{}] }.as_json
   end
   let(:message) { described_class.new(message_data) }
@@ -17,9 +18,8 @@ RSpec.describe API::Messages::OKL::Sku do
 
   context '#to_active_record' do
     let(:record) { message.to_active_record }
-    it 'includes brand Id' do
-      expect(record.brand_id).to eq 234
-    end
+    it('includes sku Id') { expect(record.sku_id).to eq 123 }
+    it('includes brand Id') { expect(record.brand_id).to eq 234 }
   end
 
   context '#children' do
@@ -46,18 +46,23 @@ RSpec.describe API::Messages::OKL::Sku do
     end
   end
 
+  it 'sets sku_id on all records' do
+    expect(message.records.all? { |r| r.sku_id == 123 }).to be_truthy
+  end
+
   context 'with two sku attribute entries' do
     let(:message_data) do
       { sku_id: 123,
         sku_shipping: {},
         sku_dimensions: {},
-        sku_attributes: [{}, {}],
-        images: [{}] }.as_json
+        sku_states: {},
+        sku_attributes: {},
+        images: [{}, {}] }.as_json
     end
 
-    it 'has two sku attributes' do
-      sku_attributes = message.children.select { |c| c.is_a? API::Messages::OKL::SkuAttribute }
-      expect(sku_attributes.size).to be 2
+    it 'has two images' do
+      images = message.children.select { |c| c.is_a? API::Messages::OKL::SkuImage }
+      expect(images.size).to be 2
     end
   end
 end

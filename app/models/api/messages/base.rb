@@ -21,7 +21,7 @@ module API
       end
 
       def records
-        [to_active_record] + children.map(&:records)
+        [to_active_record] + children.flat_map(&:records)
       end
 
       def children

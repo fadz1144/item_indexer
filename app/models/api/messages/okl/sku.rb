@@ -13,8 +13,8 @@ module API
         def children
           [API::Messages::OKL::SkuShipping.new(child_data('sku_shipping')),
            API::Messages::OKL::SkuDimensions.new(child_data('sku_dimensions')),
-           API::Messages::OKL::SkuState.new(child_data('sku_state'))] +
-            child_data_array('sku_attributes', API::Messages::OKL::SkuAttribute) +
+           API::Messages::OKL::SkuState.new(child_data('sku_state')),
+           API::Messages::OKL::SkuAttribute.new(child_data('sku_attributes'))] +
             child_data_array('images', API::Messages::OKL::SkuImage)
         end
 
@@ -25,8 +25,9 @@ module API
         end
 
         def child_data_array(key, message_class)
+          sku_id = @data.slice('sku_id')
           @data[key].map do |attr|
-            message_class.new(attr.slice('sku_id'))
+            message_class.new(attr.merge(sku_id))
           end
         end
       end

@@ -28,7 +28,7 @@ module API
 
       def save_to_database(message)
         service = @database_service || API::Inbound::DatabaseService.new
-        service.write_message(message)
+        service.write_message(@batch.inbound_batch_id, message)
       end
 
       def save_to_file(message)

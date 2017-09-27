@@ -14,7 +14,7 @@ RSpec.describe API::Inbound::DatabaseService do
   end
 
   context '#write_message' do
-    before { service.write_message(message) }
+    before { service.write_message(123, message) }
 
     it 'has no errors' do
       expect(service.errors).to be_empty
@@ -40,11 +40,11 @@ RSpec.describe API::Inbound::DatabaseService do
     end
 
     it 'rescues exceptions' do
-      expect { service.write_message(message) }.not_to raise_error
+      expect { service.write_message(123, message) }.not_to raise_error
     end
 
     it 'records error for item' do
-      service.write_message(message)
+      service.write_message(123, message)
       expect(service.errors).to eq(123 => 'test error')
     end
   end

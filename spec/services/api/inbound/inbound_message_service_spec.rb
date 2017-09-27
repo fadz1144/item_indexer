@@ -27,7 +27,7 @@ RSpec.describe API::Inbound::InboundMessageService do
     end
 
     it 'saves to database' do
-      expect(database_service).to have_received(:write_message).with(message)
+      expect(database_service).to have_received(:write_message).with(234, message)
     end
 
     it 'saves to file' do

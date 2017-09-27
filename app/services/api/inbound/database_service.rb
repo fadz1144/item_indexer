@@ -3,7 +3,8 @@ module API
     class DatabaseService
       attr_reader :errors
 
-      def write_message(message)
+      def write_message(batch_id, message)
+        @batch_id = batch_id
         @errors = {}
         message.transactional_items.each do |item|
           save_item_records(item)
@@ -14,6 +15,7 @@ module API
 
       def save_item_records(item)
         records = item.records
+        records.each { |r| r.inbound_batch_id = @batch_id }
         records.first.transaction { records.each(&:save!) }
       rescue StandardError => e
         @errors[item.item_id] = e.message
