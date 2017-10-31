@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe API::Messages::OKL::Message do
+RSpec.describe API::MessageHandlers::OKL::Message do
   let(:message_data) do
     { message_id: 123,
       data: [{ product_id: 1, name: 'first product' },

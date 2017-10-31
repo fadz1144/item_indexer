@@ -1,5 +1,5 @@
 module API
-  module Messages
+  module MessageHandlers
     module OKL
       class Message
         attr_reader :data, :data_type

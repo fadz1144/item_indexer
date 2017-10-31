@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe API::Inbound::InboundMessageService do
   let(:message) do
-    instance_double(API::Messages::OKL::Message, message_id: 123, source: :okl, data_type: :product, data: 'the data')
+    instance_double(API::MessageHandlers::OKL::Message,
+                    message_id: 123, source: :okl, data_type: :product, data: 'the data')
   end
   let(:database_service) { spy('database_service') }
   let(:flat_file_service) { spy('flat_file_service') }

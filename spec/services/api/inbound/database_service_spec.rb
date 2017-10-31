@@ -10,7 +10,7 @@ RSpec.describe API::Inbound::DatabaseService do
   let(:first_item) { spy(API::Messages::OKL::Product, records: [record, record]) }
   let(:second_item) { spy(API::Messages::OKL::Product, records: [record]) }
   let(:message) do
-    instance_double(API::Messages::OKL::Message, transactional_items: [first_item, second_item])
+    instance_double(API::MessageHandlers::OKL::Message, transactional_items: [first_item, second_item])
   end
 
   context '#write_message' do
@@ -36,7 +36,7 @@ RSpec.describe API::Inbound::DatabaseService do
       spy(API::Messages::OKL::Product, records: [bad_record], item_id: 123, class: Inbound::OKL::ProductRevision)
     end
     let(:message) do
-      instance_double(API::Messages::OKL::Message, transactional_items: [first_item, second_item, third_item])
+      instance_double(API::MessageHandlers::OKL::Message, transactional_items: [first_item, second_item, third_item])
     end
 
     it 'rescues exceptions' do
