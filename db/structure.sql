@@ -92,12 +92,65 @@ ALTER SEQUENCE brands_brand_id_seq OWNED BY brands.brand_id;
 
 
 --
+-- Name: categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE categories (
+    category_id bigint NOT NULL,
+    parent_id bigint,
+    name character varying(100),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: TABLE categories; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE categories IS 'Category definition';
+
+
+--
+-- Name: COLUMN categories.category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN categories.category_id IS 'Globally unique id for category';
+
+
+--
+-- Name: COLUMN categories.name; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN categories.name IS 'Category name';
+
+
+--
+-- Name: categories_category_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE categories_category_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: categories_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE categories_category_id_seq OWNED BY categories.category_id;
+
+
+--
 -- Name: concept_brands; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE concept_brands (
     concept_brand_id bigint NOT NULL,
-    brand_id bigint NOT NULL,
+    brand_id bigint,
     concept_id bigint NOT NULL,
     source_brand_id bigint NOT NULL,
     active boolean NOT NULL,
@@ -189,14 +242,114 @@ ALTER SEQUENCE concept_brands_concept_brand_id_seq OWNED BY concept_brands.conce
 
 
 --
+-- Name: concept_categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE concept_categories (
+    concept_category_id bigint NOT NULL,
+    category_id bigint,
+    concept_id bigint NOT NULL,
+    source_category_id bigint NOT NULL,
+    active boolean NOT NULL,
+    status character varying(10) NOT NULL,
+    name character varying(100),
+    description character varying(1000),
+    source_created_by bigint DEFAULT 0 NOT NULL,
+    source_created_at timestamp without time zone NOT NULL,
+    source_updated_by bigint DEFAULT 0 NOT NULL,
+    source_updated_at timestamp without time zone NOT NULL,
+    parent_id bigint,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: TABLE concept_categories; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE concept_categories IS 'Concept specific attribute for category';
+
+
+--
+-- Name: COLUMN concept_categories.concept_category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_categories.concept_category_id IS 'Unique id for concept + category intersection';
+
+
+--
+-- Name: COLUMN concept_categories.category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_categories.category_id IS 'Global category Id';
+
+
+--
+-- Name: COLUMN concept_categories.source_category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_categories.source_category_id IS 'Category Id in source system';
+
+
+--
+-- Name: COLUMN concept_categories.active; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_categories.active IS 'Concept-specific active flag';
+
+
+--
+-- Name: COLUMN concept_categories.status; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_categories.status IS 'Concept-specific status';
+
+
+--
+-- Name: COLUMN concept_categories.name; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_categories.name IS 'Concept-specific name';
+
+
+--
+-- Name: COLUMN concept_categories.description; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_categories.description IS 'Concept-specific description';
+
+
+--
+-- Name: concept_categories_concept_category_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE concept_categories_concept_category_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: concept_categories_concept_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE concept_categories_concept_category_id_seq OWNED BY concept_categories.concept_category_id;
+
+
+--
 -- Name: concept_products; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE concept_products (
     concept_product_id bigint NOT NULL,
-    product_id bigint NOT NULL,
+    product_id bigint,
     concept_id bigint NOT NULL,
     source_product_id bigint NOT NULL,
+    concept_brand_id bigint NOT NULL,
+    concept_category_id bigint NOT NULL,
     active boolean NOT NULL,
     status character varying(10) NOT NULL,
     name character varying(100),
@@ -237,6 +390,20 @@ COMMENT ON COLUMN concept_products.product_id IS 'Global product Id';
 --
 
 COMMENT ON COLUMN concept_products.source_product_id IS 'Product Id in source system';
+
+
+--
+-- Name: COLUMN concept_products.concept_brand_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_products.concept_brand_id IS 'Global concept_brand Id';
+
+
+--
+-- Name: COLUMN concept_products.concept_category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_products.concept_category_id IS 'Global concept_category Id';
 
 
 --
@@ -294,65 +461,61 @@ ALTER SEQUENCE concept_products_concept_product_id_seq OWNED BY concept_products
 
 
 --
--- Name: concept_sku_attributes; Type: TABLE; Schema: public; Owner: -
+-- Name: concept_sku_images; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE concept_sku_attributes (
-    concept_sku_attribute_id bigint NOT NULL,
-    sku_id bigint NOT NULL,
+CREATE TABLE concept_sku_images (
+    concept_sku_image_id bigint NOT NULL,
+    sku_image_id bigint,
     concept_id bigint NOT NULL,
+    source_sku_image_id bigint NOT NULL,
     concept_sku_id bigint NOT NULL,
-    name character varying(40),
-    value character varying(255),
-    source_created_by bigint DEFAULT 0 NOT NULL,
-    source_created_at timestamp without time zone NOT NULL,
-    source_updated_by bigint DEFAULT 0 NOT NULL,
-    source_updated_at timestamp without time zone NOT NULL,
+    image_url character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
 
 
 --
--- Name: TABLE concept_sku_attributes; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE concept_sku_images; Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON TABLE concept_sku_attributes IS 'Concept-specific sparse sku attributes';
-
-
---
--- Name: COLUMN concept_sku_attributes.concept_sku_attribute_id; Type: COMMENT; Schema: public; Owner: -
---
-
-COMMENT ON COLUMN concept_sku_attributes.concept_sku_attribute_id IS 'Unique id for concept + sku + attribute intersection';
+COMMENT ON TABLE concept_sku_images IS 'Sku images';
 
 
 --
--- Name: COLUMN concept_sku_attributes.sku_id; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN concept_sku_images.concept_sku_image_id; Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON COLUMN concept_sku_attributes.sku_id IS 'Global sku Id';
-
-
---
--- Name: COLUMN concept_sku_attributes.name; Type: COMMENT; Schema: public; Owner: -
---
-
-COMMENT ON COLUMN concept_sku_attributes.name IS 'Attribute name';
+COMMENT ON COLUMN concept_sku_images.concept_sku_image_id IS 'Unique id for concept + sku_image intersection';
 
 
 --
--- Name: COLUMN concept_sku_attributes.value; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN concept_sku_images.sku_image_id; Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON COLUMN concept_sku_attributes.value IS 'Attribute value';
+COMMENT ON COLUMN concept_sku_images.sku_image_id IS 'Global sku_image Id';
 
 
 --
--- Name: concept_sku_attributes_concept_sku_attribute_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: COLUMN concept_sku_images.source_sku_image_id; Type: COMMENT; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE concept_sku_attributes_concept_sku_attribute_id_seq
+COMMENT ON COLUMN concept_sku_images.source_sku_image_id IS 'Sku Image Id in source system';
+
+
+--
+-- Name: COLUMN concept_sku_images.concept_sku_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_sku_images.concept_sku_id IS 'Global concept_sku Id';
+
+
+--
+-- Name: concept_sku_images_concept_sku_image_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE concept_sku_images_concept_sku_image_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -361,10 +524,10 @@ CREATE SEQUENCE concept_sku_attributes_concept_sku_attribute_id_seq
 
 
 --
--- Name: concept_sku_attributes_concept_sku_attribute_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: concept_sku_images_concept_sku_image_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE concept_sku_attributes_concept_sku_attribute_id_seq OWNED BY concept_sku_attributes.concept_sku_attribute_id;
+ALTER SEQUENCE concept_sku_images_concept_sku_image_id_seq OWNED BY concept_sku_images.concept_sku_image_id;
 
 
 --
@@ -373,15 +536,37 @@ ALTER SEQUENCE concept_sku_attributes_concept_sku_attribute_id_seq OWNED BY conc
 
 CREATE TABLE concept_skus (
     concept_sku_id bigint NOT NULL,
-    sku_id bigint NOT NULL,
+    sku_id bigint,
     concept_id bigint NOT NULL,
     source_sku_id bigint NOT NULL,
+    concept_brand_id bigint NOT NULL,
+    concept_category_id bigint NOT NULL,
     active boolean NOT NULL,
     status character varying(10) NOT NULL,
     status_reason_cd character varying(5),
     name character varying(100),
     description character varying(1000),
     color character varying(100),
+    era character varying(100),
+    style character varying(100),
+    materials character varying(100),
+    care_instructions character varying(100),
+    care_instructions_other character varying(100),
+    lead_time integer,
+    lead_time_bucket character varying(100),
+    aad_min_offset_days integer,
+    aad_max_offset_days integer,
+    ltl_eligible boolean DEFAULT false NOT NULL,
+    threshold_eligible boolean DEFAULT false NOT NULL,
+    shipping_method character varying(100),
+    total_avail_qty integer,
+    warehouse_avail_qty integer,
+    stores_avail_qty integer,
+    vdc_avail_qty integer,
+    on_order_qty integer,
+    limited_qty boolean DEFAULT false NOT NULL,
+    live boolean DEFAULT false NOT NULL,
+    allow_exposure boolean DEFAULT false NOT NULL,
     source_created_by bigint DEFAULT 0 NOT NULL,
     source_created_at timestamp without time zone NOT NULL,
     source_updated_by bigint DEFAULT 0 NOT NULL,
@@ -417,6 +602,20 @@ COMMENT ON COLUMN concept_skus.sku_id IS 'Global sku Id';
 --
 
 COMMENT ON COLUMN concept_skus.source_sku_id IS 'Sku Id in source system';
+
+
+--
+-- Name: COLUMN concept_skus.concept_brand_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.concept_brand_id IS 'Global concept_brand Id';
+
+
+--
+-- Name: COLUMN concept_skus.concept_category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.concept_category_id IS 'Global concept_category Id';
 
 
 --
@@ -459,6 +658,55 @@ COMMENT ON COLUMN concept_skus.description IS 'Concept-specific description';
 --
 
 COMMENT ON COLUMN concept_skus.color IS 'Concept-specific SKU color';
+
+
+--
+-- Name: COLUMN concept_skus.era; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.era IS 'Concept-specific SKU era';
+
+
+--
+-- Name: COLUMN concept_skus.style; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.style IS 'Concept-specific SKU style';
+
+
+--
+-- Name: COLUMN concept_skus.materials; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.materials IS 'Concept-specific SKU materials';
+
+
+--
+-- Name: COLUMN concept_skus.care_instructions; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.care_instructions IS 'Concept-specific SKU care_instructions';
+
+
+--
+-- Name: COLUMN concept_skus.care_instructions_other; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.care_instructions_other IS 'Concept-specific SKU care_instructions_other';
+
+
+--
+-- Name: COLUMN concept_skus.lead_time_bucket; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.lead_time_bucket IS 'Concept-specific SKU lead_time_bucket';
+
+
+--
+-- Name: COLUMN concept_skus.shipping_method; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN concept_skus.shipping_method IS 'Concept-specific SKU shipping_method';
 
 
 --
@@ -899,8 +1147,8 @@ ALTER SEQUENCE inbound_okl_sku_state_revisions_id_seq OWNED BY inbound_okl_sku_s
 
 CREATE TABLE product_memberships (
     product_membership_id bigint NOT NULL,
-    product_id bigint,
-    sku_id bigint,
+    product_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -911,6 +1159,20 @@ CREATE TABLE product_memberships (
 --
 
 COMMENT ON TABLE product_memberships IS 'Sku membership for each product';
+
+
+--
+-- Name: COLUMN product_memberships.product_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN product_memberships.product_id IS 'Global product Id';
+
+
+--
+-- Name: COLUMN product_memberships.sku_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN product_memberships.sku_id IS 'Global sku Id';
 
 
 --
@@ -938,6 +1200,8 @@ ALTER SEQUENCE product_memberships_product_membership_id_seq OWNED BY product_me
 
 CREATE TABLE products (
     product_id bigint NOT NULL,
+    brand_id bigint NOT NULL,
+    category_id bigint NOT NULL,
     membership_hash bigint,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -956,6 +1220,20 @@ COMMENT ON TABLE products IS 'Product definition';
 --
 
 COMMENT ON COLUMN products.product_id IS 'Globally unique id for product';
+
+
+--
+-- Name: COLUMN products.brand_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN products.brand_id IS 'Global brand Id';
+
+
+--
+-- Name: COLUMN products.category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN products.category_id IS 'Global category Id';
 
 
 --
@@ -994,17 +1272,66 @@ CREATE TABLE schema_migrations (
 
 
 --
+-- Name: sku_images; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE sku_images (
+    sku_image_id bigint NOT NULL,
+    sku_id bigint NOT NULL,
+    image_url character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: TABLE sku_images; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE sku_images IS 'Sku images';
+
+
+--
+-- Name: COLUMN sku_images.sku_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN sku_images.sku_id IS 'Global sku Id';
+
+
+--
+-- Name: sku_images_sku_image_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE sku_images_sku_image_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: sku_images_sku_image_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE sku_images_sku_image_id_seq OWNED BY sku_images.sku_image_id;
+
+
+--
 -- Name: skus; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE skus (
     sku_id bigint NOT NULL,
     gtin bigint,
+    brand_id bigint NOT NULL,
+    category_id bigint NOT NULL,
     unit_of_measure_cd character varying(3),
     vmf boolean,
     color_family character varying(20),
     non_taxable boolean,
     vintage boolean,
+    image_count integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -1022,6 +1349,20 @@ COMMENT ON COLUMN skus.sku_id IS 'ID in BBBY systems';
 --
 
 COMMENT ON COLUMN skus.gtin IS 'UPC or EAN';
+
+
+--
+-- Name: COLUMN skus.brand_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN skus.brand_id IS 'Global brand Id';
+
+
+--
+-- Name: COLUMN skus.category_id; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN skus.category_id IS 'Global category Id';
 
 
 --
@@ -1086,10 +1427,24 @@ ALTER TABLE ONLY brands ALTER COLUMN brand_id SET DEFAULT nextval('brands_brand_
 
 
 --
+-- Name: categories category_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY categories ALTER COLUMN category_id SET DEFAULT nextval('categories_category_id_seq'::regclass);
+
+
+--
 -- Name: concept_brands concept_brand_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY concept_brands ALTER COLUMN concept_brand_id SET DEFAULT nextval('concept_brands_concept_brand_id_seq'::regclass);
+
+
+--
+-- Name: concept_categories concept_category_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_categories ALTER COLUMN concept_category_id SET DEFAULT nextval('concept_categories_concept_category_id_seq'::regclass);
 
 
 --
@@ -1100,10 +1455,10 @@ ALTER TABLE ONLY concept_products ALTER COLUMN concept_product_id SET DEFAULT ne
 
 
 --
--- Name: concept_sku_attributes concept_sku_attribute_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: concept_sku_images concept_sku_image_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY concept_sku_attributes ALTER COLUMN concept_sku_attribute_id SET DEFAULT nextval('concept_sku_attributes_concept_sku_attribute_id_seq'::regclass);
+ALTER TABLE ONLY concept_sku_images ALTER COLUMN concept_sku_image_id SET DEFAULT nextval('concept_sku_images_concept_sku_image_id_seq'::regclass);
 
 
 --
@@ -1191,6 +1546,13 @@ ALTER TABLE ONLY products ALTER COLUMN product_id SET DEFAULT nextval('products_
 
 
 --
+-- Name: sku_images sku_image_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sku_images ALTER COLUMN sku_image_id SET DEFAULT nextval('sku_images_sku_image_id_seq'::regclass);
+
+
+--
 -- Name: skus sku_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1214,11 +1576,27 @@ ALTER TABLE ONLY brands
 
 
 --
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (category_id);
+
+
+--
 -- Name: concept_brands concept_brands_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY concept_brands
     ADD CONSTRAINT concept_brands_pkey PRIMARY KEY (concept_brand_id);
+
+
+--
+-- Name: concept_categories concept_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_categories
+    ADD CONSTRAINT concept_categories_pkey PRIMARY KEY (concept_category_id);
 
 
 --
@@ -1230,11 +1608,11 @@ ALTER TABLE ONLY concept_products
 
 
 --
--- Name: concept_sku_attributes concept_sku_attributes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: concept_sku_images concept_sku_images_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY concept_sku_attributes
-    ADD CONSTRAINT concept_sku_attributes_pkey PRIMARY KEY (concept_sku_attribute_id);
+ALTER TABLE ONLY concept_sku_images
+    ADD CONSTRAINT concept_sku_images_pkey PRIMARY KEY (concept_sku_image_id);
 
 
 --
@@ -1342,11 +1720,33 @@ ALTER TABLE ONLY schema_migrations
 
 
 --
+-- Name: sku_images sku_images_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sku_images
+    ADD CONSTRAINT sku_images_pkey PRIMARY KEY (sku_image_id);
+
+
+--
 -- Name: skus skus_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY skus
     ADD CONSTRAINT skus_pkey PRIMARY KEY (sku_id);
+
+
+--
+-- Name: categories__idx_parent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX categories__idx_parent_id ON categories USING btree (parent_id);
+
+
+--
+-- Name: concept_categories__idx_parent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX concept_categories__idx_parent_id ON concept_categories USING btree (parent_id);
 
 
 --
@@ -1364,6 +1764,34 @@ CREATE INDEX index_concept_brands_on_concept_id ON concept_brands USING btree (c
 
 
 --
+-- Name: index_concept_categories_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_concept_categories_on_category_id ON concept_categories USING btree (category_id);
+
+
+--
+-- Name: index_concept_categories_on_concept_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_concept_categories_on_concept_id ON concept_categories USING btree (concept_id);
+
+
+--
+-- Name: index_concept_products_on_concept_brand_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_concept_products_on_concept_brand_id ON concept_products USING btree (concept_brand_id);
+
+
+--
+-- Name: index_concept_products_on_concept_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_concept_products_on_concept_category_id ON concept_products USING btree (concept_category_id);
+
+
+--
 -- Name: index_concept_products_on_concept_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1378,24 +1806,38 @@ CREATE INDEX index_concept_products_on_product_id ON concept_products USING btre
 
 
 --
--- Name: index_concept_sku_attributes_on_concept_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_concept_sku_images_on_concept_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_concept_sku_attributes_on_concept_id ON concept_sku_attributes USING btree (concept_id);
-
-
---
--- Name: index_concept_sku_attributes_on_concept_sku_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_concept_sku_attributes_on_concept_sku_id ON concept_sku_attributes USING btree (concept_sku_id);
+CREATE INDEX index_concept_sku_images_on_concept_id ON concept_sku_images USING btree (concept_id);
 
 
 --
--- Name: index_concept_sku_attributes_on_sku_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_concept_sku_images_on_concept_sku_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_concept_sku_attributes_on_sku_id ON concept_sku_attributes USING btree (sku_id);
+CREATE INDEX index_concept_sku_images_on_concept_sku_id ON concept_sku_images USING btree (concept_sku_id);
+
+
+--
+-- Name: index_concept_sku_images_on_sku_image_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_concept_sku_images_on_sku_image_id ON concept_sku_images USING btree (sku_image_id);
+
+
+--
+-- Name: index_concept_skus_on_concept_brand_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_concept_skus_on_concept_brand_id ON concept_skus USING btree (concept_brand_id);
+
+
+--
+-- Name: index_concept_skus_on_concept_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_concept_skus_on_concept_category_id ON concept_skus USING btree (concept_category_id);
 
 
 --
@@ -1462,6 +1904,55 @@ CREATE INDEX index_inbound_okl_sku_state_revisions_on_inbound_batch_id ON inboun
 
 
 --
+-- Name: index_product_memberships_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_memberships_on_product_id ON product_memberships USING btree (product_id);
+
+
+--
+-- Name: index_product_memberships_on_sku_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_product_memberships_on_sku_id ON product_memberships USING btree (sku_id);
+
+
+--
+-- Name: index_products_on_brand_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_products_on_brand_id ON products USING btree (brand_id);
+
+
+--
+-- Name: index_products_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_products_on_category_id ON products USING btree (category_id);
+
+
+--
+-- Name: index_sku_images_on_sku_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sku_images_on_sku_id ON sku_images USING btree (sku_id);
+
+
+--
+-- Name: index_skus_on_brand_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_skus_on_brand_id ON skus USING btree (brand_id);
+
+
+--
+-- Name: index_skus_on_category_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_skus_on_category_id ON skus USING btree (category_id);
+
+
+--
 -- Name: index_skus_on_gtin; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1469,24 +1960,10 @@ CREATE INDEX index_skus_on_gtin ON skus USING btree (gtin);
 
 
 --
--- Name: product_memberships__idx_product_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX product_memberships__idx_product_id ON product_memberships USING btree (product_id);
-
-
---
 -- Name: product_memberships__idx_product_id_sku_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX product_memberships__idx_product_id_sku_id ON product_memberships USING btree (product_id, sku_id);
-
-
---
--- Name: product_to_memberships__idx_sku_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX product_to_memberships__idx_sku_id ON product_memberships USING btree (sku_id);
 
 
 --
@@ -1506,6 +1983,38 @@ ALTER TABLE ONLY concept_brands
 
 
 --
+-- Name: concept_categories concept_categories__fk_category_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_categories
+    ADD CONSTRAINT concept_categories__fk_category_id FOREIGN KEY (category_id) REFERENCES categories(category_id);
+
+
+--
+-- Name: concept_categories concept_categories__fk_concept_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_categories
+    ADD CONSTRAINT concept_categories__fk_concept_id FOREIGN KEY (concept_id) REFERENCES concepts(concept_id);
+
+
+--
+-- Name: concept_products concept_products__fk_concept_brand_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_products
+    ADD CONSTRAINT concept_products__fk_concept_brand_id FOREIGN KEY (concept_brand_id) REFERENCES concept_brands(concept_brand_id);
+
+
+--
+-- Name: concept_products concept_products__fk_concept_category_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_products
+    ADD CONSTRAINT concept_products__fk_concept_category_id FOREIGN KEY (concept_category_id) REFERENCES concept_categories(concept_category_id);
+
+
+--
 -- Name: concept_products concept_products__fk_concept_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1522,6 +2031,46 @@ ALTER TABLE ONLY concept_products
 
 
 --
+-- Name: concept_sku_images concept_sku_images__fk_concept_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_sku_images
+    ADD CONSTRAINT concept_sku_images__fk_concept_id FOREIGN KEY (concept_id) REFERENCES concepts(concept_id);
+
+
+--
+-- Name: concept_sku_images concept_sku_images__fk_concept_sku_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_sku_images
+    ADD CONSTRAINT concept_sku_images__fk_concept_sku_id FOREIGN KEY (concept_sku_id) REFERENCES concept_skus(concept_sku_id);
+
+
+--
+-- Name: concept_sku_images concept_sku_images__fk_sku_image_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_sku_images
+    ADD CONSTRAINT concept_sku_images__fk_sku_image_id FOREIGN KEY (sku_image_id) REFERENCES sku_images(sku_image_id);
+
+
+--
+-- Name: concept_skus concept_skus__fk_concept_brand_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_skus
+    ADD CONSTRAINT concept_skus__fk_concept_brand_id FOREIGN KEY (concept_brand_id) REFERENCES concept_brands(concept_brand_id);
+
+
+--
+-- Name: concept_skus concept_skus__fk_concept_category_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY concept_skus
+    ADD CONSTRAINT concept_skus__fk_concept_category_id FOREIGN KEY (concept_category_id) REFERENCES concept_categories(concept_category_id);
+
+
+--
 -- Name: concept_skus concept_skus__fk_concept_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1535,30 +2084,6 @@ ALTER TABLE ONLY concept_skus
 
 ALTER TABLE ONLY concept_skus
     ADD CONSTRAINT concept_skus__fk_sku_id FOREIGN KEY (sku_id) REFERENCES skus(sku_id);
-
-
---
--- Name: concept_sku_attributes csku_attributes__fk_concept_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY concept_sku_attributes
-    ADD CONSTRAINT csku_attributes__fk_concept_id FOREIGN KEY (concept_id) REFERENCES concepts(concept_id);
-
-
---
--- Name: concept_sku_attributes csku_attributes__fk_concept_sku_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY concept_sku_attributes
-    ADD CONSTRAINT csku_attributes__fk_concept_sku_id FOREIGN KEY (concept_sku_id) REFERENCES concept_skus(concept_sku_id);
-
-
---
--- Name: concept_sku_attributes csku_attributes__fk_sku_id; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY concept_sku_attributes
-    ADD CONSTRAINT csku_attributes__fk_sku_id FOREIGN KEY (sku_id) REFERENCES skus(sku_id);
 
 
 --
@@ -1618,21 +2143,69 @@ ALTER TABLE ONLY inbound_okl_product_revisions
 
 
 --
+-- Name: product_memberships product_memberships__fk_product_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY product_memberships
+    ADD CONSTRAINT product_memberships__fk_product_id FOREIGN KEY (product_id) REFERENCES products(product_id);
+
+
+--
+-- Name: product_memberships product_memberships__fk_sku_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY product_memberships
+    ADD CONSTRAINT product_memberships__fk_sku_id FOREIGN KEY (sku_id) REFERENCES skus(sku_id);
+
+
+--
+-- Name: products products__fk_brand_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY products
+    ADD CONSTRAINT products__fk_brand_id FOREIGN KEY (brand_id) REFERENCES brands(brand_id);
+
+
+--
+-- Name: products products__fk_category_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY products
+    ADD CONSTRAINT products__fk_category_id FOREIGN KEY (category_id) REFERENCES categories(category_id);
+
+
+--
+-- Name: sku_images sku_images__fk_sku_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sku_images
+    ADD CONSTRAINT sku_images__fk_sku_id FOREIGN KEY (sku_id) REFERENCES skus(sku_id);
+
+
+--
+-- Name: skus skus__fk_brand_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY skus
+    ADD CONSTRAINT skus__fk_brand_id FOREIGN KEY (brand_id) REFERENCES brands(brand_id);
+
+
+--
+-- Name: skus skus__fk_category_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY skus
+    ADD CONSTRAINT skus__fk_category_id FOREIGN KEY (category_id) REFERENCES categories(category_id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20170818211750'),
-('20170818231646'),
-('20170818231757'),
-('20170821204421'),
-('20170821204944'),
-('20170821235948'),
-('20170822000122'),
-('20170823172949'),
-('20170825201307'),
+('20170818200000'),
 ('20170914170447'),
 ('20170914175801'),
 ('20170914175802'),
