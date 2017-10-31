@@ -1,0 +1,156 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    environment:
+      # DATABASE_URL doesn't appear to override actually? :(
+      #DATABASE_URL: postgres://circle:circle@localhost:5432/universal_catalog_test
+      ELASTICSEARCH_HOST: localhost
+      DATABASE_HOST: localhost
+      DATABASE_USER: circle
+      DATABASE_PASSWORD: circle
+      SECRET_TOKEN: 12345
+      RAILS_ENV: test
+    docker:
+      # specify the version you desire here
+       - image: circleci/ruby:2.4.1-node-browsers
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+       - image: circleci/postgres:latest
+         environment:
+         - POSTGRES_USER=circle
+         - POSTGRES_PASSWORD=circle
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: "Create .yml files from .deploy"
+          command: rake setup:deploy_yml
+
+      # Database setup
+      - run:
+          name: rails db:create and db:migrate
+          command: |
+            bundle exec rails db:create
+            bundle exec rails db:migrate
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+
+            bundle exec rspec --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml \
+                            --format progress \
+                            $TEST_FILES
+
+      - run:
+          name: run rubocop
+          command: |
+            test_reports_dir=/tmp/test-results/rubocop
+            mkdir -p $test_reports_dir
+            junit_formatter_ruby=$(bundle show rubocop-junit-formatter)/lib/rubocop/formatter/junit_formatter.rb
+            bundle exec rubocop -L | \
+            circleci tests split --split-by=timings --timings-type=filename | \
+            xargs bundle exec rubocop -P -D -R -r $junit_formatter_ruby -c .rubocop.yml --format RuboCop::Formatter::JUnitFormatter --out $test_reports_dir/rubocop.xml
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+
+  deploy:
+    environment:
+      AWS_ACCOUNT_ID: "774076615373"
+      AWS_DEFAULT_REGION: 'us-east-1'
+
+    working_directory: ~/repo
+
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - setup_remote_docker:
+          reusable: true
+      - run:
+          name: Install awscli and docker-compose
+          command: |
+            apk add --no-cache \
+              py-pip=9.0.0-r1
+            pip install \
+              docker-compose==1.12.0 \
+              awscli==1.11.76
+      - checkout
+      - run:
+          name: Deploy if tests pass and branch is Master
+          command: |
+            echo "Get login"
+            login="$(aws ecr get-login)"
+            ${login}
+            if [[ "master" = "$CIRCLE_BRANCH" ]] ; then
+              TAG="latest"
+              SHOULD_DEPLOY="true"
+            else
+              TAG=$CIRCLE_BRANCH
+              SHOULD_DEPLOY="false"
+            fi
+            pwd
+            find .
+            mv Dockerfile.aws Dockerfile
+            docker build --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:$TAG .
+            docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:$TAG
+            if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
+              echo "Update task to point to new latest version"
+              aws ecs register-task-definition --cli-input-json file://scripts/aws/task-definition.json
+              echo "Update service"
+              aws ecs update-service --cli-input-json file://scripts/aws/update-service-definition.json
+              echo "Update complete"
+            fi
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master_cd
+
+#
+#==============
+# If you're dev'ing on this config file locally and want to avoid having to push a million revisions to GitHub try this! Just change the file locally and save, then:
+# 1. export CIRCLE_TOKEN=xxxxxxx (get your token here -> https://circleci.com/account/api ) - I added this to my .bash_profile
+# 2. Run this command in the ROOT of the repository:
+# curl --user ${CIRCLE_TOKEN}: --request POST --form revision=$(git rev-parse --verify HEAD) --form config=@.circleci/config.yml --form notify=false  https://circleci.com/api/v1.1/project/github/okl/$(basename $(pwd))/tree/$(git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n')
+#

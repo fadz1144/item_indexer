@@ -62,6 +62,8 @@ end
 group :test do
   gem 'rspec-rails', '~> 3.6.0'
   gem 'fuubar'
+  gem 'rspec_junit_formatter'
+  gem 'rubocop-junit-formatter'
   gem 'simplecov', :require => false, :group => :test
 end
 

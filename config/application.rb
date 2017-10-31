@@ -1,6 +1,7 @@
 require_relative 'boot'
 
 require 'rails/all'
+require_relative '../lib/env_var_bootstrap'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -8,6 +9,7 @@ Bundler.require(*Rails.groups)
 
 module ItemIndexer
   class Application < Rails::Application
+    EnvVarBootstrap.new("#{Rails.root}/.ruby-env") unless Rails.env.production?
     # custom settings
     config.settings = config_for(:settings)
 
