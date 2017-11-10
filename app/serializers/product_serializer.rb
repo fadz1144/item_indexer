@@ -25,7 +25,7 @@ class ProductSerializer < ActiveModel::Serializer
       image_url = best_sku_image_url(s)
       if image_url.present?
         acc[:default] ||= image_url
-        acc[s.internal_color_family] ||= image_url if s.color_family.present?
+        acc[s.color_family] ||= image_url if s.color_family.present?
       end
     end
   end

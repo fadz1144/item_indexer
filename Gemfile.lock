@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 9c32060c014e6f38b039f76341e3656640e6ed97
+  revision: 5d895f9c895f9f1aefd30d7a392b8387b7378058
   branch: master
   specs:
     cat_models (0.1.0)
@@ -340,4 +340,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
