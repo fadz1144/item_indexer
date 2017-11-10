@@ -1,0 +1,53 @@
+FROM ruby:2.4.1
+
+ARG ssh_prv_key
+
+MAINTAINER rfish@onekingslane.com
+
+ENV PORT 3000
+
+RUN mkdir -p /root/.ssh && \
+    chmod 0700 /root/.ssh && \
+    ssh-keyscan github.com > /root/.ssh/known_hosts
+
+# Add the keys and set permissions
+RUN echo "$ssh_prv_key" > /root/.ssh/id_rsa && \
+    chmod 600 /root/.ssh/id_rsa
+
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  curl \
+  less \
+  nodejs \
+  python \
+  python-dev \
+  unzip
+
+# Install the AWS CLI
+RUN cd /tmp && \
+    curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
+    unzip awscli-bundle.zip && \
+    ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
+    rm awscli-bundle.zip && rm -rf awscli-bundle
+
+# Install the new entry-point script
+COPY secrets-entrypoint.sh /secrets-entrypoint.sh
+
+RUN mkdir -p /okl/app
+WORKDIR /okl/app
+
+COPY Gemfile Gemfile.lock ./
+RUN gem install bundler && bundle install --jobs 20 --retry 5
+
+COPY . ./
+
+COPY config/database.yml.deploy config/database.yml
+COPY config/settings.yml.deploy config/settings.yml
+COPY config/secrets.yml.deploy config/secrets.yml
+
+EXPOSE $PORT
+
+# Overwrite the entry-point script
+ENTRYPOINT ["/secrets-entrypoint.sh"]
+
+CMD rm -f /okl/app/tmp/pids/puma.pid && bundle exec puma -C config/puma.rb -b tcp://0.0.0.0 -p 3000

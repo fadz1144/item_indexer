@@ -4,7 +4,7 @@ module ES
 
     def initialize
       dev_search_index = 'https://search-upc-dev-2bhighuzv3fnbmyh42gmjy7aby.us-east-1.es.amazonaws.com'
-      endpoint = ENV['AWS_ENDPOINT_URL'] || dev_search_index
+      endpoint = ENV['ELASTICSEARCH_HOST'] || dev_search_index
 
       Rails.logger.info "Elastic search endpoint is set to: #{endpoint}"
 

@@ -1,12 +1,13 @@
+require 'background_task_manager'
 module Indexer
   class BaseIndexer
+    include BackgroundTaskManager
     attr_accessor :logger
 
     def initialize(logger: Rails.logger)
       @logger              = logger
       @total_num_processed = 0
-      @start_time          = Time.now
-      @children            = []
+      @start_time          = Time.current
     end
 
     def publish_to_search_by_ids(ids)
@@ -59,11 +60,11 @@ module Indexer
       benchmark(num_records: num_chunks * set_size, t0: @start_time, prefix: 'ALL WORKERS')
     rescue SignalException
       # when we die, take our children with us
-      @children.each { |pid| Process.kill('TERM', pid) }
+      cleanup_on_terminate
       logger.error "\nExited, killing all forked children."
     end
 
-    def benchmark(num_records:, t0:, prefix: '', t1: Time.now)
+    def benchmark(num_records:, t0:, prefix: '', t1: Time.current)
       elapsed = (t1 - t0) * 1000
       logger.info "#{prefix} #{num_records} records in #{elapsed} ms -> Avg: #{elapsed / (1.0 * num_records)} ms"
     end
@@ -90,29 +91,19 @@ module Indexer
       (0..num_chunks).each { |chunk_index| work_queues[chunk_index % num_threads] << chunk_index }
 
       work_queues.each_with_index do |work_q, worker_index|
-        fork do
-          handle_chunk_q(chunk_size, set_size, work_q, worker_index)
-        end
+        run_in_background { handle_chunk_q(chunk_size, set_size, work_q, worker_index) }
       end
-      Process.waitall
-      puts 'DONE WAITING'
+      wait_for_background_tasks
     end
 
     def handle_chunk_q(chunk_size, set_size, work_q, worker_index)
-      @working = true
-      trap('INT') { @working = false }
-
       logger.info "#{worker_index} => STARTED!"
       process_work_q(chunk_size, set_size, work_q, worker_index)
       logger.info "#{worker_index} => DONE!"
-
-      exit!(0) # skip exit handlers
     end
 
     def process_work_q(chunk_size, set_size, work_q, worker_index)
       until work_q.empty?
-        break unless @working
-
         index = work_q.pop
         begin
           publish_to_search(set_size, index * set_size, chunk_size)

@@ -1,12 +1,17 @@
 
 class ProductSerializer < ActiveModel::Serializer
-  attributes :product_id, :category, :color, :image
+  attributes :product_id, :category, :color, :image, :name
 
   belongs_to :brand, serializer: BrandSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
 
+  def name
+    # take the first name of the concept product
+    object.concept_products&.map(&:name)&.first
+  end
+
   def category
-    hierarchy = CatModels::CategoryCache.hierarchy_for(object.category.category_id)
+    hierarchy = CatModels::CategoryCache.hierarchy_for(object.category&.category_id)
     hierarchy.each_with_object({}) do |c, acc|
       acc["level_#{c.level}_category".to_sym] = cat_as_json(c)
     end
@@ -33,7 +38,7 @@ class ProductSerializer < ActiveModel::Serializer
   private
 
   def best_sku_image_url(decorated_sku)
-    decorated_sku.concept_skus&.detect(&:primary_image)
+    decorated_sku.concept_skus&.detect(&:primary_image)&.primary_image
   end
 
   def cat_as_json(category)

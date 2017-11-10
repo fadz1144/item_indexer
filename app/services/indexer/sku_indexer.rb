@@ -34,10 +34,16 @@ module Indexer
     end
 
     def objects_by_ids(ids)
-      CatModels::Sku.includes(:brand, :category, :products, concept_skus: %i[concept_brand concept_vendor
-                                                                             concept_sku_images concept_sku_pricing
-                                                                             concept_sku_dimensions])
-                    .where(sku_id: ids)
+      skus = CatModels::Sku.includes(:brand, :category, :products,
+                                     concept_skus: %i[concept_brand concept_vendor
+                                                      concept_sku_images concept_sku_pricing concept_sku_dimensions])
+                           .where(sku_id: ids)
+      skus.map do |s|
+        s.concept_skus.each do |cs|
+          cs.extend(CatModels::ConceptSkuDecorator)
+        end
+        s.extend(CatModels::SkuDecorator)
+      end
     end
   end
 end

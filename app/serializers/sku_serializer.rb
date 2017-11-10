@@ -1,8 +1,9 @@
 class SkuSerializer < ActiveModel::Serializer
-  attributes :sku_id, :gtin, :product_id, :upc_ean,
+  attributes :sku_id, :gtin, :product_id, :upc_ean, :name,
              :category, :inventory, :pricing, :vendor,
              :active, :allow_exposure, :non_taxable, :unit_of_measure, :vmf, :vintage,
-             :color, :description, :internal_color_family
+             :color, :description, :internal_color_family, :external_image_url,
+             :sku_status_has_inv, :sku_status_live, :brand, :dimensions
 
   # NOT MIGRATED
   #    content_ready: s.sku_states.content_ready,
@@ -13,7 +14,9 @@ class SkuSerializer < ActiveModel::Serializer
   #    inactive_reason_id: s.sku_states.inactive_reason_id,
   #    line_of_business_id: s.line_of_business_id,
 
-  belongs_to :brand, serializer: BrandSerializer
+  def external_image_url
+    object.concept_skus&.detect(&:primary_image)&.primary_image
+  end
 
   def product_id
     object.products&.map(&:product_id)
@@ -21,6 +24,10 @@ class SkuSerializer < ActiveModel::Serializer
 
   def upc_ean
     object.gtin
+  end
+
+  def name
+    object.concept_skus&.detect(&:name)&.name
   end
 
   def active
@@ -43,8 +50,16 @@ class SkuSerializer < ActiveModel::Serializer
     object.concept_skus&.map(&:description) || []
   end
 
+  def dimensions
+    object.concept_skus&.map(&:dimensions) || []
+  end
+
   def internal_color_family
     object.concept_skus&.map(&:color) || []
+  end
+
+  def brand
+    BrandSerializer.new(object.brand).as_json if object.brand
   end
 
   #    category: categories_for_sku(s),
@@ -88,6 +103,15 @@ class SkuSerializer < ActiveModel::Serializer
   def vendor
     # TODO: vendor
     {}
+  end
+
+  # TODO: Not sure about the names for these flags
+  def sku_status_live
+    object.concept_skus.any?(&:live)
+  end
+
+  def sku_status_has_inv
+    object.concept_skus.any? { |cs| cs.total_avail_qty > 0 }
   end
 
   private

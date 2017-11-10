@@ -1,3 +1,3 @@
 class BrandSerializer < ActiveModel::Serializer
-  attributes :brand_id, :name
+  attributes :id, :name
 end
