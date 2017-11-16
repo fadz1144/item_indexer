@@ -39,6 +39,10 @@ module Indexer
                                      concept_skus: %i[concept_brand concept_vendor
                                                       concept_sku_images concept_sku_pricing concept_sku_dimensions])
                            .where(sku_id: ids)
+      apply_decorators(skus)
+    end
+
+    def apply_decorators(skus)
       skus.map do |s|
         s.concept_skus.each do |cs|
           cs.extend(CatModels::ConceptSkuDecorator)

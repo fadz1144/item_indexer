@@ -24,7 +24,7 @@ class SkuSerializer < ActiveModel::Serializer
 
   def product_name
     object.products&.each_with_object([]) do |p, agg|
-      p&.concept_products&.each_with_object(agg) { |cp, agg| agg << cp.name }
+      p&.concept_products&.each_with_object(agg) { |cp, arr| arr << cp.name }
     end
   end
 
