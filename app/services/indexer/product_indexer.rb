@@ -38,7 +38,8 @@ module Indexer
     def objects_by_ids(ids)
       # BARF
       CatModels::Product.includes(:brand, :category, :concept_products,
-                                  skus: [:brand, :category, :products,
+                                  skus: [:brand, :category,
+                                         products: %i[concept_products],
                                          concept_skus: %i[concept_brand concept_vendor
                                                           concept_sku_images concept_sku_pricing
                                                           concept_sku_dimensions]])
