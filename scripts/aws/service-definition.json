@@ -1,0 +1,18 @@
+{
+  "cluster": "bbb-upc-stag",
+  "deploymentConfiguration": {
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 0
+  },
+  "desiredCount": 1,
+  "loadBalancers": [
+    {
+      "containerName": "item_indexer",
+      "containerPort": 3000,
+      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:774076615373:targetgroup/bbb-labs-tg/959727fa09fe7828"
+    }
+  ],
+  "role": "arn:aws:iam::774076615373:role/ecs-service-role",
+  "serviceName": "item_indexer_svc",
+  "taskDefinition": "item_indexer"
+}
