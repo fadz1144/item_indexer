@@ -1,5 +1,5 @@
 class SkuSerializer < ActiveModel::Serializer
-  attributes :sku_id, :gtin, :product_id, :upc_ean, :name,
+  attributes :sku_id, :gtin, :product_id, :product_name, :upc_ean, :name,
              :category, :inventory, :pricing, :vendor,
              :active, :allow_exposure, :non_taxable, :unit_of_measure, :vmf, :vintage,
              :color, :description, :internal_color_family, :external_image_url,
@@ -20,6 +20,12 @@ class SkuSerializer < ActiveModel::Serializer
 
   def product_id
     object.products&.map(&:product_id)
+  end
+
+  def product_name
+    object.products&.each_with_object([]) do |p, agg|
+      p&.concept_products&.each_with_object(agg) { |cp, arr| arr << cp.name }
+    end
   end
 
   def upc_ean
