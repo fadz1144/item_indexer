@@ -6,6 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'cat_models', git: 'git@github.com:okl/cat_models.git', branch: 'master', require: true
+# gem 'cat_models', path: "../cat_models", require: true
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1'
@@ -35,6 +36,11 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'string_enums'
+
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+gem 'faraday_middleware-aws-signers-v4'
+gem 'active_model_serializers'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
