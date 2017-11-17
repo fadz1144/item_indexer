@@ -1,0 +1,9 @@
+{
+  "cluster": "bbb-upc-stag",
+  "deploymentConfiguration": {
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 0
+  },
+  "taskDefinition": "item_indexer",
+  "service": "item_indexer_svc"
+}
