@@ -145,7 +145,7 @@ workflows:
           filters:
             branches:
               only:
-                - master_cd
+                - master
 
 #
 #==============
