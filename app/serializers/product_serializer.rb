@@ -1,6 +1,6 @@
 
 class ProductSerializer < ActiveModel::Serializer
-  attributes :product_id, :category, :color, :image, :name
+  attributes :product_id, :category, :color, :image, :name, :min_price, :max_price
 
   belongs_to :brand, serializer: BrandSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
@@ -35,7 +35,26 @@ class ProductSerializer < ActiveModel::Serializer
     end
   end
 
+  def min_price
+    retail_prices.min
+  end
+
+  def max_price
+    retail_prices.max
+  end
+
   private
+
+  def retail_prices
+    prices = []
+    decorated_skus.each do |s|
+      s.concept_skus&.each do |cs|
+        retail_price = cs.concept_sku_pricing&.retail_price
+        prices << retail_price if retail_price
+      end
+    end
+    prices.sort
+  end
 
   def best_sku_image_url(decorated_sku)
     decorated_sku.concept_skus&.detect(&:primary_image)&.primary_image

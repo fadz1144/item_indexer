@@ -51,6 +51,8 @@ module Indexer
     end
 
     def perform(set_size = 10_000, chunk_size = 1_000, num_threads = 4)
+      logger.info "ES Client initialized: #{client}"
+
       count = determine_count
 
       num_chunks = (count / set_size) + 1
