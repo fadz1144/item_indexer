@@ -97,18 +97,8 @@ class SkuSerializer < ActiveModel::Serializer
     end
   end
 
-  #    vendor: [
-  #    {
-  #      site_id: 1,
-  #      id: s.vendor_id,
-  #      vendor_sku: s.vendor_sku,
-  #      name: s.vendor&.name
-  #    }
-  #  ]
-  #  }
   def vendor
-    # TODO: vendor
-    {}
+    object.concept_skus&.map { |concept_sku| vendor_for_concept_sku(concept_sku) }
   end
 
   # TODO: Not sure about the names for these flags
@@ -133,6 +123,15 @@ class SkuSerializer < ActiveModel::Serializer
   end
 
   private
+
+  def vendor_for_concept_sku(concept_sku)
+    vendor = {}
+    vendor[:id] = concept_sku.concept_vendor_id if concept_sku.concept_vendor_id
+    vendor[:concept_id] = concept_sku.concept_id if concept_sku.concept_id
+    vendor[:vendor_sku] = concept_sku.vendor_sku if concept_sku.vendor_sku
+    vendor[:name] = concept_sku.concept_vendor.name if concept_sku.concept_vendor&.name
+    vendor
+  end
 
   # TODO: might want sku_pricing_serializer?
   def pricing_for_concept_sku(pricing)
