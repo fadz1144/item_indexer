@@ -1,6 +1,7 @@
 
 class ProductSerializer < ActiveModel::Serializer
-  attributes :product_id, :category, :color, :image, :name, :min_price, :max_price
+  attributes :product_id, :category, :color, :image, :name, :min_price, :max_price,
+             :min_lead_time, :max_lead_time, :lead_time, :min_aad_offset_days, :max_aad_offset_days
 
   belongs_to :brand, serializer: BrandSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
@@ -43,17 +44,56 @@ class ProductSerializer < ActiveModel::Serializer
     retail_prices.max
   end
 
+  def min_lead_time
+    lead_time.min
+  end
+
+  def max_lead_time
+    lead_time.max
+  end
+
+  def min_aad_offset_days
+    aad_min_offset_days.min
+  end
+
+  def max_aad_offset_days
+    aad_max_offset_days.max
+  end
+
+  def lead_time
+    decorated_skus.each_with_object([]) do |s, lead_times|
+      s.concept_skus&.each do |cs|
+        lead_time = cs&.lead_time
+        lead_times << lead_time if lead_time
+      end
+    end.sort
+  end
+
   private
 
   def retail_prices
-    prices = []
-    decorated_skus.each do |s|
+    decorated_skus.each_with_object([]) do |s, prices|
       s.concept_skus&.each do |cs|
         retail_price = cs.concept_sku_pricing&.retail_price
         prices << retail_price if retail_price
       end
-    end
-    prices.sort
+    end.sort
+  end
+
+  def aad_min_offset_days
+    decorated_skus.each.with_object([]) do |s, aad_min_offset_days|
+      s.concept_skus&.each do |cs|
+        aad_min_offset_days << cs.aad_min_offset_days if cs.aad_min_offset_days
+      end
+    end.sort
+  end
+
+  def aad_max_offset_days
+    decorated_skus.each_with_object([]) do |s, acc|
+      s.concept_skus&.each do |cs|
+        acc << cs.aad_max_offset_days if cs.aad_max_offset_days
+      end
+    end.sort
   end
 
   def best_sku_image_url(decorated_sku)

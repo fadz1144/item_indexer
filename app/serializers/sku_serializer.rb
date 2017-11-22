@@ -1,9 +1,9 @@
+# rubocop:disable ClassLength
 class SkuSerializer < ActiveModel::Serializer
   attributes :sku_id, :gtin, :product_id, :product_name, :upc_ean, :name,
-             :category, :inventory, :pricing, :vendor,
-             :active, :allow_exposure, :non_taxable, :unit_of_measure, :vmf, :vintage,
-             :color, :description, :internal_color_family, :external_image_url,
-             :sku_status_has_inv, :sku_status_live, :brand, :dimensions
+             :category, :inventory, :pricing, :vendor, :active, :allow_exposure, :non_taxable, :unit_of_measure,
+             :vmf, :vintage, :color, :description, :internal_color_family, :external_image_url, :sku_status_has_inv,
+             :sku_status_live, :brand, :dimensions, :lead_time, :aad_min_offset_days, :aad_max_offset_days
 
   # NOT MIGRATED
   #    content_ready: s.sku_states.content_ready,
@@ -120,6 +120,18 @@ class SkuSerializer < ActiveModel::Serializer
     object.concept_skus.any? { |cs| cs.total_avail_qty > 0 }
   end
 
+  def lead_time
+    object.concept_skus&.map(&:lead_time)&.min
+  end
+
+  def aad_min_offset_days
+    object.concept_skus&.map(&:aad_min_offset_days)&.min
+  end
+
+  def aad_max_offset_days
+    object.concept_skus&.map(&:aad_max_offset_days)&.max
+  end
+
   private
 
   # TODO: might want sku_pricing_serializer?
@@ -143,3 +155,4 @@ class SkuSerializer < ActiveModel::Serializer
     object.concept_skus.any?(&:allow_exposure?)
   end
 end
+# rubocop:enable all
