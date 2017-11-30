@@ -1,9 +1,9 @@
 # rubocop:disable ClassLength
 class SkuSerializer < ActiveModel::Serializer
-  attributes :sku_id, :gtin, :product_id, :product_name, :upc_ean, :name,
-             :category, :inventory, :pricing, :vendor, :active, :allow_exposure, :non_taxable, :unit_of_measure,
-             :vmf, :vintage, :color, :description, :internal_color_family, :external_image_url, :sku_status_has_inv,
-             :sku_status_live, :brand, :dimensions, :lead_time, :aad_min_offset_days, :aad_max_offset_days
+  attributes :sku_id, :gtin, :product_id, :product_name, :upc_ean, :name, :category, :inventory, :pricing, :vendor,
+             :active, :allow_exposure, :non_taxable, :unit_of_measure, :vmf, :vintage, :color, :description,
+             :internal_color_family, :external_image_url, :sku_status_has_inv, :sku_status_live, :brand, :dimensions,
+             :lead_time, :aad_min_offset_days, :aad_max_offset_days, :shipping_method
 
   # NOT MIGRATED
   #    content_ready: s.sku_states.content_ready,
@@ -120,6 +120,10 @@ class SkuSerializer < ActiveModel::Serializer
 
   def aad_max_offset_days
     object.concept_skus&.map(&:aad_max_offset_days)&.max
+  end
+
+  def shipping_method
+    object.concept_skus&.map(&:shipping_method)&.uniq
   end
 
   private
