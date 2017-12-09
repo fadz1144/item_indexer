@@ -7,7 +7,7 @@ class AddFkToInboundOKLTables < ActiveRecord::Migration[5.1]
 
   def add_reference(name)
     change_table "inbound_okl_sku_#{name}_revisions" do |t|
-      t.references :inbound_okl_sku_revisions, type: :integer, limit: 8,
+      t.references :inbound_okl_sku_revision, type: :integer, limit: 8,
                        index: { name: "#{t.name}__fk_inb_okl_sku" }
     end
   end
