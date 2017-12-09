@@ -4,8 +4,8 @@ module API
       private
 
       # supports either a generic message handler with the class name "Message" or an endpoint-specific handler
-      # for example, a generic OKL message is API::Messages::OKL::Message, while a sku-specifc handler would be
-      # API::Messages::OKL::Sku.
+      # for example, a generic OKL message is Inbound::Messages::OKL::Message, while a sku-specifc handler would be
+      # Inbound::Messages::OKL::Sku.
       def instantiate_message(source, data_type, message)
         message_class = "#{API::Messages}::#{source}::#{data_type}".safe_constantize ||
                         "#{API::Messages}::#{source}::Message".safe_constantize

@@ -1,0 +1,74 @@
+{ "data": [
+    {
+      "sku_id": 77264477,
+      "okl_sku_id": 2264477,
+      "upc": 444722644775,
+      "product_id": 2418193,
+      "brand_id": 3506,
+      "vendor_id": 2178,
+      "category_id": 601103,
+      "name": "Bengali Kantha Printed Throw",
+      "description": "Karma Living. Layers of reclaim Sari is quilted in layers by Kantha Hand stitched by farmers in the region of West Bengal. This traditional method of quilting is native to this region and provide local families with income or a tool for barter for homewares , clothing and oil. Each one is unique and made by an individual craft women community leader. Each Kantha is unique.",
+      "unit_of_measure_cd": "each",
+      "active": false,
+      "allow_exposure": true,
+      "price": 99,
+      "cost": 40.59,
+      "pre_markdown_price": null,
+      "msrp": 0,
+      "color": "",
+      "color_family": "green",
+      "size": "",
+      "era": "1960s",
+      "style": "Retro",
+      "materials": "",
+      "care_instructions": "hand-wash",
+      "care_instructions_other": "patches misprints mending imperfections are part of kantha beauty",
+      "line_of_business": "VMF",
+      "vmf": true,
+      "vintage": true,
+      "non_taxable": false,
+      "sku_states": {
+        "content_ready": false,
+        "copy_ready": false,
+        "vetted": true,
+        "exists_in_storefront": false,
+        "exclusivity_tier": "Not Exclusive",
+        "inactive_reason_id": null,
+        "obsolete_reason_id": null,
+        "obsolete_reason_name": null
+      },
+      "sku_shipping": {
+        "lead_time": 4,
+        "min_aad_offset_days": 6,
+        "max_aad_offset_days": 9,
+        "extra_shipping_charge": 0,
+        "virtual_delivery": false,
+        "returnable": false,
+        "non_merchandise": false,
+        "perishable": false,
+        "white_glove": false,
+        "entryway": false,
+        "vdc": false
+      },
+      "sku_dimensions": {
+        "shipping_width": 58,
+        "shipping_height": 4,
+        "shipping_length": 0,
+        "shipping_weight": 4,
+        "item_width": 54,
+        "item_height": 0,
+        "item_length": 86,
+        "item_weight": 3
+      },
+      "sku_inventory": {
+        "total_avail_qty": 0,
+        "warehouse_avail_qty": 0,
+        "vdc_avail_qty": 0
+      },
+      "sku_images": []
+    }
+  ],
+  "message_id": 276,
+  "timestamp": "2017-12-05T16:09:53.185-08:00"
+}

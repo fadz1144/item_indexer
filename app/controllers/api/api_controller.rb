@@ -1,15 +1,12 @@
 module API
   class APIController < ActionController::API
-    VALID_SOURCES = %w[okl].freeze
-
     private
 
-    # TODO: Create error class
-    # the route has a constraint, but it doesn't allow anchors, so double check the source is not OKL-rugs
-    def source
-      source = params[:source]
-      raise "Bad, bad source: #{source}" unless VALID_SOURCES.include?(source)
-      source.upcase
+    def process_batch(data_type)
+      service = ::Inbound::InboundMessageService.new(params[:source], data_type)
+      response = service.consume_message(request.request_parameters)
+
+      render response_format => response, status: response.status
     end
 
     def response_format
