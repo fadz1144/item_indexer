@@ -53,6 +53,9 @@ guard :rspec, cmd: "bundle exec rspec" do
     ]
   end
 
+  # run all transformer tests when Catalog Transformer updated
+  watch(%r{^app\/transformers\/catalog_transformer\/(.+)\.rb$}) { "#{rspec.spec_dir}/transformers" }
+
   # run all message tests when Catalog Message updated
   watch(%r{^app\/messages\/catalog_message\/(.+)\.rb$}) { "#{rspec.spec_dir}/messages" }
 
