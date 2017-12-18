@@ -1,4 +1,13 @@
 default_settings: &defaults
+  redis: &redis_defaults
+    host: <%= ENV.fetch('REDIS_HOST') %>
+    port: <%= ENV.fetch('REDIS_PORT', 6379) %>
+    mutex:
+      <<: *redis_defaults
+      db: <%= ENV.fetch('REDIS_MUTEX_DB', 1) %>
+    resque:
+      <<: *redis_defaults
+      db: <%= ENV.fetch('REDIS_RESQUE_DB', 2) %>
 
 development:
   <<: *defaults

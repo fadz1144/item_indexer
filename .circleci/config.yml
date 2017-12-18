@@ -14,6 +14,8 @@ jobs:
       DATABASE_PASSWORD: circle
       SECRET_TOKEN: 12345
       RAILS_ENV: test
+      REDIS_HOST: redis_host_not_a_real_param
+      REDIS_PORT: 1234
     docker:
       # specify the version you desire here
        - image: circleci/ruby:2.4.1-node-browsers
