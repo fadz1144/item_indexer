@@ -1,7 +1,8 @@
 
 class ProductSerializer < ActiveModel::Serializer
-  attributes :product_id, :category, :color, :image, :name, :min_price, :max_price,
-             :min_lead_time, :max_lead_time, :lead_time, :min_aad_offset_days, :max_aad_offset_days
+  attributes :product_id, :category, :color, :image, :name, :min_price, :max_price, :min_lead_time, :max_lead_time,
+             :lead_time, :min_aad_offset_days, :max_aad_offset_days,
+             :min_margin_amount, :max_margin_amount, :avg_margin_percent
 
   belongs_to :brand, serializer: BrandSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
@@ -37,11 +38,24 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def min_price
-    retail_prices.min
+    sku_pricing_field_values(:retail_price).min
   end
 
   def max_price
-    retail_prices.max
+    sku_pricing_field_values(:retail_price).max
+  end
+
+  def min_margin_amount
+    sku_pricing_field_values(:margin_amount).min
+  end
+
+  def max_margin_amount
+    sku_pricing_field_values(:margin_amount).max
+  end
+
+  def avg_margin_percent
+    margin_percents = sku_pricing_field_values(:margin_percent)
+    margin_percents.empty? ? 0 : margin_percents.sum.fdiv(margin_percents.size)
   end
 
   def min_lead_time
@@ -53,45 +67,33 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def min_aad_offset_days
-    aad_min_offset_days.min
+    concept_sku_field_values(:aad_min_offset_days).min
   end
 
   def max_aad_offset_days
-    aad_max_offset_days.max
+    concept_sku_field_values(:aad_max_offset_days).max
   end
 
   def lead_time
-    decorated_skus.each_with_object([]) do |s, lead_times|
-      s.concept_skus&.each do |cs|
-        lead_time = cs&.lead_time
-        lead_times << lead_time if lead_time
-      end
-    end.sort
+    concept_sku_field_values(:lead_time)
   end
 
   private
 
-  def retail_prices
-    decorated_skus.each_with_object([]) do |s, prices|
+  def sku_pricing_field_values(field_sym)
+    decorated_skus.each_with_object([]) do |s, arr|
       s.concept_skus&.each do |cs|
-        retail_price = cs.concept_sku_pricing&.retail_price
-        prices << retail_price if retail_price
+        value = cs.concept_sku_pricing&.send(field_sym)
+        arr << value if value
       end
     end.sort
   end
 
-  def aad_min_offset_days
-    decorated_skus.each.with_object([]) do |s, aad_min_offset_days|
+  def concept_sku_field_values(field_sym)
+    decorated_skus.each.with_object([]) do |s, acc|
       s.concept_skus&.each do |cs|
-        aad_min_offset_days << cs.aad_min_offset_days if cs.aad_min_offset_days
-      end
-    end.sort
-  end
-
-  def aad_max_offset_days
-    decorated_skus.each_with_object([]) do |s, acc|
-      s.concept_skus&.each do |cs|
-        acc << cs.aad_max_offset_days if cs.aad_max_offset_days
+        val = cs.send(field_sym)
+        acc << val if val
       end
     end.sort
   end
@@ -116,13 +118,4 @@ class ProductSerializer < ActiveModel::Serializer
       s.extend(CatModels::SkuDecorator)
     end
   end
-
-  # def all_sku_data
-  #   return @all_sku_data unless @all_sku_data.nil?
-  #   object.skus.each do |sku|
-  #     @all_sku_data[:colors] ||= []
-  #     @all_sku_data[:colors] << sku.color
-  #   end
-  #
-  # end
 end
