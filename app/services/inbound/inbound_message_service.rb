@@ -1,6 +1,6 @@
 module Inbound
   class InboundMessageService
-    attr_accessor :database_service, :flat_file_service
+    attr_accessor :database_service, :flat_file_service, :transformation_job
 
     def initialize(source, data_type)
       @source = source
@@ -42,6 +42,7 @@ module Inbound
       save_to_database(handler)
       save_to_file(handler)
       @batch.mark_complete
+      submit_transformation_job
     end
 
     def save_to_database(handler)
@@ -54,6 +55,11 @@ module Inbound
       name = [@source, @data_type, @batch.inbound_batch_id].join('_')
       service = @flat_file_service || Inbound::FlatFileService.new
       service.write_to_file(name: name, data: handler.data)
+    end
+
+    def submit_transformation_job
+      job = @transformation_job || Transform::TransformationJob
+      job.perform_later(@source)
     end
 
     def handle_error(error, message_id)

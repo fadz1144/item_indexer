@@ -4,11 +4,13 @@ RSpec.describe Inbound::InboundMessageService do
   let(:message_data) { { message_id: 123, data: 'the data' }.stringify_keys }
   let(:database_service) { spy('database_service') }
   let(:flat_file_service) { spy('flat_file_service') }
+  let(:transformation_job) { spy('transformation_job') }
 
   let(:service) do
     described_class.new('okl', 'sku').tap do |s|
       s.database_service = database_service
       s.flat_file_service = flat_file_service
+      s.transformation_job = transformation_job
     end
   end
   let(:response) { service.consume_message(message_data) }
@@ -41,6 +43,10 @@ RSpec.describe Inbound::InboundMessageService do
 
     it 'marks batch complete' do
       expect(Inbound::Batch.first.status).to eq Inbound::Batch::STATUS_COMPLETE
+    end
+
+    it 'enqueues transfer job' do
+      expect(transformation_job).to have_received(:perform_later).with('okl')
     end
   end
 

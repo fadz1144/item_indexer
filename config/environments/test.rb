@@ -44,4 +44,6 @@ Rails.application.configure do
   # CircleCI is not currently configured to run pg_dump
   config.active_record.dump_schema_after_migration = false
 
+  # test queue for active job
+  config.active_job.queue_adapter = :test
 end

@@ -53,4 +53,6 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   ActiveModelSerializers.logger.level = Logger::Severity::UNKNOWN
+
+  config.active_job.queue_adapter = :resque
 end
