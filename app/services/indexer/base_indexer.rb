@@ -10,12 +10,17 @@ module Indexer
       @start_time          = Time.current
     end
 
-    def publish_to_search_by_ids(ids)
-      skus   = objects_by_ids(ids)
-      json   = each_chunk(skus)
-      result = client.bulk body: json
+    def publish_to_search_by_ids(ids, chunk_size = 1_000)
+      results = []
+      ids = [ids] unless ids.is_a? Array
+      ids.each_slice(chunk_size) do |id_chunk|
+        skus   = objects_by_ids(id_chunk)
+        json   = each_chunk(skus)
+        result = client.bulk body: json
+        results << result
+      end
       # TODO: check for errors??
-      result
+      results
     end
 
     def determine_count
@@ -73,8 +78,8 @@ module Indexer
 
     def handle_publish_chunk(chunk_size, i, limit, offset, ids)
       logger.info "Indexing #{offset / limit}.#{i}"
-      publish_to_search_by_ids(ids)
-      @total_num_processed += chunk_size
+      publish_to_search_by_ids(ids, chunk_size)
+      @total_num_processed += ids.size
 
       benchmark(num_records: @total_num_processed, t0: @start_time, prefix: "#{offset / limit}.#{i}") if i % 10 == 9
     end
