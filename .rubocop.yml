@@ -10,6 +10,8 @@ Style/NumericPredicate:
   Enabled: false
 Metrics/BlockLength:
   ExcludedMethods: ['describe', 'context']
+Rails:
+  Enabled: true
 
 AllCops:
   Include:
