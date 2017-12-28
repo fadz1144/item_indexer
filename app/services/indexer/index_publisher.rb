@@ -1,7 +1,5 @@
-require 'background_task_manager'
 module Indexer
   class IndexPublisher
-    include BackgroundTaskManager
     attr_accessor :logger
 
     def initialize(logger: Rails.logger, index_class:)
@@ -25,14 +23,6 @@ module Indexer
       results
     end
 
-    def index_root
-      'catalog'
-    end
-
-    def client
-      @client ||= ES::ESClient.new
-    end
-
     def perform(set_size = 10_000, chunk_size = 1_000, num_threads = 4)
       logger.info "ES Client initialized: #{client}"
 
@@ -45,6 +35,30 @@ module Indexer
       # when we die, take our children with us
       cleanup_on_terminate
       logger.error "\nExited, killing all forked children."
+    end
+
+    def publish_to_search(limit = 100_000, offset = 0, chunk_size = 1_000)
+      ids = @indexer.fetch_ids_relation.limit(limit).offset(offset).ids
+      ids.each_slice(chunk_size).with_index do |id_chunk, i|
+        handle_publish_chunk(chunk_size, i, limit, offset, id_chunk)
+      end
+    end
+
+    private
+
+    def index_root
+      'catalog'
+    end
+
+    def client
+      @client ||= ES::ESClient.new
+    end
+
+    def queue_work(chunk_size, num_chunks, num_threads, set_size)
+      worker = Indexer::WorkQueueHandler.new(logger: @logger)
+      worker.queue_work(num_chunks, num_threads, set_size) do |limit, offset|
+        publish_to_search(limit, offset, chunk_size)
+      end
     end
 
     def calculate_num_chunks(set_size)
@@ -60,7 +74,7 @@ module Indexer
 
     def handle_publish_chunk(chunk_size, i, limit, offset, ids)
       logger.info "Indexing #{offset / limit}.#{i}"
-      @indexer.publish_to_search_by_ids(ids, chunk_size)
+      publish_to_search_by_ids(ids, chunk_size)
       @total_num_processed += ids.size
 
       benchmark(num_records: @total_num_processed, t0: @start_time, prefix: "#{offset / limit}.#{i}") if i % 10 == 9
@@ -68,44 +82,6 @@ module Indexer
 
     def index_hash_for_item(item)
       { index: { _index: index_root, _type: @indexer.index_type, _id: item.id, data: @indexer.raw_json(item) } }
-    end
-
-    def publish_to_search(limit = 100_000, offset = 0, chunk_size = 1_000)
-      ids = @indexer.fetch_ids_relation.limit(limit).offset(offset).ids
-      ids.each_slice(chunk_size).with_index do |id_chunk, i|
-        handle_publish_chunk(chunk_size, i, limit, offset, id_chunk)
-      end
-    end
-
-    private
-
-    def queue_work(chunk_size, num_chunks, num_threads, set_size)
-      work_queues = []
-      (0..num_threads).each { |thread_index| work_queues[thread_index] = [] }
-      (0..num_chunks).each { |chunk_index| work_queues[chunk_index % num_threads] << chunk_index }
-
-      work_queues.each_with_index do |work_q, worker_index|
-        run_in_background { handle_chunk_q(chunk_size, set_size, work_q, worker_index) }
-      end
-      wait_for_background_tasks
-    end
-
-    def handle_chunk_q(chunk_size, set_size, work_q, worker_index)
-      logger.info "#{worker_index} => STARTED!"
-      process_work_q(chunk_size, set_size, work_q, worker_index)
-      logger.info "#{worker_index} => DONE!"
-    end
-
-    def process_work_q(chunk_size, set_size, work_q, worker_index)
-      until work_q.empty?
-        index = work_q.pop
-        begin
-          publish_to_search(set_size, index * set_size, chunk_size)
-        rescue => e
-          logger.error "problem on index #{worker_index}\n#{e.inspect}"
-          logger.error e.backtrace.join("\n")
-        end
-      end
     end
   end
 end
