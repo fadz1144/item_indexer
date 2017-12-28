@@ -1,21 +1,23 @@
 require 'background_task_manager'
 module Indexer
-  class BaseIndexer
+  class IndexPublisher
     include BackgroundTaskManager
     attr_accessor :logger
 
-    def initialize(logger: Rails.logger)
+    def initialize(logger: Rails.logger, index_class:)
       @logger              = logger
       @total_num_processed = 0
       @start_time          = Time.current
+
+      @indexer = index_class.new
     end
 
     def publish_to_search_by_ids(ids, chunk_size = 1_000)
       results = []
-      ids = [ids] unless ids.is_a? Array
+      ids     = [ids] unless ids.is_a? Array
       ids.each_slice(chunk_size) do |id_chunk|
-        skus   = objects_by_ids(id_chunk)
-        json   = each_chunk(skus)
+        items = @indexer.fetch_items(id_chunk)
+        json = items.map { |item| index_hash_for_item(item) }
         result = client.bulk body: json
         results << result
       end
@@ -23,32 +25,8 @@ module Indexer
       results
     end
 
-    def determine_count
-      raise 'Subclass must implement determine_count'
-    end
-
     def index_root
-      ENV['INDEX_NAME'] || 'catalog'
-    end
-
-    def index_type
-      raise 'Subclass must implement index_type'
-    end
-
-    def publish_to_search(_limit = 100_000, _offset = 0, _chunk_size = 1_000)
-      raise 'Subclass must implement publish_to_search'
-    end
-
-    def id_for_item(_item)
-      raise 'Subclass must implement id_for_item'
-    end
-
-    def raw_json(_item)
-      raise 'Subclass must implement raw_json'
-    end
-
-    def objects_by_ids(_ids)
-      raise 'Subclass must implement objects_by_ids'
+      'catalog'
     end
 
     def client
@@ -58,17 +36,21 @@ module Indexer
     def perform(set_size = 10_000, chunk_size = 1_000, num_threads = 4)
       logger.info "ES Client initialized: #{client}"
 
-      count = determine_count
-
-      num_chunks = (count / set_size) + 1
-
+      num_chunks = calculate_num_chunks(set_size)
       queue_work(chunk_size, num_chunks, num_threads, set_size)
-
       benchmark(num_records: num_chunks * set_size, t0: @start_time, prefix: 'ALL WORKERS')
+
+      logger.info 'Indexing DONE'
     rescue SignalException
       # when we die, take our children with us
       cleanup_on_terminate
       logger.error "\nExited, killing all forked children."
+    end
+
+    def calculate_num_chunks(set_size)
+      count = @indexer.determine_count
+      logger.info "Total num items to index: #{count}"
+      (count / set_size) + 1
     end
 
     def benchmark(num_records:, t0:, prefix: '', t1: Time.current)
@@ -78,15 +60,20 @@ module Indexer
 
     def handle_publish_chunk(chunk_size, i, limit, offset, ids)
       logger.info "Indexing #{offset / limit}.#{i}"
-      publish_to_search_by_ids(ids, chunk_size)
+      @indexer.publish_to_search_by_ids(ids, chunk_size)
       @total_num_processed += ids.size
 
       benchmark(num_records: @total_num_processed, t0: @start_time, prefix: "#{offset / limit}.#{i}") if i % 10 == 9
     end
 
-    def each_chunk(items)
-      items.each_with_object([]) do |item, arr|
-        arr << { index: { _index: index_root, _type: index_type, _id: id_for_item(item), data: raw_json(item) } }
+    def index_hash_for_item(item)
+      { index: { _index: index_root, _type: @indexer.index_type, _id: item.id, data: @indexer.raw_json(item) } }
+    end
+
+    def publish_to_search(limit = 100_000, offset = 0, chunk_size = 1_000)
+      ids = @indexer.fetch_ids_relation.limit(limit).offset(offset).ids
+      ids.each_slice(chunk_size).with_index do |id_chunk, i|
+        handle_publish_chunk(chunk_size, i, limit, offset, id_chunk)
       end
     end
 
