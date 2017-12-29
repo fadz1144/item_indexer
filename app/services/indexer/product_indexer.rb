@@ -3,7 +3,7 @@ module Indexer
     attr_accessor :logger
 
     def determine_count
-      CatModels::Product.joins(:skus).order(:product_id).distinct.pluck(:product_id).count
+      fetch_ids_relation.ids.count
     end
 
     def index_type
@@ -11,7 +11,8 @@ module Indexer
     end
 
     def fetch_ids_relation
-      CatModels::Product.joins(:skus).order(:product_id).distinct
+      # CatModels::Product.joins(:skus).order(:product_id).distinct
+      CatModels::Product.joins(:product_memberships).order(:product_id).distinct
     end
 
     def raw_json(item)
