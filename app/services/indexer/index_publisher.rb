@@ -26,11 +26,10 @@ module Indexer
     def perform(set_size = 10_000, chunk_size = 1_000, num_threads = 4)
       logger.info "ES Client initialized: #{client}"
 
-      num_chunks = calculate_num_chunks(set_size)
-      queue_work(chunk_size, num_chunks, num_threads, set_size)
-      benchmark(num_records: num_chunks * set_size, t0: @start_time, prefix: 'ALL WORKERS')
-
-      logger.info 'Indexing DONE'
+      with_benchmark(prefix: 'Indexing ALL WORKERS', count: @indexer.determine_count, with_summary: true) do
+        num_chunks = calculate_num_chunks(set_size)
+        queue_work(chunk_size, num_chunks, num_threads, set_size)
+      end
     rescue SignalException
       # when we die, take our children with us
       cleanup_on_terminate
@@ -40,8 +39,21 @@ module Indexer
     def publish_to_search(limit = 100_000, offset = 0, chunk_size = 1_000)
       ids = @indexer.fetch_ids_relation.limit(limit).offset(offset).ids
       ids.each_slice(chunk_size).with_index do |id_chunk, i|
-        handle_publish_chunk(chunk_size, i, limit, offset, id_chunk)
+        with_benchmark(publish_to_search_benchmark_options(i, id_chunk, limit, offset)) do
+          publish_to_search_by_ids(id_chunk, chunk_size)
+        end
+
+        @total_num_processed += id_chunk.size
       end
+    end
+
+    def publish_to_search_benchmark_options(i, id_chunk, limit, offset)
+      {
+        prefix:       "Indexing #{offset / limit}.#{i}",
+        count:        @total_num_processed + id_chunk.size,
+        start_time:   @start_time,
+        should_print: i % 10 == 9
+      }
     end
 
     private
@@ -67,21 +79,28 @@ module Indexer
       (count / set_size) + 1
     end
 
-    def benchmark(num_records:, t0:, prefix: '', t1: Time.current)
-      elapsed = (t1 - t0) * 1000
-      logger.info "#{prefix} #{num_records} records in #{elapsed} ms -> Avg: #{elapsed / (1.0 * num_records)} ms"
-    end
-
-    def handle_publish_chunk(chunk_size, i, limit, offset, ids)
-      logger.info "Indexing #{offset / limit}.#{i}"
-      publish_to_search_by_ids(ids, chunk_size)
-      @total_num_processed += ids.size
-
-      benchmark(num_records: @total_num_processed, t0: @start_time, prefix: "#{offset / limit}.#{i}") if i % 10 == 9
-    end
-
     def index_hash_for_item(item)
       { index: { _index: index_root, _type: @indexer.index_type, _id: item.id, data: @indexer.raw_json(item) } }
+    end
+
+    def with_benchmark(prefix: '', start_time: Time.current, count: nil, should_print: true, with_summary: false)
+      logger.info "#{prefix} START" if should_print
+      yield
+      end_time          = Time.current
+      elapsed_ms        = (end_time - start_time) * 1_000
+      logger.info benchmark_end_str(prefix, elapsed_ms, count) if should_print
+      logger.info benchmark_summary_str(prefix, elapsed_ms) if should_print && with_summary
+    end
+
+    def benchmark_end_str(prefix, elapsed_ms, count)
+      avg_str = count.present? ? "-> Avg: #{elapsed_ms / (1.0 * count)} ms for #{count} items" : ''
+      "#{prefix} DONE took #{elapsed_ms} ms #{avg_str}"
+    end
+
+    # Takes elapsed ms and turns it into HH:MM:SS
+    def benchmark_summary_str(prefix, elapsed_ms)
+      summary_time = Time.at(elapsed_ms / 1000).utc.strftime('%H:%M:%S')
+      "#{prefix} SUMMARY Elapsed: #{summary_time}"
     end
   end
 end
