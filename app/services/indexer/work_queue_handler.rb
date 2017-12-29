@@ -25,7 +25,7 @@ module Indexer
       logger.info "#{worker_index} => DONE!"
     end
 
-    def process_work_q(set_size, work_q, worker_index, &block)
+    def process_work_q(set_size, work_q, worker_index)
       until work_q.empty?
         index = work_q.pop
         begin
