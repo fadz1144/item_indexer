@@ -29,7 +29,7 @@ module Indexer
       until work_q.empty?
         index = work_q.pop
         begin
-          block.call set_size, index * set_size
+          yield set_size, index * set_size
         rescue => e
           logger.error "problem on index #{worker_index}\n#{e.inspect}"
           logger.error e.backtrace.join("\n")
