@@ -53,6 +53,9 @@ guard :rspec, cmd: "bundle exec rspec" do
     ]
   end
 
+  # run all message tests when Catalog Message updated
+  watch(%r{^app\/messages\/catalog_message\/(.+)\.rb$}) { "#{rspec.spec_dir}/messages" }
+
   # Rails config changes
   watch(rails.spec_helper)     { rspec.spec_dir }
   watch(rails.routes)          { "#{rspec.spec_dir}/routing" }
