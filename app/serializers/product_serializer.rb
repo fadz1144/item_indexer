@@ -82,7 +82,7 @@ class ProductSerializer < ActiveModel::Serializer
     shipping_methods = Set.new
     decorated_skus.each do |s|
       sm = s.concept_skus&.map(&:shipping_method)&.uniq
-      sm.each { |m| shipping_methods.add(m)} if sm
+      sm&.each { |m| shipping_methods.add(m) }
     end
     shipping_methods.to_a
   end
