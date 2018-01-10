@@ -2,7 +2,7 @@
 class ProductSerializer < ActiveModel::Serializer
   attributes :product_id, :category, :color, :image, :name, :min_price, :max_price, :min_lead_time, :max_lead_time,
              :lead_time, :min_aad_offset_days, :max_aad_offset_days,
-             :min_margin_amount, :max_margin_amount, :avg_margin_percent
+             :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method
 
   belongs_to :brand, serializer: BrandSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
@@ -76,6 +76,15 @@ class ProductSerializer < ActiveModel::Serializer
 
   def lead_time
     concept_sku_field_values(:lead_time)
+  end
+
+  def shipping_method
+    shipping_methods = Set.new
+    decorated_skus.each do |s|
+      sm = s.concept_skus&.map(&:shipping_method)&.uniq
+      sm.each { |m| shipping_methods.add(m)} if sm
+    end
+    shipping_methods.to_a
   end
 
   private
