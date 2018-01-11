@@ -9,10 +9,10 @@
     {
       "containerName": "item_indexer",
       "containerPort": 3000,
-      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:774076615373:loadbalancer/app/elb-upc-cicd/5b77a3ef0055aa98"
+      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:774076615373:targetgroup/upc-cicd-auth-svc/b133205fdae1d2da"
     }
   ],
-  "role": "arn:aws:iam::774076615373:role/ecs-service-role",
+  "role": "arn:aws:iam::774076615373:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
   "serviceName": "item_indexer_svc",
   "taskDefinition": "item_indexer"
 }
