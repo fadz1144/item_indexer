@@ -1,5 +1,5 @@
 {
-  "cluster": "bbb-upc-stag",
+  "cluster": "upc-cicd",
   "deploymentConfiguration": {
     "maximumPercent": 200,
     "minimumHealthyPercent": 0

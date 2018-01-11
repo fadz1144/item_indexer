@@ -1,5 +1,5 @@
 {
-  "cluster": "bbb-upc-stag",
+  "cluster": "upc-cicd",
   "deploymentConfiguration": {
     "maximumPercent": 200,
     "minimumHealthyPercent": 0
@@ -9,7 +9,7 @@
     {
       "containerName": "item_indexer",
       "containerPort": 3000,
-      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:774076615373:targetgroup/bbb-labs-tg/959727fa09fe7828"
+      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:774076615373:loadbalancer/app/elb-upc-cicd/5b77a3ef0055aa98"
     }
   ],
   "role": "arn:aws:iam::774076615373:role/ecs-service-role",
