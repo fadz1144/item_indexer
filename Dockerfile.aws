@@ -50,4 +50,5 @@ EXPOSE $PORT
 # Overwrite the entry-point script
 ENTRYPOINT ["/secrets-entrypoint.sh"]
 
-CMD rm -f /okl/app/tmp/pids/puma.pid && bundle exec puma -C config/puma.rb -b tcp://0.0.0.0 -p 3000
+# CMD rm -f /okl/app/tmp/pids/puma.pid && bundle exec puma -C config/puma.rb -b tcp://0.0.0.0 -p 3000
+CMD ./bin/server.sh
