@@ -1,0 +1,5 @@
+TransformationJob:
+  class: 'Transform::TransformationJob'
+  cron: '*/15 * * * *'
+  queue: transform
+  description: 'Transforms data from inbound tables into polished tables'
