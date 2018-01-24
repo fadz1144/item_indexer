@@ -39,20 +39,24 @@ class RedisSimpleMutex
     redis.get(@key) == signature
   end
 
+  # rubocop:disable MethodLength
   def self.run_with_lock(lock_name, ttl = nil)
     raise 'Block missing' unless block_given?
 
     mutex = RedisSimpleMutex.new(lock_name, ttl)
-    if mutex.lock
-      yield
-      true
-    else
-      Rails.logger.info "Failed to acquire lock for '#{lock_name}'"
-      false
+    begin
+      if mutex.lock
+        yield mutex
+      else
+        Rails.logger.info "Failed to acquire lock for '#{lock_name}'"
+      end
+    rescue => e
+      Rails.logger.error(e.backtrace.join("\n\t"))
+    ensure
+      mutex.unlock
     end
-  ensure
-    mutex.unlock
   end
+  # rubocop:enable all
 
   private
 

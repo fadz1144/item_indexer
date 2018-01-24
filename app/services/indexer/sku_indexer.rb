@@ -19,7 +19,7 @@ module Indexer
     def fetch_ids_changed_in_range(start_time = min_start_time, end_time = DateTime.current)
       # TODO: may need to join other fields to get the full list of sku_ids
       CatModels::Sku.where('updated_at > :start_time AND updated_at <= :end_time',
-                           start_time: start_time, end_time: end_time).order(:sku_id).distinct
+                           start_time: start_time, end_time: end_time).order(:sku_id).distinct.ids
     end
 
     def raw_json(item)
