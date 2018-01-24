@@ -39,6 +39,21 @@ class RedisSimpleMutex
     redis.get(@key) == signature
   end
 
+  def self.run_with_lock(lock_name, ttl = nil)
+    raise 'Block missing' unless block_given?
+
+    mutex = RedisSimpleMutex.new(lock_name, ttl)
+    if mutex.lock
+      yield
+      true
+    else
+      Rails.logger.info "Failed to acquire lock for '#{lock_name}'"
+      false
+    end
+  ensure
+    mutex.unlock
+  end
+
   private
 
   def signature
