@@ -29,11 +29,11 @@ module Indexer
     def perform(set_size = 10_000, chunk_size = 1_000, num_threads = 4)
       logger.info "ES Client initialized: #{client}"
 
-      worker_benchmark = BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS',
-                                             count:  @indexer.determine_count, with_summary: true)
-      worker_benchmark.with_benchmark do
-        num_chunks = calculate_num_chunks(set_size)
-        queue_work(chunk_size, num_chunks, num_threads, set_size)
+      @indexer.audit.execute_and_record_status! do
+        worker_benchmark.with_benchmark do
+          num_chunks = calculate_num_chunks(set_size)
+          queue_work(chunk_size, num_chunks, num_threads, set_size)
+        end
       end
     rescue SignalException
       # when we die, take our children with us
@@ -70,6 +70,10 @@ module Indexer
     # end
 
     private
+
+    def worker_benchmark
+      BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS', count: @indexer.determine_count, with_summary: true)
+    end
 
     def index_root
       'catalog'
