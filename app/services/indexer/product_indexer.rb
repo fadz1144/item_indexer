@@ -20,7 +20,7 @@ module Indexer
     end
 
     def fetch_ids_for_sku_ids(sku_ids)
-      CatModels::Product.joins(:product_memberships).where(sku_id: sku_ids).order(:product_id).distinct.ids
+      CatModels::ProductMembership.where(sku_id: sku_ids).order(:product_id).distinct.select(:product_id)
     end
 
     def raw_json(item)

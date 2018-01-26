@@ -10,6 +10,8 @@ module Transform
       return if @batch.error?
 
       @batch.execute_and_record_status! { process_inbound_batch }
+
+      submit_reindex_job
     end
 
     private
@@ -65,6 +67,12 @@ module Transform
       source = @batch.inbound_batch.source
       data_type = @batch.inbound_batch.data_type
       "Transform::Transformers::#{source.upcase}::Concept#{data_type.titlecase}".constantize
+    end
+
+    def submit_reindex_job
+      data_type = @batch.data_type
+      important_time = @batch.stop_datetime
+      Indexer::ReindexJobFactory.job_for_type(data_type).perform_later(important_time) unless @batch.error?
     end
   end
 end
