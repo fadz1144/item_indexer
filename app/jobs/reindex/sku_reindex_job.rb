@@ -10,8 +10,6 @@ module Reindex
       'sku'
     end
 
-    private
-
     def start_time
       Indexer::Audit.last_successful_important_time('sku')
     end

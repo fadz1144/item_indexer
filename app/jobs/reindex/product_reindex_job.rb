@@ -11,6 +11,10 @@ module Reindex
       'product'
     end
 
+    def start_time
+      Indexer::Audit.last_successful_important_time('product') || Indexer::Audit.last_successful_important_time('sku')
+    end
+
     private
 
     def changed_product_ids(until_time)
@@ -20,10 +24,6 @@ module Reindex
 
     def sku_ids_for_product_ids(product_ids)
       CatModels::Sku.joins(:product_memberships).where(product_id: product_ids).order(:sku_id).distinct.ids
-    end
-
-    def start_time
-      Indexer::Audit.last_successful_important_time('product') || Indexer::Audit.last_successful_important_time('sku')
     end
   end
 end

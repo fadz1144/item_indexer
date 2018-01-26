@@ -9,15 +9,15 @@ module Reindex
       'category'
     end
 
-    private
-
     def start_time
       Indexer::Audit.last_successful_important_time('category') || Indexer::Audit.last_successful_important_time('sku')
     end
 
+    private
+
     def changed_category_ids(until_time)
       CatModels::Category.where('updated_at > :start_time AND updated_at <= :end_time',
-                             start_time: start_time, end_time: until_time).order(:category_id).distinct.ids
+                                start_time: start_time, end_time: until_time).order(:category_id).distinct.ids
     end
 
     def sku_ids_for_category_ids(category_ids)

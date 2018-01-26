@@ -9,11 +9,11 @@ module Reindex
       'brand'
     end
 
-    private
-
     def start_time
       Indexer::Audit.last_successful_important_time('brand') || Indexer::Audit.last_successful_important_time('sku')
     end
+
+    private
 
     def changed_brand_ids(until_time)
       CatModels::Brand.where('updated_at > :start_time AND updated_at <= :end_time',
