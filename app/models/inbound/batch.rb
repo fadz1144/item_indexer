@@ -1,7 +1,5 @@
 module Inbound
   class Batch < ApplicationRecord
-    include ExecutionWorkflow
-
     include StringEnums
     string_enum status: %w[in\ progress complete error]
 
