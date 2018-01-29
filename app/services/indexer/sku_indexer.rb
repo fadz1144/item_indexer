@@ -4,6 +4,10 @@ module Indexer
       CatModels::Sku.count
     end
 
+    def audit
+      Indexer::Audit.create!(index_type: index_type, counter: determine_count, important_datetime: max_updated_at)
+    end
+
     def index_type
       'sku'
     end
@@ -32,6 +36,12 @@ module Indexer
         end
         s.extend(CatModels::SkuDecorator)
       end
+    end
+
+    private
+
+    def max_updated_at
+      CatModels::Sku.maximum(:updated_at)
     end
   end
 end

@@ -6,6 +6,10 @@ module Indexer
       fetch_ids_relation.ids.count
     end
 
+    def audit
+      Indexer::Audit.create!(index_type: index_type, counter: determine_count, important_datetime: max_updated_at)
+    end
+
     def index_type
       'product'
     end
@@ -28,6 +32,10 @@ module Indexer
                                                           concept_sku_images concept_sku_pricing
                                                           concept_sku_dimensions]])
                         .where(product_id: ids)
+    end
+
+    def max_updated_at
+      CatModels::Product.maximum(:updated_at)
     end
   end
 end
