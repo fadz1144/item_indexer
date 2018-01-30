@@ -18,7 +18,7 @@ module Indexer
       ids     = [ids] unless ids.is_a? Array
       ids.each_slice(chunk_size) do |id_chunk|
         items  = @indexer.fetch_items(id_chunk)
-        json   = items.map { |item| index_hash_for_item(item) }
+        json   = items.map { |item| index_hash_for_item(item) }.compact
         result = client.bulk body: json
         results << result
       end
@@ -94,6 +94,10 @@ module Indexer
 
     def index_hash_for_item(item)
       { index: { _index: index_root, _type: @indexer.index_type, _id: item.id, data: @indexer.raw_json(item) } }
+    rescue => e
+      logger.error("Unable to generate index hash for #{item}.  Reason: #{e.message}")
+      logger.error e.backtrace.join("\n")
+      nil
     end
 
     def with_publish_benchmark(i, id_chunk, limit, offset)
