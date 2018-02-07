@@ -45,7 +45,7 @@ module CatalogTransformer
     def attribute_value(record, attribute_name)
       record.public_send(attribute_name)
     rescue => e
-      raise CatalogTransformer::Errors::CouldNotReadAttribute.new(self.class.name, record.name, attribute_name,
+      raise CatalogTransformer::Errors::CouldNotReadAttribute.new(self.class.name, record.class.name, attribute_name,
                                                                   e.message)
     end
 
