@@ -9,5 +9,8 @@ Rails.application.routes.draw do
     end
   end
 
+  root to: 'health_check#version'
+  get 'version' => 'health_check#version'
+
   resources :health_check, only: [:index]
 end

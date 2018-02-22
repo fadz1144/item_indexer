@@ -112,6 +112,13 @@ jobs:
               awscli==1.11.76
       - checkout
       - run:
+          name: Add version and commit sha to build
+          # Note the first command uses a single > to overwrite version.rb completely. Important.
+          command: |
+            echo "ENV['BBB_CI_VERSION'] = '$CIRCLE_BRANCH:$CIRCLE_BUILD_NUM'" > config/initializers/ci_version.rb
+            echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/initializers/ci_version.rb
+            echo "ENV['CIRCLE_COMPARE_URL'] = '$CIRCLE_COMPARE_URL'" >> config/initializers/ci_version.rb
+      - run:
           name: Deploy if tests pass and branch is Master
           command: |
             echo "Get login"
@@ -127,8 +134,9 @@ jobs:
             pwd
             find .
             mv Dockerfile.aws Dockerfile
-            docker build --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:$TAG .
+            docker build --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:$TAG -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:build-$CIRCLE_BUILD_NUM .
             docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:$TAG
+            docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:build-$CIRCLE_BUILD_NUM
             if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
               echo "Update task to point to new latest version"
               aws ecs register-task-definition --cli-input-json file://scripts/aws/task-definition.json
