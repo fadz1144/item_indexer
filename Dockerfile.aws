@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -y \
   nodejs \
   python \
   python-dev \
-  unzip
+  unzip \
+  nginx
 
 # Install the AWS CLI
 RUN cd /tmp && \
@@ -41,14 +42,15 @@ RUN gem install bundler && bundle install --jobs 20 --retry 5
 
 COPY . ./
 
-COPY config/database.yml.deploy config/database.yml
-COPY config/settings.yml.deploy config/settings.yml
-COPY config/secrets.yml.deploy config/secrets.yml
+# Move config files into place
+RUN mv nginx/nginx.conf /etc/nginx/nginx.conf && \
+    mv config/database.yml.deploy config/database.yml && \
+    mv config/settings.yml.deploy config/settings.yml && \
+    mv config/secrets.yml.deploy config/secrets.yml
 
 EXPOSE $PORT
 
 # Overwrite the entry-point script
 ENTRYPOINT ["/secrets-entrypoint.sh"]
 
-# CMD rm -f /okl/app/tmp/pids/puma.pid && bundle exec puma -C config/puma.rb -b tcp://0.0.0.0 -p 3000
 CMD ./bin/server.sh

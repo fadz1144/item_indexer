@@ -1,3 +1,18 @@
+#
+#     $$\   $$\  $$$$$$\ $$$$$$$$\ $$$$$$$$\
+#     $$$\  $$ |$$  __$$\\__$$  __|$$  _____|
+#     $$$$\ $$ |$$ /  $$ |  $$ |   $$ |
+#     $$ $$\$$ |$$ |  $$ |  $$ |   $$$$$\
+#     $$ \$$$$ |$$ |  $$ |  $$ |   $$  __|
+#     $$ |\$$$ |$$ |  $$ |  $$ |   $$ |
+#     $$ | \$$ | $$$$$$  |  $$ |   $$$$$$$$\
+#     \__|  \__| \______/   \__|   \________|
+#
+#     Routes are all going to be effectively prepended with the subdirectory path
+#       given in ENV['RAILS_RELATIVE_URL_ROOT'] - see config.ru and server.sh
+#       for the mechanism used. This is so that asset URLs will also get this
+#       prefix, so that this can serve an app from the subdir on the ELB.
+#
 Rails.application.routes.draw do
   namespace :api do
     scope module: :inbound do
