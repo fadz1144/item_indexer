@@ -1,2 +1,10 @@
 #!/usr/bin/env bash
-rm -f /okl/app/tmp/pids/puma.pid && bundle exec puma -C config/puma.rb -b tcp://0.0.0.0 -p 3000
+echo "Starting nginx web server..." && \
+nginx && \
+mkdir -p /okl/app/tmp/pids && \
+rm -f /okl/app/tmp/pids/puma.pid && \
+echo -n "DB " && \
+rake db:version && \
+echo "Starting puma application server..." && \
+export RAILS_RELATIVE_URL_ROOT='/item_indexer' && \
+bundle exec puma -e production -b unix:///var/run/puma.sock
