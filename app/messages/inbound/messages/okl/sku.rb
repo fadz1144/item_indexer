@@ -9,6 +9,7 @@ module Inbound
         has_one :state, source_name: :sku_states
         has_one :inventory, source_name: :sku_inventory
         has_many :images, source_name: :sku_images
+        has_many :sku_attributes, source_name: :sku_additional_attributes
 
         attribute_mapping({ source_sku_id: 'okl_sku_id',
                             source_product_id: 'product_id' }.merge(SOURCE_STAMPS_MAPPING))

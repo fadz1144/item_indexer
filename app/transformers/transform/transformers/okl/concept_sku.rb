@@ -9,6 +9,7 @@ module Transform
         has_one :concept_sku_dimensions, source_name: :dimensions
         has_one :concept_sku_pricing
         has_many :concept_sku_images, source_name: :images, match_keys: [:source_sku_image_id]
+        has_many :concept_sku_attributes, source_name: :sku_attributes, match_keys: [:code]
 
         attribute :status_reason_cd, association: :state, source_name: :obsolete_reason_id
         attribute :lead_time, association: :shipping
