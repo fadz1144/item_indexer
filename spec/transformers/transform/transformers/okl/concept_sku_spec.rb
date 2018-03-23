@@ -182,5 +182,74 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
         expect(limited_qty).to be_falsey
       end
     end
+
+    context '#returnable' do
+      it 'false when returnable is nil' do
+        expect(values['returnable']).to be false
+      end
+    end
+
+    context '#made_to_order' do
+      let(:please_note) { source.sku_attributes.build(code: 'please_note') }
+      let(:made_to_order) { values['made_to_order'] }
+
+      it 'false when no please note value' do
+        expect(made_to_order).to be false
+      end
+
+      it 'false when please note does not match' do
+        please_note.value = 'Roll on you bears'
+        expect(made_to_order).to be false
+      end
+
+      it "true when please note includes 'made to order'" do
+        please_note.value = 'This product is made to order'
+        expect(made_to_order).to be true
+      end
+
+      it "true when please note includes 'MaDe to OrdeR'" do
+        please_note.value = 'This product is MaDe to OrdeR'
+        expect(made_to_order).to be true
+      end
+
+      it "true when please note includes 'cut to order'" do
+        please_note.value = 'This product is cut to order'
+        expect(made_to_order).to be true
+      end
+
+      it "true when please note includes 'finished to order'" do
+        please_note.value = 'This product is finished to order'
+        expect(made_to_order).to be true
+      end
+    end
+
+    context '#assembly_required' do
+      let(:please_note) { source.sku_attributes.build(code: 'please_note') }
+      let(:assembly_required) { values['assembly_required'] }
+
+      it 'false when no please note value' do
+        expect(assembly_required).to be false
+      end
+
+      it 'true when please note includes assembly required' do
+        please_note.value = 'some assembly required'
+        expect(assembly_required).to be true
+      end
+
+      it 'true when please not includes assembly IS required' do
+        please_note.value = 'some assembly is required'
+        expect(assembly_required).to be true
+      end
+
+      it 'true when please not includes assembly may be required' do
+        please_note.value = 'some assembly may be required'
+        expect(assembly_required).to be true
+      end
+
+      it 'false when please note includes no assembly required' do
+        please_note.value = 'no assembly required'
+        expect(assembly_required).to be false
+      end
+    end
   end
 end
