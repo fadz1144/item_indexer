@@ -28,6 +28,9 @@ module Transform
         end
 
         module Decorations
+          REGEX_MADE_TO_ORDER = /(cut|made|finished) to order/i
+          REGEX_ASSEMBLY_REQUIRED = /(?<!no )assembly (may be )?(is )?required/i
+
           def concept_id
             CONCEPT_ID
           end
@@ -62,6 +65,25 @@ module Transform
 
           def limited_qty
             inventory.nil? || inventory.total_avail_qty.nil? || inventory.total_avail_qty < 5
+          end
+
+          # value can be null in inbound table, but is required as boolean in polished table
+          def returnable
+            shipping.returnable.presence || false
+          end
+
+          def made_to_order
+            REGEX_MADE_TO_ORDER.match(please_note).present?
+          end
+
+          def assembly_required
+            REGEX_ASSEMBLY_REQUIRED.match(please_note).present?
+          end
+
+          private
+
+          def please_note
+            @memo_please_note ||= sku_attributes.find { |a| a.code = 'please_note' }&.value || ''
           end
         end
       end
