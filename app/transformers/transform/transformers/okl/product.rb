@@ -5,6 +5,7 @@ module Transform
         source_name 'Inbound::OKL::ProductRevision'
         exclude :membership_hash
 
+        references :vendor, association: :concept_vendor
         references :brand, association: :concept_brand
         references :category, association: :concept_category
       end
