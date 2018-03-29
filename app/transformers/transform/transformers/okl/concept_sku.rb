@@ -12,6 +12,7 @@ module Transform
         has_many :concept_sku_attributes, source_name: :sku_attributes, match_keys: [:code]
 
         attribute :status_reason_cd, association: :state, source_name: :obsolete_reason_id
+        attribute :exclusivity_tier, association: :state
         attribute :lead_time, association: :shipping
         attribute :aad_min_offset_days, association: :shipping, source_name: :min_aad_offset_days
         attribute :aad_max_offset_days, association: :shipping, source_name: :max_aad_offset_days
