@@ -5,8 +5,12 @@ git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
   "https://github.com/#{repo_name}.git"
 end
+git_source(:github_ssh) do |repo_name|
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  "git@github.com:#{repo_name}.git"
+end
 
-gem 'cat_models', git: 'git@github.com:okl/cat_models.git', branch: 'master', require: true
+gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'master', require: true
 # gem 'cat_models', path: "../cat_models", require: true
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -53,17 +57,17 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.0'
 
   gem 'guard'
   gem 'guard-rspec'
-  gem 'rubocop', '~> 0.49.1', require: false
+  gem 'rubocop', '~> 0.49', require: false
   gem 'rubocop-rspec'
   gem 'guard-rubocop'
 end
 
 group :test do
-  gem 'rspec-rails', '~> 3.6.0'
+  gem 'rspec-rails', '~> 3.6'
   gem 'fuubar'
   gem 'rspec_junit_formatter'
   gem 'rubocop-junit-formatter'
