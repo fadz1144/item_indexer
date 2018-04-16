@@ -29,4 +29,3 @@ coverage
 
 # docker
 /bin/wait_for_postgres.*
-/bin/server.sh.docker
