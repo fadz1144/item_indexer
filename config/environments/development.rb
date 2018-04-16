@@ -53,6 +53,9 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   ActiveModelSerializers.logger.level = Logger::Severity::UNKNOWN
+  
+  # Do not dump schema after migrations.
+  config.active_record.dump_schema_after_migration = false
 
   config.active_job.queue_adapter = :resque
 end
