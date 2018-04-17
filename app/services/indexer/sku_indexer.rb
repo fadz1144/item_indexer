@@ -12,6 +12,10 @@ module Indexer
       CatModels::Sku.order(:sku_id).distinct
     end
 
+    def fetch_sku_ids_for_product_ids(product_ids)
+      CatModels::ProductMembership.where(product_id: product_ids).order(:sku_id).distinct
+    end
+
     def raw_json(item)
       SkuSerializer.new(item).as_json
     end

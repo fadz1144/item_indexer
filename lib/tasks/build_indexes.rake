@@ -14,4 +14,16 @@ namespace :bridge do
     # fetch all the skus
     Indexer::IndexPublisher.new(index_class: Indexer::SkuIndexer).perform
   end
+
+  desc 'Builds a partial product re-index for (Bridge) Catalog'
+  task :partial_product_reindex, [:product_count] => :environment do |_t, args|
+    product_count = args[:product_count]
+    Indexer::PartialIndexer.reindex_products(product_count)
+  end
+
+  desc 'Builds a partial sku re-index for (Bridge) Catalog'
+  task :partial_sku_reindex, [:product_count] => :environment do |_t, args|
+    product_count = args[:product_count]
+    Indexer::PartialIndexer.reindex_skus(product_count)
+  end
 end
