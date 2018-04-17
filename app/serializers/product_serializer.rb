@@ -5,6 +5,7 @@ class ProductSerializer < ActiveModel::Serializer
              :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method
 
   belongs_to :brand, serializer: BrandSerializer
+  belongs_to :vendor, serializer: VendorSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
 
   def name
@@ -20,11 +21,9 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def color
-    colors = Set.new
-    decorated_skus.each do |s|
-      colors.add(s.color_family)
-    end
-    colors.to_a
+    decorated_skus.each_with_object(Set.new) do |s, acc|
+      acc.add(s.color_family)
+    end.to_a
   end
 
   def image
@@ -112,9 +111,6 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def cat_as_json(category)
-    # options = {}
-    # serialization = ActiveModelSerializers::SerializableResource.new(category, options)
-    # serialization.as_json
     category.as_json
   end
 
