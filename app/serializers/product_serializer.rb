@@ -86,9 +86,9 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def vendor
-    decorated_skus.each_with_object(Set.new) do |s, arr|
-      s.concept_skus&.each { |cs| arr.add(id: cs.concept_vendor_id, name: cs.concept_vendor_name) }
-    end.to_a
+    decorated_skus.each_with_object([]) do |s, arr|
+      s.concept_skus.each { |cs| arr << { id: cs.concept_vendor_id, name: cs.concept_vendor_name } }
+    end.uniq
   end
 
   private
@@ -104,7 +104,7 @@ class ProductSerializer < ActiveModel::Serializer
 
   def concept_sku_field_values(field_sym)
     decorated_skus.each.with_object([]) do |s, acc|
-      s.concept_skus&.each do |cs|
+      s.concept_skus.each do |cs|
         val = cs.send(field_sym)
         acc << val if val
       end
@@ -112,11 +112,11 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def concept_sku_field_unique_values(field_sym)
-    decorated_skus.each_with_object(Set.new) do |s, acc|
-      s.concept_skus&.each do |cs|
-        acc.add(cs.send(field_sym)) if cs.send(field_sym)
+    decorated_skus.each_with_object([]) do |s, acc|
+      s.concept_skus.each do |cs|
+        acc << cs.send(field_sym) if cs.send(field_sym)
       end
-    end.to_a
+    end.uniq
   end
 
   def best_sku_image_url(decorated_sku)
