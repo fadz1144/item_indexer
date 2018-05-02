@@ -48,6 +48,10 @@ RSpec.describe SkuSerializer do
     CatModels::ConceptSkuDimensions.new
   end
 
+  let(:concept_vendor_model) do
+    CatModels::ConceptVendor.new
+  end
+
   # rubocop:disable Metrics/BlockLength
   let(:concept_sku_model) do
     cs = CatModels::ConceptSku.new(
@@ -73,10 +77,12 @@ RSpec.describe SkuSerializer do
       on_order_qty: 3,
       limited_qty: false,
       live: true,
-      allow_exposure: true
+      allow_exposure: true,
+      exclusivity_tier: 'Not Exclusive'
     )
     cs.concept_sku_images = [concept_sku_image_model]
     cs.concept_sku_dimensions = concept_sku_dimensions_model
+    cs.concept_vendor = concept_vendor_model
     cs.extend(CatModels::ConceptSkuDecorator)
     cs
   end
