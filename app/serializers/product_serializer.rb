@@ -1,11 +1,11 @@
-
+# rubocop:disable ClassLength
+# TODO: Make this class smaller by moving the helper methods to another class
 class ProductSerializer < ActiveModel::Serializer
   attributes :product_id, :category, :color, :image, :name, :min_price, :max_price, :min_lead_time, :max_lead_time,
-             :lead_time, :min_aad_offset_days, :max_aad_offset_days,
-             :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method
+             :lead_time, :min_aad_offset_days, :max_aad_offset_days, :vendor,
+             :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method, :exclusivity_tier
 
   belongs_to :brand, serializer: BrandSerializer
-  belongs_to :vendor, serializer: VendorSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
 
   def name
@@ -78,12 +78,17 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def shipping_method
-    shipping_methods = Set.new
-    decorated_skus.each do |s|
-      sm = s.concept_skus&.map(&:shipping_method)&.uniq
-      sm&.each { |m| shipping_methods.add(m) }
-    end
-    shipping_methods.to_a
+    concept_sku_field_unique_values(:shipping_method)
+  end
+
+  def exclusivity_tier
+    concept_sku_field_unique_values(:exclusivity_tier)
+  end
+
+  def vendor
+    decorated_skus.each_with_object(Set.new) do |s, arr|
+      s.concept_skus&.each { |cs| arr.add(id: cs.concept_vendor_id, name: cs.concept_vendor_name) }
+    end.to_a
   end
 
   private
@@ -104,6 +109,14 @@ class ProductSerializer < ActiveModel::Serializer
         acc << val if val
       end
     end.sort
+  end
+
+  def concept_sku_field_unique_values(field_sym)
+    decorated_skus.each_with_object(Set.new) do |s, acc|
+      s.concept_skus&.each do |cs|
+        acc.add(cs.send(field_sym)) if cs.send(field_sym)
+      end
+    end.to_a
   end
 
   def best_sku_image_url(decorated_sku)
