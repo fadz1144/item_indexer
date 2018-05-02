@@ -185,7 +185,7 @@ describe Serializers::DecoratedSkusSerializerService do
     expect(service.field_values(:aad_min_offset_days)).to eq([6, 6])
   end
 
-  it 'supports field_values' do
+  it 'supports field_unique_values' do
     expect(service.field_unique_values(:aad_min_offset_days)).to eq([6])
   end
 end
