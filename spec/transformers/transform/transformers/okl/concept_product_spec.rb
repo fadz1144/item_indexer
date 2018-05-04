@@ -40,7 +40,7 @@ RSpec.describe Transform::Transformers::OKL::ConceptProduct do
     end
 
     it 'does not override supplied date' do
-      source.source_created_at = DateTime.yesterday
+      source.source_created_at = Time.current.yesterday.beginning_of_day
       expect(values['source_created_at']).to eq source.source_created_at
     end
   end

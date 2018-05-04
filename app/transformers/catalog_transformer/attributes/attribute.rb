@@ -50,7 +50,7 @@ module CatalogTransformer
       end
 
       def source_includes
-        @association.present? ? @association : nil
+        @association.presence
       end
     end
   end

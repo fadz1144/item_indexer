@@ -2,17 +2,41 @@ AllCops:
   TargetRubyVersion: 2.4
 LineLength:
   Max: 120
+ClassLength:
+  Exclude:
+    - app/serializers/sku_serializer.rb
 Documentation:
   Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
 Style/NumericPredicate:
   Enabled: false
+Style/RescueStandardError:
+  EnforcedStyle: implicit
 Metrics/BlockLength:
   ExcludedMethods: ['describe', 'context']
+  Exclude:
+    - spec/serializers/sku_serializer_spec.rb
+    - spec/services/serializers/decorated_skus_serializer_service_spec.rb
 Rails:
   Enabled: true
 
+#@TODO @toddkummer - can you enable these new rubocops and fix the issues?
+Rails/HasManyOrHasOneDependent:
+  Exclude:
+    - app/models/transform/batch.rb
+Rails/InverseOf:
+  Exclude:
+    - app/models/inbound/okl/sku_revision.rb
+    - app/models/inbound/okl/sku_attribute_revision.rb
+    - app/models/concerns/inbound/common_concept_foreign_keys.rb
+    - app/models/inbound/okl/category_revision.rb
+Naming/MemoizedInstanceVariableName:
+  Exclude:
+    - app/serializers/product_serializer.rb
+    - app/services/serializers/decorated_skus_serializer_service.rb
+    - app/transformers/transform/transformers/okl/concept_sku.rb
+#@TODO END of new rubocops
 AllCops:
   Include:
     - config.ru

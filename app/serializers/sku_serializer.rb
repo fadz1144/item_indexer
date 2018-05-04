@@ -1,4 +1,3 @@
-# rubocop:disable ClassLength
 class SkuSerializer < ActiveModel::Serializer
   attributes :sku_id, :gtin, :product_id, :product_name, :upc_ean, :name, :category, :inventory, :pricing, :vendor,
              :active, :allow_exposure, :non_taxable, :unit_of_measure, :vmf, :vintage, :color, :description,
@@ -163,4 +162,3 @@ class SkuSerializer < ActiveModel::Serializer
     object.concept_skus.any?(&:allow_exposure?)
   end
 end
-# rubocop:enable all

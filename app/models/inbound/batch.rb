@@ -16,7 +16,7 @@ module Inbound
 
     def status=(value)
       super
-      self.stop_datetime = DateTime.current if complete? || error?
+      self.stop_datetime = Time.current if complete? || error?
     end
 
     def status_reason=(value)
