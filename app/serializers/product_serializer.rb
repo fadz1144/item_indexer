@@ -1,9 +1,8 @@
 class ProductSerializer < ActiveModel::Serializer
   attributes :product_id, :category, :color, :image, :name, :min_price, :max_price, :min_lead_time, :max_lead_time,
-             :lead_time, :min_aad_offset_days, :max_aad_offset_days, :vendor,
+             :lead_time, :min_aad_offset_days, :max_aad_offset_days, :vendor, :brand,
              :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method, :exclusivity_tier
 
-  belongs_to :brand, serializer: BrandSerializer
   has_many :skus, serializer: SkuSerializer, key: :sku
 
   def name
@@ -86,6 +85,12 @@ class ProductSerializer < ActiveModel::Serializer
   def vendor
     service.concept_skus_iterator_uniq do |cs|
       { id: cs.concept_vendor_id, name: cs.concept_vendor_name }
+    end
+  end
+
+  def brand
+    service.concept_skus_iterator_uniq do |cs|
+      { id: cs.concept_brand_id, name: cs.concept_brand_name }
     end
   end
 
