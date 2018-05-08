@@ -63,7 +63,6 @@ describe Serializers::DecoratedSkusSerializerService do
     CatModels::ConceptVendor.new
   end
 
-  # rubocop:disable Metrics/BlockLength
   let(:concept_sku_model) do
     cs = CatModels::ConceptSku.new(
       vendor_sku: 'ABC12345',
@@ -97,9 +96,7 @@ describe Serializers::DecoratedSkusSerializerService do
     cs.extend(CatModels::ConceptSkuDecorator)
     cs
   end
-  # rubocop:enable all
 
-  # rubocop:disable Metrics/BlockLength
   let(:concept_sku_model2) do
     cs = CatModels::ConceptSku.new(
       vendor_sku: 'ABC12346',
@@ -133,7 +130,6 @@ describe Serializers::DecoratedSkusSerializerService do
     cs.extend(CatModels::ConceptSkuDecorator)
     cs
   end
-  # rubocop:enable all
 
   let(:sku_model) do
     sku = CatModels::Sku.new(

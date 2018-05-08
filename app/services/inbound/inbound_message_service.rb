@@ -13,7 +13,7 @@ module Inbound
       handler = build_handler(message)
       process_message(handler)
       Inbound::Response.build_response(handler.message_id, @batch.inbound_batch_id, @errors)
-    rescue StandardError => e
+    rescue => e
       handle_error(e, handler&.message_id)
       Inbound::Response.build_error_response(handler&.message_id, @batch&.inbound_batch_id, e)
     ensure

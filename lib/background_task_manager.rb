@@ -20,7 +20,7 @@ module BackgroundTaskManager
   protected
 
   def child_processes
-    @_child_processes ||= Set.new
+    @child_processes ||= Set.new
   end
 
   def add_child(pid)

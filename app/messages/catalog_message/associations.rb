@@ -20,13 +20,13 @@ module CatalogMessage
       # * attribute_mapping: a hash to map attribute names from the message to the model
       # * source_name: the message key for the data
       # * propagate: copy attribute (or attributes) from parent message to child
-      def has_one(name, source_name: nil, **options) # rubocop:disable Style/PredicateName
+      def has_one(name, source_name: nil, **options) # rubocop:disable Naming/PredicateName
         associations << SingularAssociation.build(self, name, source_name, options)
       end
 
       # Specifies that each message includes a child with one or more rows of data.
       # See has_one for parameters.
-      def has_many(name, source_name: nil, **options) # rubocop:disable Style/PredicateName
+      def has_many(name, source_name: nil, **options) # rubocop:disable Naming/PredicateName
         associations << CollectionAssociation.build(self, name, source_name, options)
       end
 

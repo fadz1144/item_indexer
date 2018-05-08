@@ -19,14 +19,14 @@ module Transform
     end
 
     def execute_and_record_status!
-      self.start_datetime = DateTime.current
+      self.start_datetime = Time.current
       yield
       mark_complete
     rescue => e
       Rails.logger.error(([e.message] + e.backtrace).join("\n\t"))
       mark_error(e.message)
     ensure
-      self.stop_datetime = DateTime.current
+      self.stop_datetime = Time.current
       save!
     end
   end

@@ -19,7 +19,7 @@ module CatalogTransformer
         if @source_name.present?
           nested.present? ? { @source_name => nested } : @source_name
         else
-          nested.present? ? nested : nil
+          nested.presence
         end
       end
 

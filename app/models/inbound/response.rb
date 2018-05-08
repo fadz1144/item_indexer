@@ -1,7 +1,5 @@
 module Inbound
   class Response
-    attr_reader :status
-
     def self.build_response(message_id, batch_id, item_errors)
       body = if item_errors.present?
                { status: 207, code: :check_item_errors, errors: item_errors }

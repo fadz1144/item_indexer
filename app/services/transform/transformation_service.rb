@@ -43,7 +43,7 @@ module Transform
       else
         record_errors(source, target.errors.full_messages)
       end
-    rescue StandardError => e
+    rescue => e
       Rails.logger.error "[#{self.class}] Unexpected error saving item: #{e.message}\n\t#{e.backtrace}"
       record_errors(source, [e.message])
     end

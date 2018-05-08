@@ -100,11 +100,11 @@ module Indexer
       nil
     end
 
-    def with_publish_benchmark(i, id_chunk, limit, offset)
-      @benchmark.with_benchmark(prefix:       "Indexing #{offset / limit}.#{i}",
+    def with_publish_benchmark(iterator, id_chunk, limit, offset)
+      @benchmark.with_benchmark(prefix:       "Indexing #{offset / limit}.#{iterator}",
                                 count:        @total_num_processed + id_chunk.size,
                                 start_time:   @start_time,
-                                should_print: i % 10 == 9) do
+                                should_print: iterator % 10 == 9) do
         yield
       end
     end

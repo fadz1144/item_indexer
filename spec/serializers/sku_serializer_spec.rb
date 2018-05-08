@@ -52,7 +52,6 @@ RSpec.describe SkuSerializer do
     CatModels::ConceptVendor.new
   end
 
-  # rubocop:disable Metrics/BlockLength
   let(:concept_sku_model) do
     cs = CatModels::ConceptSku.new(
       vendor_sku: 'ABC12345',
@@ -86,7 +85,6 @@ RSpec.describe SkuSerializer do
     cs.extend(CatModels::ConceptSkuDecorator)
     cs
   end
-  # rubocop:enable all
 
   let(:sku_model) do
     # :sku_id, :gtin, :product_id, :product_name, :upc_ean, :name, :category, :inventory, :pricing, :vendor,

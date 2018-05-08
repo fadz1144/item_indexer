@@ -30,11 +30,11 @@ module CatalogTransformer
         exclude association_foreign_key(name)
       end
 
-      def has_one(name, source_name: nil, transformer_name: nil) # rubocop:disable Style/PredicateName
+      def has_one(name, source_name: nil, transformer_name: nil) # rubocop:disable Naming/PredicateName
         add_singular_association(name, source_name, transformer_name)
       end
 
-      # rubocop:disable Style/PredicateName
+      # rubocop:disable Naming/PredicateName
       def has_many(name, source_name: nil, transformer_name: nil, match_keys: nil)
         associations <<
           CatalogTransformer::Associations::CollectionAssociation.new(
@@ -42,6 +42,7 @@ module CatalogTransformer
             derive_match_key(name, match_keys)
           )
       end
+      # rubocop:enable Naming/PredicateName
 
       def associations
         @associations ||= []
@@ -79,7 +80,7 @@ module CatalogTransformer
       # if there is a single match key and it is just the singular version of the association plus _id,
       # it does not need to be specified
       def derive_match_key(association, match_keys)
-        match_keys.present? ? match_keys : "#{association.to_s.singularize}_id"
+        match_keys.presence || "#{association.to_s.singularize}_id"
       end
 
       # if the target class has a belongs to that's not updated, it still tries to validate;

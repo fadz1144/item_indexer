@@ -16,7 +16,7 @@ module Inbound
       records = item.records
       records.each { |r| r.inbound_batch = @batch }
       records.first.transaction { records.each(&:save!) }
-    rescue StandardError => e
+    rescue => e
       @errors[item.item_id] = e.message
       log_error(e, item.class)
     end
