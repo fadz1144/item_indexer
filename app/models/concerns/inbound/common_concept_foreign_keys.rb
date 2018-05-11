@@ -6,7 +6,7 @@ module Inbound
       belongs_to :concept,
                  optional: true,
                  class_name: 'CatModels::Concept',
-                 foreign_key: :psuedo_concept_id
+                 foreign_key: :pseudo_concept_id
 
       belongs_to :concept_brand, -> { where(concept_id: 3) },
                  optional: true,
@@ -28,13 +28,18 @@ module Inbound
                  foreign_key: :vendor_id
     end
 
-    # allows models to support belongs_to :concept without carrying the foriegn key on the table
+    # allows models to support belongs_to :concept without carrying the foreign key on the table
     def [](attr_name)
-      if attr_name == :psuedo_concept_id
+      if attr_name == :pseudo_concept_id
         3
       else
         super
       end
+    end
+
+    # assigning pseudo_concept_id is a no-op
+    def []=(attr_name, _value)
+      super unless attr_name == :pseudo_concept_id
     end
   end
 end

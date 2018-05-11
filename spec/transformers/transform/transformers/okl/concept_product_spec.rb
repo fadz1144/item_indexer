@@ -44,4 +44,17 @@ RSpec.describe Transform::Transformers::OKL::ConceptProduct do
       expect(values['source_created_at']).to eq source.source_created_at
     end
   end
+
+  context 'black magic' do # see Inbound::CommonConceptForeignKeys
+    before do
+      CatModels::Concept.create(concept_id: 3, name: 'One Kings Lane', abbreviation: 'OKL',
+                                legal_name: 'Barry Zuckercorn')
+      Inbound::OKL::ProductRevision.create(source_product_id: 123,
+                                           inbound_batch: Inbound::Batch.create(source: 'okl', data_type: 'product'))
+    end
+
+    it 'loads product revision with pseudo-association concept' do
+      expect { Inbound::OKL::ProductRevision.includes(:concept).first }.not_to raise_exception
+    end
+  end
 end
