@@ -1,7 +1,8 @@
 class ProductSerializer < ActiveModel::Serializer
   attributes :product_id, :category, :color, :image, :name, :min_price, :max_price, :min_lead_time, :max_lead_time,
              :lead_time, :min_aad_offset_days, :max_aad_offset_days, :vendor, :brand,
-             :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method, :exclusivity_tier
+             :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method, :exclusivity_tier,
+             :item_status
 
   has_many :skus, serializer: SkuSerializer, key: :sku
 
@@ -80,6 +81,11 @@ class ProductSerializer < ActiveModel::Serializer
 
   def exclusivity_tier
     service.field_unique_values(:exclusivity_tier)
+  end
+
+  def item_status
+    result = service.field_unique_values(:status) + service.field_unique_values(:suspended_reason)
+    result.flatten.uniq
   end
 
   def vendor

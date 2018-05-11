@@ -3,7 +3,7 @@ class SkuSerializer < ActiveModel::Serializer
              :active, :allow_exposure, :non_taxable, :unit_of_measure, :vmf, :vintage, :color, :description,
              :internal_color_family, :external_image_url, :sku_status_has_inv, :sku_status_live, :brand, :dimensions,
              :lead_time, :aad_min_offset_days, :aad_max_offset_days, :shipping_method,
-             :exclusivity_tier
+             :exclusivity_tier, :item_status
 
   # NOT MIGRATED
   #    content_ready: s.sku_states.content_ready,
@@ -128,6 +128,11 @@ class SkuSerializer < ActiveModel::Serializer
 
   def exclusivity_tier
     object.concept_skus.map(&:exclusivity_tier)&.uniq
+  end
+
+  def item_status
+    result = object.concept_skus.map(&:status) + object.concept_skus.map(&:suspended_reason)
+    result.flatten.uniq
   end
 
   private
