@@ -10,6 +10,7 @@ Bundler.require(*Rails.groups)
 module ItemIndexer
   class Application < Rails::Application
     EnvVarBootstrap.new("#{Rails.root}/.ruby-env") unless Rails.env.production?
+    EnvVarBootstrap.new('./.ruby-env.test') if Rails.env.test?
     # custom settings
     config.settings = config_for(:settings)
 
