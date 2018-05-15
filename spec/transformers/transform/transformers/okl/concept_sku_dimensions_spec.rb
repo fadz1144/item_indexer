@@ -52,5 +52,14 @@ RSpec.describe Transform::Transformers::OKL::ConceptSkuDimensions do
       source.shipping_height = 3
       expect(values['shipping_dimension_display']).to eq '1" L x 2" W x 3" H'
     end
+
+    # required fields at db level
+    %w[source_created_by source_created_at source_updated_by source_updated_at].each do |stamp|
+      context "##{stamp}" do
+        it 'provides default value' do
+          expect(values[stamp]).not_to be_nil
+        end
+      end
+    end
   end
 end

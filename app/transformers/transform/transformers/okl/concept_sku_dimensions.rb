@@ -17,6 +17,18 @@ module Transform
             super || '1976-07-06'.to_datetime
           end
 
+          def source_updated_at
+            super || '1976-07-06'.to_datetime
+          end
+
+          def source_created_by
+            super || 0
+          end
+
+          def source_updated_by
+            super || 0
+          end
+
           def item_dimension_display
             dimension_display(item_length, item_width, item_height)
           end
