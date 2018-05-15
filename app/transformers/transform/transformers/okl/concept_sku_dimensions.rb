@@ -40,14 +40,13 @@ module Transform
           private
 
           def dimension_display(length, width, height)
-            # replace nil values with zero's
-            clean_length = clean_measurement(length)
-            clean_width = clean_measurement(width)
-            clean_height = clean_measurement(height)
+            builder = { L: clean_measurement(length),
+                        W: clean_measurement(width),
+                        H: clean_measurement(height) }
 
-            return '' if [clean_length, clean_width, clean_height].all? { |m| m == '0' }
-
-            "#{clean_length}\" L x #{clean_width}\" W x #{clean_height}\" H"
+            builder.reject { |_k, measurement| measurement == '0' }
+                   .map { |dimension, measurement| "#{measurement}\" #{dimension}" }
+                   .join(' x ')
           end
 
           def clean_measurement(measurement)

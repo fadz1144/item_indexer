@@ -39,10 +39,17 @@ RSpec.describe Transform::Transformers::OKL::ConceptSkuDimensions do
       end
 
       it 'includes precision to two places' do
-        source.item_length = 1.1
+        source.item_length = 1.10
         source.item_width = 2.25
         source.item_height = 3.345
         expect(display).to eq '1.1" L x 2.25" W x 3.35" H'
+      end
+
+      it 'leaves out zero dimensions' do
+        source.item_length = 1
+        source.item_width = 2
+        source.item_height = 0
+        expect(display).to eq '1" L x 2" W'
       end
     end
 
