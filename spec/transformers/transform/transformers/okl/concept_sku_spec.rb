@@ -113,14 +113,33 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
     end
 
     context '#status' do
-      it 'active returns ACTIVE' do
+      it 'active returns Active' do
         source.active = true
-        expect(values['status']).to eq 'ACTIVE'
+        expect(values['status']).to eq 'Active'
       end
 
-      it 'NOT active returns INACTIVE' do
+      it 'NOT active and not Obsolete returns In Progress' do
         source.active = false
-        expect(values['status']).to eq 'INACTIVE'
+        source.state.obsolete_reason_id = nil
+        expect(values['status']).to eq 'In Progress'
+      end
+
+      it 'NOT active and Obsolete returns Suspended' do
+        source.active = false
+        source.state.obsolete_reason_id = 1
+        expect(values['status']).to eq 'Suspended'
+      end
+    end
+
+    context '#suspended_reason' do
+      it 'should have a nil reason if there is no obsolete reason name' do
+        source.state.obsolete_reason_name = nil
+        expect(values['suspended_reason']).to be_nil
+      end
+
+      it 'should have a reason if there is a obsolete reason name' do
+        source.state.obsolete_reason_name = 'Anything but Bears'
+        expect(values['suspended_reason']).to eq('Anything but Bears')
       end
     end
 

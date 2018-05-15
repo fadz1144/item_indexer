@@ -12,6 +12,7 @@ module Transform
         has_many :concept_sku_attributes, source_name: :sku_attributes, match_keys: [:code]
 
         attribute :status_reason_cd, association: :state, source_name: :obsolete_reason_id
+        attribute :suspended_reason, association: :state, source_name: :obsolete_reason_name
         attribute :exclusivity_tier, association: :state
         attribute :lead_time, association: :shipping
         attribute :aad_min_offset_days, association: :shipping, source_name: :min_aad_offset_days
@@ -41,7 +42,13 @@ module Transform
           end
 
           def status
-            active? ? 'ACTIVE' : 'INACTIVE'
+            if active?
+              'Active'
+            elsif state.obsolete_reason_id.present?
+              'Suspended'
+            else
+              'In Progress'
+            end
           end
 
           def live
