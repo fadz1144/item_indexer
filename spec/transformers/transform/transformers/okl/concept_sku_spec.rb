@@ -113,8 +113,9 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
     end
 
     context '#status' do
-      it 'active returns Active' do
+      it 'active and not obsolete returns Active' do
         source.active = true
+        source.state.obsolete_reason_id = nil
         expect(values['status']).to eq 'Active'
       end
 
@@ -124,8 +125,14 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
         expect(values['status']).to eq 'In Progress'
       end
 
-      it 'NOT active and Obsolete returns Suspended' do
+      it 'obsolete and inactive returns Suspended' do
         source.active = false
+        source.state.obsolete_reason_id = 1
+        expect(values['status']).to eq 'Suspended'
+      end
+
+      it 'obsolete and active returns Suspended' do
+        source.active = true
         source.state.obsolete_reason_id = 1
         expect(values['status']).to eq 'Suspended'
       end
@@ -160,6 +167,7 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
         it('not exposed') { source.allow_exposure = false }
         it('no inventory') { source.inventory.total_avail_qty = 0 }
         it('not in storefront') { source.state.exists_in_storefront = false }
+        it('obsolete') { source.state.obsolete_reason_id = 1 }
       end
     end
 

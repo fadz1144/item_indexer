@@ -42,10 +42,10 @@ module Transform
           end
 
           def status
-            if active?
-              'Active'
-            elsif state.obsolete_reason_id.present?
+            if state.obsolete_reason_id.present?
               'Suspended'
+            elsif active?
+              'Active'
             else
               'In Progress'
             end
@@ -53,7 +53,7 @@ module Transform
 
           def live
             active? && allow_exposure && inventory.present? && !inventory.total_avail_qty.zero? &&
-              state.exists_in_storefront
+              state.exists_in_storefront && state.obsolete_reason_id.nil?
           end
 
           # TODO: how does lead_time_bucket get calculated?
