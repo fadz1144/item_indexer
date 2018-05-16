@@ -23,6 +23,10 @@ module Serializers
       end.flatten.compact
     end
 
+    def concept_skus_any?(&block)
+      decorated_skus.flat_map(&:concept_skus).any?(&block)
+    end
+
     def field_values(field_sym)
       concept_skus_iterator do |cs|
         cs.public_send(field_sym)
@@ -44,12 +48,17 @@ module Serializers
     private
 
     def build_decorated_skus
-      @product.skus.map do |s|
+      skus.map do |s|
         s.concept_skus.each do |cs|
           cs.extend(CatModels::ConceptSkuDecorator)
         end
         s.extend(CatModels::SkuDecorator)
       end
+    end
+
+    def skus
+      # @product.skus
+      @product.product_memberships.map(&:sku)
     end
   end
 end

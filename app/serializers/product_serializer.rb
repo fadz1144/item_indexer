@@ -2,7 +2,7 @@ class ProductSerializer < ActiveModel::Serializer
   attributes :product_id, :category, :color, :image, :name, :min_price, :max_price, :min_lead_time, :max_lead_time,
              :lead_time, :min_aad_offset_days, :max_aad_offset_days, :vendor, :brand,
              :min_margin_amount, :max_margin_amount, :avg_margin_percent, :shipping_method, :exclusivity_tier,
-             :item_status
+             :item_status, :live
 
   has_many :skus, serializer: SkuSerializer, key: :sku
 
@@ -84,8 +84,14 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def item_status
-    result = service.field_unique_values(:status) + service.field_unique_values(:suspended_reason)
-    result.flatten.uniq
+    # active
+    if service.concept_skus_any? { |cs| cs.status == 'Active' }
+      ['Active']
+    elsif service.concept_skus_any? { |cs| cs.status == 'In Progress' }
+      ['In Progress']
+    else
+      (['Suspended'] + service.field_unique_values(:suspended_reason)).flatten.uniq
+    end
   end
 
   def vendor
@@ -98,6 +104,10 @@ class ProductSerializer < ActiveModel::Serializer
     service.concept_skus_iterator_uniq do |cs|
       { id: cs.concept_brand_id, name: cs.concept_brand_name }
     end
+  end
+
+  def live
+    service.concept_skus_any?(&:live)
   end
 
   private
