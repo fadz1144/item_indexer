@@ -2,6 +2,9 @@ require 'benchmark_helper'
 
 module Indexer
   class IndexPublisher
+    DEFAULT_DB_FETCH_SIZE = 10_000
+    DEFAULT_ES_BATCH_SIZE = 1_000
+    DEFAULT_NUM_PROCESSES = 4
     attr_accessor :logger
 
     def initialize(logger: Rails.logger, index_class:)
@@ -26,7 +29,10 @@ module Indexer
       results
     end
 
-    def perform(set_size = 10_000, chunk_size = 1_000, num_threads = 4)
+    # set_size = DB Fetch. chunk_size = size of batch to load to ES
+    def perform(set_size = DEFAULT_DB_FETCH_SIZE,
+                chunk_size = DEFAULT_ES_BATCH_SIZE,
+                num_threads = DEFAULT_NUM_PROCESSES)
       logger.info "ES Client initialized: #{client}"
 
       worker_benchmark = BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS',
