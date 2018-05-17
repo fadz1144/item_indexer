@@ -33,7 +33,7 @@ module Indexer
     def perform(set_size = DEFAULT_DB_FETCH_SIZE,
                 chunk_size = DEFAULT_ES_BATCH_SIZE,
                 num_threads = DEFAULT_NUM_PROCESSES)
-      logger.info "ES Client initialized: #{client}"
+      logger.info "Client init: #{client} set_size: #{set_size}, chunk_size: #{chunk_size}, num_threads: #{num_threads}"
 
       worker_benchmark = BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS',
                                              count:  @indexer.determine_count, with_summary: true)
