@@ -47,12 +47,16 @@ class EnvVarBootstrap
     return nil unless File.exist?(@filename)
     file_data = {}
     File.open(@filename, 'r') do |file|
-      file.each_line do |line|
+      lines_without_comments(file.readlines).each do |line|
         var_name, value = line.strip.split('=')
         file_data[var_name.strip] = value.strip unless var_name.nil?
       end
     end
     file_data
+  end
+
+  def lines_without_comments(lines)
+    lines.map { |line| line.split('#').first.strip }.reject(&:blank?)
   end
 
   def init_logger(logger, log_level)

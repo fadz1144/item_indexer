@@ -1,0 +1,11 @@
+api_key: 'ed0d1523'
+env: "<%= ENV.fetch('ENVIRONMENT_TOKEN', 'development').sub(%r/.*-prod.*/, 'production') %>"
+exceptions:
+  ignore:
+    - !ruby/class 'SignalException'
+user_informer:
+  enabled: true
+  info: 'Debugging info has been captured. Please copy and share this error ID with the dev team if you need to make a bug report: <span><tt>{{error_id}}</tt></span>'
+development:
+  logging:
+    path: "log/honeybadger.log"
