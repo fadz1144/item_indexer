@@ -5,9 +5,9 @@ namespace :bridge do
   desc 'Builds the product index for (Bridge) Catalog'
   task 'build_product_search_index' => :environment do
     # fetch all the products
-    db_fetch_size = ENV['DB_FETCH_SIZE']&.to_i
-    es_batch_size = ENV['ES_BATCH_SIZE']&.to_i
-    num_processes = ENV['NUM_PROCESSES']&.to_i
+    db_fetch_size = ENV.fetch('DB_FETCH_SIZE', Indexer::IndexPublisher::DEFAULT_DB_FETCH_SIZE)
+    es_batch_size = ENV.fetch('ES_BATCH_SIZE', Indexer::IndexPublisher::DEFAULT_ES_BATCH_SIZE)
+    num_processes = ENV.fetch('NUM_PROCESSES', Indexer::IndexPublisher::DEFAULT_NUM_PROCESSES)
     Indexer::IndexPublisher.new(index_class: Indexer::ProductIndexer).perform(db_fetch_size,
                                                                               es_batch_size,
                                                                               num_processes)
@@ -16,9 +16,9 @@ namespace :bridge do
   desc 'Builds the sku index for (Bridge) Catalog'
   task 'build_sku_search_index' => :environment do
     # fetch all the skus
-    db_fetch_size = ENV['DB_FETCH_SIZE']&.to_i
-    es_batch_size = ENV['ES_BATCH_SIZE']&.to_i
-    num_processes = ENV['NUM_PROCESSES']&.to_i
+    db_fetch_size = ENV.fetch('DB_FETCH_SIZE', Indexer::IndexPublisher::DEFAULT_DB_FETCH_SIZE)
+    es_batch_size = ENV.fetch('ES_BATCH_SIZE', Indexer::IndexPublisher::DEFAULT_ES_BATCH_SIZE)
+    num_processes = ENV.fetch('NUM_PROCESSES', Indexer::IndexPublisher::DEFAULT_NUM_PROCESSES)
     Indexer::IndexPublisher.new(index_class: Indexer::SkuIndexer).perform(db_fetch_size,
                                                                           es_batch_size,
                                                                           num_processes)
