@@ -2,6 +2,10 @@ module Indexer
   class ProductIndexer
     attr_accessor :logger
 
+    def initialize(serializer_class: ES::ProductSerializer)
+      @serializer_class = serializer_class
+    end
+
     def determine_count
       fetch_ids_relation.ids.count
     end
@@ -16,7 +20,7 @@ module Indexer
     end
 
     def raw_json(item)
-      ProductSerializer.new(item).as_json
+      @serializer_class.new(item).as_json
     end
 
     def fetch_items(ids)

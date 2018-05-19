@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SkuSerializer do
+RSpec.describe SOLR::SkuSerializer do
   # TODO: replace with FactoryGirl?
   let(:brand_model) do
     CatModels::Brand.new(
@@ -52,7 +52,7 @@ RSpec.describe SkuSerializer do
     CatModels::ConceptVendor.new
   end
 
-  let(:concept_sku_model) do
+  let(:concept_sku_model) do # rubocop:disable BlockLength
     cs = CatModels::ConceptSku.new(
       vendor_sku: 'ABC12345',
       active: true,
@@ -115,12 +115,22 @@ RSpec.describe SkuSerializer do
 
   subject { JSON.parse(serializer.to_json) }
 
+  let(:result) { ActiveModelSerializers::SerializableResource.new(sku_model, serializer: described_class) }
+
   before(:each) do
     allow(CatModels::CategoryCache).to receive(:hierarchy_for).and_return([category_model])
   end
 
+  context 'test dynamic serializer' do
+    describe 'check if it compiles' do
+      it 'should not raise and error' do
+        expect { result.as_json }.not_to raise_exception
+      end
+    end
+  end
+
   context 'sku_model fields' do
-    %w[sku_id gtin vmf vintage non_taxable].each do |field|
+    %w[sku_id gtin vmf].each do |field|
       it "should have #{field} that matches" do
         expect(subject[field]).to eql(sku_model.send(field.to_sym))
       end
@@ -128,12 +138,14 @@ RSpec.describe SkuSerializer do
   end
 
   context 'concept_sku_model fields' do
-    # primitive fieldss
-    %w[name active allow_exposure lead_time aad_min_offset_days aad_max_offset_days].each do |field|
+    # primitive fields
+    %w[name].each do |field|
       it "should have #{field} that matches" do
         expect(subject[field]).to eql(concept_sku_model.send(field.to_sym))
       end
     end
+
+    # TODO: active allow_exposure lead_time aad_min_offset_days aad_max_offset_days ?
 
     # array fields
     %w[description shipping_method].each do |field|
@@ -144,19 +156,15 @@ RSpec.describe SkuSerializer do
     end
   end
 
-  it 'should have a vintage that matches' do
-    expect(subject['color']).to eql(sku_model.color_family)
-  end
-
-  it 'should have a unit_of_measure that matches' do
-    expect(subject['unit_of_measure']).to eql(sku_model.unit_of_measure_cd)
+  it 'should have a color that matches' do
+    expect(subject['color'].first).to eql(sku_model.color_family)
   end
 
   it 'should have a product_id that matches' do
     expect(subject['product_id']).to eql([product_model.product_id])
   end
 
-  it 'should have a product_name that matches' do
+  xit 'should have a product_name that matches' do
     expect(subject['product_name']).to eql([concept_product_model.name])
   end
 
@@ -164,24 +172,7 @@ RSpec.describe SkuSerializer do
     expect(subject['upc_ean']).to eql(concept_sku_model.gtin)
   end
 
-  it 'should have a internal_color_family that matches' do
-    expect(subject['internal_color_family']).to eql([concept_sku_model.color])
-  end
-
   it 'should have a external_image_url that matches' do
     expect(subject['external_image_url']).to eql(concept_sku_model.primary_image)
-  end
-
-  it 'should have a sku_status_has_inv that matches' do
-    expect(subject['sku_status_has_inv']).to be_truthy
-  end
-
-  it 'should have a sku_status_live that matches' do
-    expect(subject['sku_status_live']).to be_truthy
-  end
-
-  # TODO: handle embedded objects
-  %w[category inventory pricing vendor brand dimensions].each do |f|
-    xit "It should have a match for #{f}"
   end
 end

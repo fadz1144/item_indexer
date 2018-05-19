@@ -58,4 +58,8 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.active_job.queue_adapter = :resque
+
+
+  # RSF: dont print out AR stuff for not
+  config.active_record.logger = nil
 end

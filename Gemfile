@@ -28,6 +28,8 @@ gem 'redis', '~> 3.0'
 # Error reporting
 gem 'honeybadger', '~> 3.1'
 
+gem 'rsolr', '~> 2.2'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

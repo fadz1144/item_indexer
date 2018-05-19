@@ -238,6 +238,9 @@ GEM
       redis (>= 3.3, < 5)
       resque (~> 1.26)
       rufus-scheduler (~> 3.2)
+    rsolr (2.2.1)
+      builder (>= 2.1.2)
+      faraday (>= 0.9.0)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -350,6 +353,7 @@ DEPENDENCIES
   redis (~> 3.0)
   resque
   resque-scheduler
+  rsolr (~> 2.2)
   rspec-rails (~> 3.6)
   rspec_junit_formatter
   rubocop (~> 0.49)

@@ -12,6 +12,7 @@
 !/log/.keep
 !/tmp/.keep
 /.idea
+.DS_Store
 
 .byebug_history
 
