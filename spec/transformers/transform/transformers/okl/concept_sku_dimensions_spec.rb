@@ -1,18 +1,16 @@
 require 'rails_helper'
+require 'support/transformer_examples'
 
 RSpec.describe Transform::Transformers::OKL::ConceptSkuDimensions do
-  let(:source) do
-    Inbound::OKL::SkuDimensionsRevision.new.tap(&:build_sku)
-  end
+  let(:source) { Inbound::OKL::SkuDimensionsRevision.new.tap(&:build_sku) }
+  let(:target) { CatModels::ConceptSkuDimensions.new }
 
   let(:transformer) { described_class.new(source) }
 
+  it_behaves_like 'valid transformer'
+
   context '#attribute_values' do
     let(:values) { transformer.attribute_values }
-
-    it 'does not error' do
-      expect { values }.not_to raise_exception
-    end
 
     context '#item_dimension_display' do
       let(:display) { values['item_dimension_display'] }

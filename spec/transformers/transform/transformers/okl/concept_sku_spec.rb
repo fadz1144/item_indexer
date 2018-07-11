@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/transformer_examples'
 
 RSpec.describe Transform::Transformers::OKL::ConceptSku do
   let(:source) do
@@ -13,22 +14,11 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
   let(:transformer) { described_class.new(source) }
   let(:target) { CatModels::ConceptSku.new }
 
-  it 'source_class is valid' do
-    expect { described_class.source_class }.not_to raise_error
-  end
-
-  it 'target_class is valid' do
-    expect { described_class.target_class }.not_to raise_error
-  end
-
+  it_behaves_like 'valid transformer'
   context '#apply_transformation' do
     let(:results) do
       transformer.apply_transformation(target)
       target
-    end
-
-    it 'does not error' do
-      expect { results }.not_to raise_exception
     end
 
     context 'with a source image' do
@@ -108,10 +98,6 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
 
   context '#attribute_values' do
     let(:values) { transformer.attribute_values }
-    it 'does not error' do
-      expect { values }.not_to raise_exception
-    end
-
     context '#status' do
       it 'active and not obsolete returns Active' do
         source.active = true

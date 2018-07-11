@@ -1,18 +1,16 @@
 require 'rails_helper'
+require 'support/transformer_examples'
 
 RSpec.describe Transform::Transformers::OKL::ConceptSkuPricing do
-  let(:source) do
-    Inbound::OKL::SkuRevision.new
-  end
+  let(:source) { Inbound::OKL::SkuRevision.new }
+  let(:target) { CatModels::ConceptSkuPricing.new }
 
   let(:transformer) { described_class.new(source) }
 
+  it_behaves_like 'valid transformer'
+
   context '#attribute_values' do
     let(:values) { transformer.attribute_values }
-
-    it 'does not error' do
-      expect { values }.not_to raise_exception
-    end
 
     context '#margin_amount' do
       let(:margin_amount) { values['margin_amount'] }

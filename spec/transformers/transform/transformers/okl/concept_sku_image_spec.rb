@@ -1,18 +1,15 @@
 require 'rails_helper'
+require 'support/transformer_examples'
 
 RSpec.describe Transform::Transformers::OKL::ConceptSkuImage do
-  let(:source) do
-    Inbound::OKL::SkuImageRevision.new
-  end
+  let(:source) { Inbound::OKL::SkuImageRevision.new }
+  let(:target) { CatModels::ConceptSkuImage.new }
 
   let(:transformer) { described_class.new(source) }
+  it_behaves_like 'valid transformer'
 
   context '#attribute_values' do
     let(:values) { transformer.attribute_values }
-
-    it 'does not error' do
-      expect { values }.not_to raise_exception
-    end
 
     it '#image_url' do
       source.resource_folder = 'go'
