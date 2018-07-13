@@ -22,7 +22,10 @@ class SolrSchemaApiClient
     http = Net::HTTP.new(url.host, url.port)
     response, body = http.post(url.path, data, 'Content-type' => 'application/json')
 
-    raise 'Bad Response' unless response.is_a? Net::HTTPSuccess
+    unless response.is_a? Net::HTTPSuccess
+      puts response.inspect
+      raise 'Bad Response'
+    end
     JSON.parse(body, symbolize_names: true) if body
   end
 end

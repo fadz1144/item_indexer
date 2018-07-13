@@ -34,6 +34,11 @@ module SOLR
       service.concept_skus_iterator_uniq(&:description)
     end
 
+    # TODO: implement me
+    def long_description
+      ''
+    end
+
     def owned_available
       store_avail_qty + warehouse_avail_qty
     end
@@ -94,6 +99,30 @@ module SOLR
       service.sku_pricing_field_values(:margin_amount).max
     end
 
+    def min_price_cents
+      as_currency_cents(service.sku_pricing_field_values(:retail_price).min)
+    end
+
+    def max_price_cents
+      as_currency_cents(service.sku_pricing_field_values(:retail_price).max)
+    end
+
+    def min_margin_amount_cents
+      as_currency_cents(service.sku_pricing_field_values(:margin_amount).min)
+    end
+
+    def max_margin_amount_cents
+      as_currency_cents(service.sku_pricing_field_values(:margin_amount).max)
+    end
+
+    def min_aad_offset_days
+      service.field_unique_values(:aad_min_offset_days).min
+    end
+
+    def max_aad_offset_days
+      service.field_unique_values(:aad_max_offset_days).max
+    end
+
     def cost
       service.sku_pricing_field_values(:cost).max
     end
@@ -102,8 +131,31 @@ module SOLR
       service.sku_pricing_field_values(:pre_markdown_price).max
     end
 
+    def cost_cents
+      as_currency_cents(service.sku_pricing_field_values(:cost).max)
+    end
+
+    def pre_markdown_price_cents
+      as_currency_cents(service.sku_pricing_field_values(:pre_markdown_price).max)
+    end
+
     def margin_percent
       service.sku_pricing_field_values(:margin_percent).max
+    end
+
+    # TODO: implement me
+    def msrp
+      0
+    end
+
+    # TODO: implement me
+    def msrp_cents
+      0
+    end
+
+    # TODO: implement me
+    def commission_percent
+      0
     end
 
     def category_id
@@ -112,6 +164,16 @@ module SOLR
 
     def category_name
       CatModels::CategoryCache.hierarchy_for(object.category&.category_id).map(&:name).uniq
+    end
+
+    # TODO: implement me
+    def eph_category_id
+      []
+    end
+
+    # TODO: implement me
+    def eph_category_name
+      ''
     end
 
     def brand_id
@@ -150,6 +212,11 @@ module SOLR
       service.decorated_skus.map(&:color_family).uniq
     end
 
+    # TODO: implement me
+    def internal_color_family
+      ''
+    end
+
     def item_status
       # active
       if service.concept_skus_any? { |cs| cs.status == 'Active' }
@@ -177,6 +244,11 @@ module SOLR
 
     def as_currency(value, type: 'USD')
       "#{value},#{type}"
+    end
+
+    def as_currency_cents(value)
+      return 0 unless value
+      (value * 100.0).to_i
     end
   end
 end

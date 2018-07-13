@@ -24,6 +24,12 @@ namespace :bridge do
     publisher.perform(db_fetch_size, es_batch_size, num_processes)
   end
 
+  desc 'Builds a partial product re-index for SOLR'
+  task :partial_product_solr_reindex, [:product_count] => :environment do |_t, args|
+    product_count = args[:product_count]
+    Indexer::PartialIndexer.reindex(:product, :solr, product_count)
+  end
+
   desc 'Builds the sku index for (Bridge) Catalog'
   task 'build_sku_search_index' => :environment do
     # fetch all the skus

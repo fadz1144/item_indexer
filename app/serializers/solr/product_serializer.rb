@@ -40,8 +40,33 @@ module SOLR
       CatModels::CategoryCache.hierarchy_for(object.category&.category_id).map(&:name).uniq
     end
 
+    # TODO: implement me
+    def description
+      ''
+    end
+
+    # TODO: implement me
+    def long_description
+      ''
+    end
+
+    # TODO: implement me
+    def eph_category_id
+      []
+    end
+
+    # TODO: implement me
+    def eph_category_name
+      ''
+    end
+
     def color
       service.decorated_skus.map(&:color_family).uniq
+    end
+
+    # TODO: implement me
+    def internal_color_family
+      ''
     end
 
     def min_price
@@ -58,6 +83,22 @@ module SOLR
 
     def max_margin_amount
       service.sku_pricing_field_values(:margin_amount).max
+    end
+
+    def min_price_cents
+      as_currency_cents(service.sku_pricing_field_values(:retail_price).min)
+    end
+
+    def max_price_cents
+      as_currency_cents(service.sku_pricing_field_values(:retail_price).max)
+    end
+
+    def min_margin_amount_cents
+      as_currency_cents(service.sku_pricing_field_values(:margin_amount).min)
+    end
+
+    def max_margin_amount_cents
+      as_currency_cents(service.sku_pricing_field_values(:margin_amount).max)
     end
 
     def avg_margin_percent
@@ -138,6 +179,12 @@ module SOLR
 
     def as_currency(value, type: 'USD')
       "#{value},#{type}"
+    end
+
+    def as_currency_cents(value)
+      return 0 unless value
+
+      (value * 100.0).to_i
     end
   end
 end
