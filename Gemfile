@@ -50,6 +50,14 @@ gem 'resque-scheduler'
 gem 'bridge-cloud', github_ssh: 'okl/bridge-cloud', branch: 'master', require: 'bridge/cloud'
 # gem 'bridge-cloud', path: '../bridge-cloud', require: 'bridge/cloud'
 
+# oracle gems allow connection to staged PDM data; not required in most cases
+if ENV.fetch('ENABLE_PDM_CONNECTION', 'false') != 'false'
+  gem 'activerecord-oracle_enhanced-adapter'
+  gem 'ruby-oci8'
+
+  gem 'htmlentities' # some of the PDM data carries tags such as &reg;
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
