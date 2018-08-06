@@ -23,15 +23,15 @@ module CatalogTransformer
     # attributes to be specified as match_keys. If there is only one match key and it is simply a singular version of
     # the association plus _id, it does not need to be specified.
     module ClassMethods
-      def belongs_to(name, source_name: nil, transformer_name: nil)
-        add_singular_association(name, source_name, transformer_name)
+      def belongs_to(name, source_name: nil, transformer_name: nil, match_keys: nil)
+        add_singular_association(name, source_name, transformer_name, match_keys)
 
         # do not try to assign the foreign key; assigning the belongs to association will do this
         exclude association_foreign_key(name)
       end
 
       def has_one(name, source_name: nil, transformer_name: nil) # rubocop:disable Naming/PredicateName
-        add_singular_association(name, source_name, transformer_name)
+        add_singular_association(name, source_name, transformer_name, nil)
       end
 
       # rubocop:disable Naming/PredicateName
@@ -59,11 +59,12 @@ module CatalogTransformer
 
       private
 
-      def add_singular_association(name, source_name, transformer_name)
+      def add_singular_association(name, source_name, transformer_name, match_keys)
         associations <<
           CatalogTransformer::Associations::SingularAssociation.new(name,
                                                                     source_name,
-                                                                    derive_transformer(name, transformer_name))
+                                                                    derive_transformer(name, transformer_name),
+                                                                    match_keys)
       end
 
       def association_foreign_key(name)

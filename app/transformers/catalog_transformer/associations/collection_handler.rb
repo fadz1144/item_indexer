@@ -10,9 +10,9 @@ module CatalogTransformer
         target_records = indexed_target_records(association)
         transformers = indexed_transformers(association)
 
-        update_matches(target_records, transformers, association.parent_key)
+        update_matches(target_records, transformers, nil)
         delete_missing(target_records, transformers)
-        add_new(target_records, transformers, association.name, association.parent_key)
+        add_new(target_records, transformers, association.name, nil)
       end
 
       private

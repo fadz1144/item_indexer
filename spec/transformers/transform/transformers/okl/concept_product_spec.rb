@@ -38,4 +38,12 @@ RSpec.describe Transform::Transformers::OKL::ConceptProduct do
       expect { Inbound::OKL::ProductRevision.includes(:concept).first }.not_to raise_exception
     end
   end
+
+  context 'belongs_to product' do
+    before { transformer.apply_transformation(target) }
+
+    it 'creates product' do
+      expect(target.product).to be_new_record
+    end
+  end
 end

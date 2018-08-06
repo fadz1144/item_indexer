@@ -5,7 +5,7 @@ module Transform
         source_name 'Inbound::OKL::BrandRevision'
         match_keys :source_brand_id
 
-        belongs_to :brand
+        belongs_to :brand, match_keys: :name
 
         def self.target_relation
           super.where(concept_id: CONCEPT_ID)
@@ -14,6 +14,10 @@ module Transform
         module Decorations
           def concept_id
             CONCEPT_ID
+          end
+
+          def name
+            super || description
           end
 
           def status

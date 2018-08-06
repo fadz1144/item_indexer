@@ -9,7 +9,8 @@ RSpec.describe CatalogTransformer::Associations::SingularHandler do
     instance_double(CatalogTransformer::Associations::SingularAssociation,
                     name: :coach,
                     source_name: :source_coach,
-                    transformer_class: transformer_class)
+                    transformer_class: transformer_class,
+                    match_keys: nil)
   end
 
   let(:source_coach) { double 'SourceCoach' }
