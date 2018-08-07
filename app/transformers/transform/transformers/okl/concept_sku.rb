@@ -4,6 +4,7 @@ module Transform
       class ConceptSku < CatalogTransformer::Base
         source_name 'Inbound::OKL::SkuRevision'
         match_keys :source_sku_id
+        decorator_name 'Transform::Transformers::OKL::Decorators::SkuConceptSkuDecorator'
 
         belongs_to :sku
         has_one :concept_sku_dimensions, source_name: :dimensions
@@ -39,16 +40,6 @@ module Transform
 
           def source_created_at
             super || '1976-07-06'.to_datetime
-          end
-
-          def status
-            if state.obsolete_reason_id.present?
-              'Suspended'
-            elsif active?
-              'Active'
-            else
-              'In Progress'
-            end
           end
 
           def live

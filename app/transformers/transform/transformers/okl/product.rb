@@ -3,6 +3,7 @@ module Transform
     module OKL
       class Product < CatalogTransformer::Base
         source_name 'Inbound::OKL::ProductRevision'
+        decorator_name 'Transform::Transformers::OKL::Decorators::ProductConceptProductDecorator'
         exclude :membership_hash
 
         references :vendor, association: :concept_vendor

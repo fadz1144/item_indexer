@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'support/transformer_examples'
 
 RSpec.describe Transform::Transformers::OKL::Sku do
-  let(:source) { Inbound::OKL::SkuRevision.new }
+  let(:source) { Inbound::OKL::SkuRevision.new.tap { |s| s.build_state } }
   let(:target) { CatModels::Sku.new }
 
   let(:transformer) { described_class.new(source) }

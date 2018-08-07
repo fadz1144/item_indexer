@@ -4,6 +4,7 @@ module Transform
       class ConceptProduct < CatalogTransformer::Base
         source_name 'Inbound::OKL::ProductRevision'
         match_keys :source_product_id
+        decorator_name 'Transform::Transformers::OKL::Decorators::ProductConceptProductDecorator'
 
         belongs_to :product
 
@@ -16,10 +17,6 @@ module Transform
         module Decorations
           def concept_id
             CONCEPT_ID
-          end
-
-          def active
-            status == 'ACTIVE'
           end
 
           # TODO: do we want to truncate long descriptions, or remove the restriction in the database?
