@@ -9,6 +9,7 @@ module Transform
         attribute :sku_id, source_name: :sku_id
         attribute :gtin, source_name: :upc
 
+        references :vendor, association: :concept_vendor
         references :brand, association: :concept_brand
         references :category, association: :concept_category
 

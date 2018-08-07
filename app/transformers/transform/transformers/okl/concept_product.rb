@@ -8,8 +8,6 @@ module Transform
 
         belongs_to :product
 
-        attribute :concept_vendor_id, source_name: :vendor_id # TODO: remove when concept_vendors is fixed
-
         def self.target_relation
           super.where(concept_id: CONCEPT_ID)
         end
