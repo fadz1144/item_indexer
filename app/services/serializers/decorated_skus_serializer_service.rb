@@ -18,7 +18,7 @@ module Serializers
       decorated_skus.map do |s|
         s.concept_skus.map do |cs|
           val = yield cs
-          val if val
+          val if val # rubocop:disable Style/UnneededCondition
         end.compact
       end.flatten.compact
     end
