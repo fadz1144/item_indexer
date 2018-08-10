@@ -38,8 +38,6 @@ Naming/MemoizedInstanceVariableName:
     - app/transformers/transform/transformers/okl/concept_sku.rb
 #@TODO END of new rubocops
 AllCops:
-  Include:
-    - config.ru
   Exclude:
     - bin/**/*
     - config/**/*
