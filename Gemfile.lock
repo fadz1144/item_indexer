@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 57813cdd3ffd06e997960bbbec9c662208d550d3
+  revision: 74ee9415d82cb3e922ae61081a595e820bebd210
   branch: master
   specs:
     cat_models (0.1.0)
