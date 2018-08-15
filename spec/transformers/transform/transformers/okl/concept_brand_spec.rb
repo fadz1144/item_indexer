@@ -8,6 +8,37 @@ RSpec.describe Transform::Transformers::OKL::ConceptBrand do
 
   it_behaves_like 'valid transformer'
 
+  context '#apply_transformation' do
+    let(:results) do
+      transformer.apply_transformation(target)
+      target
+    end
+
+    context '#name' do
+      it 'uses name when present' do
+        source.name = 'Oski'
+        expect(results.name).to eq 'Oski'
+      end
+
+      it 'uses description when name nil' do
+        source.description = 'Go Bears!'
+        expect(results.name).to eq 'Go Bears!'
+      end
+
+      it 'uses description when name is blank' do
+        source.name = ''
+        source.description = 'Blue'
+        expect(results.name).to eq 'Blue'
+      end
+
+      it 'uses description when name is blank space' do
+        source.name = ' '
+        source.description = 'Blue'
+        expect(results.name).to eq 'Blue'
+      end
+    end
+  end
+
   context 'when no matching brand exists' do
     before do
       source.name = 'Oski'

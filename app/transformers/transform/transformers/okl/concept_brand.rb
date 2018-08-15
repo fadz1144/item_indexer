@@ -17,7 +17,7 @@ module Transform
           end
 
           def name
-            super || description
+            super.presence || description
           end
 
           def status
