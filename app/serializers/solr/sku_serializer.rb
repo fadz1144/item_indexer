@@ -1,5 +1,8 @@
+## These Serializers are on the way OUT to SOLR
+## They are active record model serializers but do so
+## in a way thay they can be written to our SOLR index.
 module SOLR
-  class SkuSerializer < ActiveModel::Serializer # rubocop:disable ClassLength
+  class SkuSerializer < BaseSerializer # rubocop:disable ClassLength
     attribute :id
     ProductCoreFields.sku_fields.map do |field|
       attribute field[:name].to_sym
@@ -9,6 +12,11 @@ module SOLR
 
     delegate :sku_id, to: :object
     delegate :gtin, to: :object
+    delegate :vmf, to: :object
+
+    def serializable_fields
+      ProductCoreFields.sku_fields
+    end
 
     def id
       "S#{sku_id}"

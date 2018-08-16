@@ -1,5 +1,8 @@
+## These Serializers are on the way OUT to SOLR
+## They are active record model serializers but do so
+## in a way thay they can be written to our SOLR index.
 module SOLR
-  class ProductSerializer < ActiveModel::Serializer # rubocop:disable ClassLength
+  class ProductSerializer < BaseSerializer # rubocop:disable ClassLength
     attribute :id
     attribute :skus, key: :_childDocuments_
 
@@ -8,6 +11,10 @@ module SOLR
     end
 
     delegate :product_id, to: :object
+
+    def serializable_fields
+      ProductCoreFields.product_fields
+    end
 
     def id
       "P#{product_id}"
