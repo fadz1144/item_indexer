@@ -82,7 +82,7 @@ module Transform
           private
 
           def please_note
-            @memo_please_note ||= sku_attributes.find { |a| a.code = 'please_note' }&.value || ''
+            @please_note ||= sku_attributes.find { |a| a.code = 'please_note' }&.value || ''
           end
         end
       end

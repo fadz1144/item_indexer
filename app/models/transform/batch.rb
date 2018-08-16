@@ -2,9 +2,9 @@ module Transform
   class Batch < ApplicationRecord
     self.primary_key = :transform_batch_id
     has_one :inbound_batch, class_name: 'Inbound::Batch', foreign_key: :transform_batch_id,
-                            primary_key: :transform_batch_id, inverse_of: :transform_batch
+                            primary_key: :transform_batch_id, inverse_of: :transform_batch, dependent: :nullify
     has_many :batch_errors, class_name: 'Transform::BatchError', foreign_key: :transform_batch_id, autosave: true,
-                            inverse_of: :batch
+                            inverse_of: :batch, dependent: :destroy
 
     include StringEnums
     string_enum status: %w[in\ progress complete error]

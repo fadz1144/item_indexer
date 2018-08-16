@@ -22,9 +22,6 @@ Rails:
   Enabled: true
 
 #@TODO @toddkummer - can you enable these new rubocops and fix the issues?
-Rails/HasManyOrHasOneDependent:
-  Exclude:
-    - app/models/transform/batch.rb
 Rails/InverseOf:
   Exclude:
     - app/models/inbound/okl/sku_revision.rb
@@ -35,7 +32,6 @@ Naming/MemoizedInstanceVariableName:
   Exclude:
     - app/serializers/product_serializer.rb
     - app/services/serializers/decorated_skus_serializer_service.rb
-    - app/transformers/transform/transformers/okl/concept_sku.rb
 #@TODO END of new rubocops
 AllCops:
   Exclude:
