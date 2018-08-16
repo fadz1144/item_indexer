@@ -7,6 +7,7 @@ module CatalogTransformer
     include CatalogTransformer::Attributes
     include CatalogTransformer::SourceDecorations
     include CatalogTransformer::SourceClassAccessors
+    include CatalogTransformer::Callbacks
     attr_reader :source
 
     def self.source_relation
@@ -28,8 +29,10 @@ module CatalogTransformer
     end
 
     def apply_transformation(target, excluded_attributes = nil)
+      run_callbacks(:before, target)
       target.assign_attributes(attribute_values.except(excluded_attributes))
       apply_association_transformations(target)
+      run_callbacks(:after, target)
     end
 
     def attribute_values
