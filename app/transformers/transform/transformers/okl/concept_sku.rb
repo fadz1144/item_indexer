@@ -26,6 +26,8 @@ module Transform
         attribute :vdc_avail_qty, association: :inventory
         attribute :on_order_qty, association: :inventory
 
+        exclude :site_nav_tree_node_id
+
         def self.target_relation
           super.where(concept_id: CONCEPT_ID)
         end

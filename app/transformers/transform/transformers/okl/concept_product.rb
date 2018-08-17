@@ -6,6 +6,8 @@ module Transform
         match_keys :source_product_id
         decorator_name 'Transform::Transformers::OKL::Decorators::ProductConceptProductDecorator'
 
+        exclude :site_nav_tree_node_id
+
         belongs_to :product
 
         def self.target_relation
