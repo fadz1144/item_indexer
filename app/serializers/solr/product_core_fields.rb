@@ -5,6 +5,7 @@ module SOLR
       { name: 'doc_type', type: 'string', indexed: true, stored: true },
       { name: 'category_id', type: 'long', indexed: true, stored: true, multiValued: true },
       { name: 'category_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+      { name: 'concept_id', type: 'int', indexed: true, stored: true, multiValued: true },
       { name: 'eph_category_id', type: 'long', indexed: true, stored: true, multiValued: true },
       { name: 'eph_category_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
       { name: 'vendor_id', type: 'long', indexed: true, stored: true, multiValued: true },
@@ -26,14 +27,19 @@ module SOLR
       { name: 'min_margin_amount_cents', type: 'int', indexed: true, stored: true },
       { name: 'max_margin_amount_cents', type: 'int', indexed: true, stored: true },
       { name: 'name', type: 'text_general', indexed: true, stored: true },
-      { name: 'shipping_method', type: 'string', indexed: true, stored: true, multiValued: true }
+      { name: 'shipping_method', type: 'string', indexed: true, stored: true, multiValued: true },
+      ## web status fields
+      { name: 'web_status', type: 'string', indexed: true, stored: true },
+      { name: 'web_status_buyer_reviewed', type: 'int', indexed: true, stored: true },
+      { name: 'web_status_in_progress', type: 'int', indexed: true, stored: true },
+      { name: 'web_status_active', type: 'int', indexed: true, stored: true },
+      { name: 'web_status_suspended', type: 'int', indexed: true, stored: true }
     ].freeze
 
     SKU_ONLY_FIELDS = [
       { name: 'sku_id', type: 'long', indexed: true, stored: true, multiValued: true },
       { name: 'brand_code', type: 'string', indexed: true, stored: true, multiValued: true },
       { name: 'commission_percent', type: 'float', indexed: true, stored: true },
-      { name: 'concept_id', type: 'int', indexed: true, stored: true, multiValued: true },
       { name: 'cost_cents', type: 'int', indexed: true, stored: true },
       { name: 'dimensions', type: 'string', indexed: true, stored: true, multiValued: true },
       { name: 'external_image_url', type: 'string', indexed: true, stored: true, multiValued: true },

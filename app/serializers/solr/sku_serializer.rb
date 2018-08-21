@@ -244,6 +244,36 @@ module SOLR
       service.field_unique_values(:shipping_method)
     end
 
+    def web_status
+      # values should be 'Active', 'In Progress', 'Suspended', 'Buyer Reviewed'
+      status = WEB_STATUS_TO_DISPLAY_VALUE.keys.map do |method_name|
+        WEB_STATUS_TO_DISPLAY_VALUE[method_name] if send("#{method_name}?".to_sym)
+      end.compact
+
+      status.presence ? status : nil
+    end
+
+    WEB_STATUS_TO_DISPLAY_VALUE = {
+      web_status_buyer_reviewed: 'Buyer Reviewed',
+      web_status_in_progress: 'In Progress',
+      web_status_active: 'Active',
+      web_status_suspended: 'Suspended'
+    }.freeze
+
+    WEB_STATUS_TO_DISPLAY_VALUE.keys.each do |method_name|
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        def #{method_name}
+          object.send("#{method_name}".to_sym)
+        end
+
+        def #{method_name}?
+          object.send("#{method_name}".to_sym).present?
+        end
+      RUBY
+    end
+
+    # TODO: implement these methods BELOW
+
     private
 
     def service

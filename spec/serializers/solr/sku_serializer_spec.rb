@@ -175,4 +175,24 @@ RSpec.describe SOLR::SkuSerializer do
   it 'should have a external_image_url that matches' do
     expect(subject['external_image_url']).to eql(concept_sku_model.primary_image)
   end
+
+  it 'should have a web_status' do
+    expect(subject['web_status']).to eql(sku_model.web_status)
+  end
+
+  it 'should have a web_status_buyer_reviewed' do
+    expect(subject['web_status_buyer_reviewed']).to eql(sku_model.web_status_buyer_reviewed)
+  end
+
+  it 'should have a web_status_in_progress' do
+    expect(subject['web_status_in_progress']).to eql(sku_model.web_status_in_progress)
+  end
+
+  it 'should have a web_status_active' do
+    expect(subject['web_status_active']).to eql(sku_model.web_status_active)
+  end
+
+  it 'should have a web_status_suspended' do
+    expect(subject['web_status_suspended']).to eql(sku_model.web_status_suspended)
+  end
 end
