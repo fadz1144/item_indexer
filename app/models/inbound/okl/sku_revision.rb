@@ -18,6 +18,7 @@ module Inbound
                  primary_key: :source_product_id,
                  foreign_key: :source_product_id
       include Inbound::CommonConceptForeignKeys
+      include Inbound::OKL::MerchandisingTreeNodeAssociations
 
       belongs_to :polished_sku,
                  optional: true,

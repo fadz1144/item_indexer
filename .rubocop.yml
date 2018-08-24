@@ -21,13 +21,12 @@ Metrics/BlockLength:
 Rails:
   Enabled: true
 
-#@TODO @toddkummer - can you enable these new rubocops and fix the issues?
 Rails/InverseOf:
   Exclude:
-    - app/models/inbound/okl/sku_revision.rb
-    - app/models/inbound/okl/sku_attribute_revision.rb
+  # do not clutter up main models with associations to inbound or external tables
+    - app/models/concerns/inbound/okl/*
+    - app/models/inbound/okl/*
     - app/models/concerns/inbound/common_concept_foreign_keys.rb
-    - app/models/inbound/okl/category_revision.rb
 Naming/MemoizedInstanceVariableName:
   Exclude:
     - app/serializers/product_serializer.rb
