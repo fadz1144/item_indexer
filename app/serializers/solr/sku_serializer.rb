@@ -20,8 +20,50 @@ module SOLR
       ProductCoreFields.sku_fields
     end
 
-    # rollup 'description', access_type: 'service', access_field: 'description'
+    rollup 'live', access_type: 'concept_skus_any', access_field: 'live'
+
+    rollup 'brand_id', access_type: 'concept_skus_uniq', access_field: 'concept_brand_id'
+    rollup 'brand_name', access_type: 'concept_skus_uniq', access_field: 'display_brand'
+    rollup 'description', access_type: 'concept_skus_uniq', access_field: 'description'
+    rollup 'vendor_id', access_type: 'concept_skus_uniq', access_field: 'concept_vendor_id'
+    rollup 'vendor_name', access_type: 'concept_skus_uniq', access_field: 'concept_vendor_name'
+
+    rollup 'color', access_type: 'decorated', access_field: 'color_family'
+
+    rollup 'name', access_type: 'detect', access_field: 'name'
+    rollup 'external_image_url', access_type: 'detect', access_field: 'primary_image'
+
+    rollup 'cost', access_type: 'pricing', access_field: 'cost', group: 'max'
+    rollup 'cost_cents', access_type: 'pricing', access_field: 'cost', group: 'max', format: 'currency_cents'
+    rollup 'margin_percent', access_type: 'pricing', access_field: 'margin_percent', group: 'max'
+    rollup 'min_price', access_type: 'pricing', access_field: 'retail_price', group: 'min', format: 'currency'
+    rollup 'max_price', access_type: 'pricing', access_field: 'retail_price', group: 'max', format: 'currency'
+    rollup 'min_price_cents', access_type: 'pricing', access_field: 'retail_price', group: 'min',
+                              format: 'currency_cents'
+    rollup 'max_price_cents', access_type: 'pricing', access_field: 'retail_price', group: 'max',
+                              format: 'currency_cents'
+    rollup 'min_margin_amount', access_type: 'pricing', access_field: 'margin_amount', group: 'min'
+    rollup 'max_margin_amount', access_type: 'pricing', access_field: 'margin_amount', group: 'max'
+    rollup 'min_margin_amount_cents', access_type: 'pricing', access_field: 'margin_amount', group: 'min',
+                                      format: 'currency_cents'
+    rollup 'max_margin_amount_cents', access_type: 'pricing', access_field: 'margin_amount', group: 'max',
+                                      format: 'currency_cents'
+    rollup 'pre_markdown_price', access_type: 'pricing', access_field: 'pre_markdown_price', group: 'max'
+    rollup 'pre_markdown_price_cents', access_type: 'pricing', access_field: 'pre_markdown_price', group: 'max',
+                                       format: 'currency_cents'
+
+    rollup 'concept_id', access_type: 'service', access_field: 'concept_id'
+    rollup 'exclusivity_tier', access_type: 'service', access_field: 'exclusivity_tier'
+    rollup 'limited_qty', access_type: 'service', access_field: 'limited_qty', group: 'first'
+    rollup 'min_aad_offset_days', access_type: 'service', access_field: 'aad_min_offset_days', group: 'min'
+    rollup 'max_aad_offset_days', access_type: 'service', access_field: 'aad_max_offset_days', group: 'max'
+    rollup 'on_order_qty', access_type: 'service', access_field: 'on_order_qty', group: 'max'
+    rollup 'shipping_method', access_type: 'service', access_field: 'shipping_method'
     rollup 'store_avail_qty', access_type: 'service', access_field: 'stores_avail_qty', group: 'max'
+    rollup 'total_avail_qty', access_type: 'service', access_field: 'total_avail_qty', group: 'max'
+    rollup 'vdc_avail_qty', access_type: 'service', access_field: 'vdc_avail_qty', group: 'max'
+    rollup 'vendor_sku', access_type: 'service', access_field: 'vendor_sku', group: 'max'
+    rollup 'warehouse_avail_qty', access_type: 'service', access_field: 'warehouse_avail_qty', group: 'max'
 
     def id
       "S#{sku_id}"
@@ -39,14 +81,6 @@ module SOLR
       object.gtin
     end
 
-    def name
-      object.concept_skus&.detect(&:name)&.name
-    end
-
-    def description
-      service.concept_skus_iterator_uniq(&:description)
-    end
-
     # TODO: implement me
     def long_description
       ''
@@ -58,102 +92,6 @@ module SOLR
 
     def vendor_remaining
       vdc_avail_qty
-    end
-
-    def store_avail_qty
-      service.field_unique_values(:stores_avail_qty).max
-    end
-
-    def vdc_avail_qty
-      service.field_unique_values(:vdc_avail_qty).max
-    end
-
-    def warehouse_avail_qty
-      service.field_unique_values(:warehouse_avail_qty).max
-    end
-
-    def on_order_qty
-      service.field_unique_values(:on_order_qty).max
-    end
-
-    def limited_qty
-      service.field_unique_values(:limited_qty).first
-    end
-
-    def total_avail_qty
-      service.field_unique_values(:total_avail_qty).max
-    end
-
-    def vendor_sku
-      service.field_unique_values(:vendor_sku).max
-    end
-
-    def external_image_url
-      object.concept_skus&.detect(&:primary_image)&.primary_image
-    end
-
-    def concept_id
-      service.field_unique_values(:concept_id)
-    end
-
-    def min_price
-      as_currency(service.sku_pricing_field_values(:retail_price).min)
-    end
-
-    def max_price
-      as_currency(service.sku_pricing_field_values(:retail_price).max)
-    end
-
-    def min_margin_amount
-      service.sku_pricing_field_values(:margin_amount).min
-    end
-
-    def max_margin_amount
-      service.sku_pricing_field_values(:margin_amount).max
-    end
-
-    def min_price_cents
-      as_currency_cents(service.sku_pricing_field_values(:retail_price).min)
-    end
-
-    def max_price_cents
-      as_currency_cents(service.sku_pricing_field_values(:retail_price).max)
-    end
-
-    def min_margin_amount_cents
-      as_currency_cents(service.sku_pricing_field_values(:margin_amount).min)
-    end
-
-    def max_margin_amount_cents
-      as_currency_cents(service.sku_pricing_field_values(:margin_amount).max)
-    end
-
-    def min_aad_offset_days
-      service.field_unique_values(:aad_min_offset_days).min
-    end
-
-    def max_aad_offset_days
-      service.field_unique_values(:aad_max_offset_days).max
-    end
-
-    def cost
-      service.sku_pricing_field_values(:cost).max
-    end
-
-    def pre_markdown_price
-      service.sku_pricing_field_values(:pre_markdown_price).max
-    end
-
-    def cost_cents
-      as_currency_cents(service.sku_pricing_field_values(:cost).max)
-    end
-
-    def pre_markdown_price_cents
-      as_currency_cents(service.sku_pricing_field_values(:pre_markdown_price).max)
-    end
-
-    def margin_percent
-      service.sku_pricing_field_values(:margin_percent).max
     end
 
     # TODO: implement me
@@ -189,24 +127,8 @@ module SOLR
       ''
     end
 
-    def brand_id
-      service.concept_skus_iterator_uniq(&:concept_brand_id)
-    end
-
-    def brand_name
-      service.concept_skus_iterator_uniq(&:display_brand)
-    end
-
     def brand_code
       CatModels::BrandCache.for_id(brand_id)&.map(&:brand_code)
-    end
-
-    def vendor_id
-      service.concept_skus_iterator_uniq(&:concept_vendor_id)
-    end
-
-    def vendor_name
-      service.concept_skus_iterator_uniq(&:concept_vendor_name).uniq
     end
 
     def dimensions
@@ -215,14 +137,6 @@ module SOLR
 
     def inventory?
       total_avail_qty > 0
-    end
-
-    def live
-      service.concept_skus_any?(&:live)
-    end
-
-    def color
-      service.decorated_skus.map(&:color_family).uniq
     end
 
     # TODO: implement me
@@ -239,14 +153,6 @@ module SOLR
       else
         (['Suspended'] + service.field_unique_values(:suspended_reason)).flatten.uniq
       end
-    end
-
-    def exclusivity_tier
-      service.field_unique_values(:exclusivity_tier)
-    end
-
-    def shipping_method
-      service.field_unique_values(:shipping_method)
     end
 
     def web_status
@@ -283,15 +189,6 @@ module SOLR
 
     def service
       @service ||= Serializers::DecoratedSkusSerializerService.new(Serializers::SkuDecoratorWrapper.new(object))
-    end
-
-    def as_currency(value, type: 'USD')
-      "#{value},#{type}"
-    end
-
-    def as_currency_cents(value)
-      return 0 unless value
-      (value * 100.0).to_i
     end
   end
 end

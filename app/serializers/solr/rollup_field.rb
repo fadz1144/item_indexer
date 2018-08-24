@@ -1,9 +1,10 @@
 module SOLR
+  # rubocop:disable ClassLength
   class RollupField
     attr_reader :field_name, :access_field, :group_action, :format
 
-    VALID_ACCESS_TYPES = %i[pricing service concept_skus_uniq decorated].freeze
-    VALID_GROUP_ACTIONS = [:min, :max, :avg, nil].freeze
+    VALID_ACCESS_TYPES = %i[pricing service concept_skus_uniq concept_skus_any decorated detect].freeze
+    VALID_GROUP_ACTIONS = [:min, :max, :avg, :first, nil].freeze
     VALID_FORMATS = [:currency, :currency_cents, nil].freeze
 
     # Defines how we roll up the field
@@ -39,8 +40,16 @@ module SOLR
       @access_type == :decorated
     end
 
+    def detect?
+      @access_type == :detect
+    end
+
     def concept_skus_uniq?
       @access_type == :concept_skus_uniq
+    end
+
+    def concept_skus_any?
+      @access_type == :concept_skus_any
     end
 
     def currency_cents?
@@ -73,7 +82,7 @@ module SOLR
     end
 
     def self.apply_group(result, action)
-      if %i[min max].include? action
+      if %i[min max first].include? action
         result.public_send(action)
       elsif action == :avg
         result.empty? ? 0 : result.sum.fdiv(result.size)
@@ -101,23 +110,28 @@ module SOLR
     end
 
     def self.sku_pricing_result(service, access_field, group_action, format_type)
-      result = service.sku_pricing_field_values(access_field)
-      group_and_format_results(result, group_action, format_type)
+      group_and_format_results(service.sku_pricing_field_values(access_field), group_action, format_type)
     end
 
     def self.field_unique_values_result(service, access_field, group_action, format_type)
-      result = service.field_unique_values(access_field)
-      group_and_format_results(result, group_action, format_type)
+      group_and_format_results(service.field_unique_values(access_field), group_action, format_type)
+    end
+
+    def self.concept_skus_any(service, access_field, group_action, format_type)
+      group_and_format_results(service.concept_skus_any?(&access_field), group_action, format_type)
     end
 
     def self.concept_skus_uniq_values(service, access_field, group_action, format_type)
-      result = service.concept_skus_iterator_uniq(&access_field)
-      group_and_format_results(result, group_action, format_type)
+      group_and_format_results(service.concept_skus_iterator_uniq(&access_field), group_action, format_type)
     end
 
     def self.decorated_skus_uniq_values(service, access_field, group_action, format_type)
-      result = service.decorated_skus_iterator_uniq(&access_field)
-      group_and_format_results(result, group_action, format_type)
+      group_and_format_results(service.decorated_skus_iterator_uniq(&access_field), group_action, format_type)
+    end
+
+    def self.detect_value(object, access_field, group_action, format_type)
+      value = object.concept_skus&.detect(&access_field)&.public_send(access_field)
+      group_and_format_results(value, group_action, format_type)
     end
 
     private
@@ -130,4 +144,5 @@ module SOLR
       "#{field} must be one of the following: #{valid_values.join(', ')}. value: #{value}"
     end
   end
+  # rubocop:enable all
 end
