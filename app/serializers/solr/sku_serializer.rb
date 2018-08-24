@@ -3,6 +3,8 @@
 ## in a way thay they can be written to our SOLR index.
 module SOLR
   class SkuSerializer < BaseSerializer # rubocop:disable ClassLength
+    include SOLR::RollupAttribute
+
     attribute :id
     ProductCoreFields.sku_fields.map do |field|
       attribute field[:name].to_sym
@@ -17,6 +19,9 @@ module SOLR
     def serializable_fields
       ProductCoreFields.sku_fields
     end
+
+    # rollup 'description', access_type: 'service', access_field: 'description'
+    rollup 'store_avail_qty', access_type: 'service', access_field: 'stores_avail_qty', group: 'max'
 
     def id
       "S#{sku_id}"
