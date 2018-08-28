@@ -1,17 +1,13 @@
 module SOLR
-  # rubocop:disable ClassLength
   # TODO: rename this class to DecoratedField
   class RollupField
-    attr_reader :field_name, :access_field, :access_sub_type, :group_action, :format
+    attr_reader :field_name, :field, :access_sub_type, :group_action, :format
 
-    VALID_ACCESS_TYPES = %i[pricing service concept_skus_uniq concept_skus_any decorated detect tree_node].freeze
     VALID_GROUP_ACTIONS = [:min, :max, :avg, :first, nil].freeze
     VALID_FORMATS = [:currency, :currency_cents, nil].freeze
 
     # Defines how we roll up the field
     # field_name: the name of the field we want written to SOLR
-    # access_type: should be one of the following:
-    #              :pricing, :service, :concept_skus_uniq, :decorated, :tree_node
     # group action: should be one of the following:
     #              :min, :max, :avg
     # format: should be one of the following:
@@ -21,39 +17,10 @@ module SOLR
       validate_options(options)
 
       @field_name = options[:field_name].to_sym
-      @access_type = options[:access_type].to_sym
       @access_sub_type = options[:access_sub_type]&.to_sym
-      @access_field = options[:access_field]&.to_sym
+      @field = options[:field]&.to_sym
       @group_action = options[:group]&.to_sym
       @format = options[:format]&.to_sym
-    end
-
-    def pricing?
-      @access_type == :pricing
-    end
-
-    def service?
-      @access_type == :service
-    end
-
-    def decorated?
-      @access_type == :decorated
-    end
-
-    def detect?
-      @access_type == :detect
-    end
-
-    def concept_skus_uniq?
-      @access_type == :concept_skus_uniq
-    end
-
-    def concept_skus_any?
-      @access_type == :concept_skus_any
-    end
-
-    def tree_node?
-      @access_type == :tree_node
     end
 
     def currency_cents?
@@ -117,38 +84,37 @@ module SOLR
       group_and_format_results(service.sku_pricing_field_values(access_field), group_action, format_type)
     end
 
-    def self.sku_tree_node_result(service, access_sub_type, access_field, group_action, format_type)
-      group_and_format_results(service.tree_node_values(access_sub_type, access_field), group_action, format_type)
+    def self.sku_tree_node_result(service, tree, access_field, group_action, format_type)
+      group_and_format_results(service.tree_node_values(tree, access_field), group_action, format_type)
     end
 
     def self.field_unique_values_result(service, access_field, group_action, format_type)
       group_and_format_results(service.field_unique_values(access_field), group_action, format_type)
     end
 
-    def self.concept_skus_any(service, access_field, group_action, format_type)
-      group_and_format_results(service.concept_skus_any?(&access_field), group_action, format_type)
+    def self.concept_skus_any(service, field, group_action, format_type)
+      group_and_format_results(service.concept_skus_any?(&field), group_action, format_type)
     end
 
-    def self.concept_skus_uniq_values(service, access_field, group_action, format_type)
-      group_and_format_results(service.concept_skus_iterator_uniq(&access_field), group_action, format_type)
+    def self.concept_skus_uniq_values(service, field, group_action, format_type)
+      group_and_format_results(service.concept_skus_iterator_uniq(&field), group_action, format_type)
     end
 
-    def self.decorated_skus_uniq_values(service, access_field, group_action, format_type)
-      group_and_format_results(service.decorated_skus_iterator_uniq(&access_field), group_action, format_type)
+    def self.decorated_skus_uniq_values(service, field, group_action, format_type)
+      group_and_format_results(service.decorated_skus_iterator_uniq(&field), group_action, format_type)
     end
 
-    def self.detect_value(object, access_field, group_action, format_type)
-      value = object.concept_skus&.detect(&access_field)&.public_send(access_field)
+    def self.detect_value(object, field, group_action, format_type)
+      value = object.concept_skus&.detect(&field)&.public_send(field)
       group_and_format_results(value, group_action, format_type)
     end
 
     private
 
     def validate_options(options)
-      missing_keys = %i[field_name access_type] - options.keys
+      missing_keys = %i[field_name] - options.keys
       raise ArgumentError, "Missing keys #{missing_keys.join(',')}" unless missing_keys.empty?
 
-      check_value('access_type', VALID_ACCESS_TYPES, options[:access_type]&.to_sym)
       check_value('group', VALID_GROUP_ACTIONS, options[:group_action]&.to_sym)
       check_value('format', VALID_FORMATS, options[:format]&.to_sym)
     end
@@ -161,5 +127,4 @@ module SOLR
       "#{field} must be one of the following: #{valid_values.join(', ')}. value: #{value}"
     end
   end
-  # rubocop:enable all
 end

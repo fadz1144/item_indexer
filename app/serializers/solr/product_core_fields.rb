@@ -30,11 +30,11 @@ module SOLR
       { name: 'name', type: 'text_general', indexed: true, stored: true },
       { name: 'shipping_method', type: 'string', indexed: true, stored: true, multiValued: true },
       ## web status fields
-      { name: 'web_status', type: 'string', indexed: true, stored: true },
-      { name: 'web_status_buyer_reviewed', type: 'int', indexed: true, stored: true },
-      { name: 'web_status_in_progress', type: 'int', indexed: true, stored: true },
-      { name: 'web_status_active', type: 'int', indexed: true, stored: true },
-      { name: 'web_status_suspended', type: 'int', indexed: true, stored: true },
+      { name: 'web_status', type: 'string', indexed: true, stored: true, multiValued: true },
+      { name: 'web_status_buyer_reviewed', type: 'int', indexed: true, stored: true, multiValued: true },
+      { name: 'web_status_in_progress', type: 'int', indexed: true, stored: true, multiValued: true },
+      { name: 'web_status_active', type: 'int', indexed: true, stored: true, multiValued: true },
+      { name: 'web_status_suspended', type: 'int', indexed: true, stored: true, multiValued: true },
       # solr_field_expansion
       { name: 'allow_exposure', type: 'boolean', indexed: true, stored: true },
       { name: 'available_in_ca', type: 'boolean', indexed: true, stored: true },

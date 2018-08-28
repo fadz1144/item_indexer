@@ -16,6 +16,9 @@ module Indexer
       @indexer   = indexer
       @benchmark = BenchmarkHelper.new(logger: logger)
       @client = client
+
+      # init the tree cache
+      Indexer::TreeCache.build
     end
 
     def publish_to_search_by_ids(ids, chunk_size = 1_000)
@@ -35,9 +38,6 @@ module Indexer
                 chunk_size = DEFAULT_ES_BATCH_SIZE,
                 num_threads = DEFAULT_NUM_PROCESSES)
       logger.info "Client init: #{client} set_size: #{set_size}, chunk_size: #{chunk_size}, num_threads: #{num_threads}"
-
-      # init the tree cache
-      TreeCache.build
 
       worker_benchmark = BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS',
                                              count:  @indexer.determine_count, with_summary: true)

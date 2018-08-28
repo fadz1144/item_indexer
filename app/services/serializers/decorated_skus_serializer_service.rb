@@ -58,9 +58,9 @@ module Serializers
     TREE_NODE_MAPPING = {
       eph: :eph_tree_node
     }.freeze
-    def tree_node_values(sub_type, field_sym)
-      tree_node_sym = TREE_NODE_MAPPING[sub_type]
-      if SKU_LEVEL_TREE_NODES.include?(sub_type)
+    def tree_node_values(tree, field_sym)
+      tree_node_sym = TREE_NODE_MAPPING[tree]
+      if SKU_LEVEL_TREE_NODES.include?(tree)
         sku_level_tree_node_values(tree_node_sym, field_sym)
       else
         concept_skus_node_values(tree_node_sym, field_sym)
@@ -80,14 +80,14 @@ module Serializers
       decorated_skus.map do |s|
         tree_node = s.public_send(tree_node_sym)
         hierarchy = hierarchy_for(tree_node)
-        hierarchy&.map(&field_sym)
-      end.flatten.compact
+        hierarchy&.map { |h| h[field_sym] }
+      end.flatten.compact.uniq
     end
-    
+
     def hierarchy_for(tree_node)
       return [] if tree_node.nil?
 
-      TreeCache.fetch(tree_node.tree_node_id)
+      Indexer::TreeCache.fetch(tree_node.tree_node_id)
     end
   end
 end

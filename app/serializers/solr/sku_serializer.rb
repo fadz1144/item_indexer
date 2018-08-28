@@ -3,7 +3,13 @@
 ## in a way thay they can be written to our SOLR index.
 module SOLR
   class SkuSerializer < BaseSerializer # rubocop:disable ClassLength
-    include SOLR::RollupAttribute
+    include SOLR::Decorators::AnyDecoratedAttribute
+    include SOLR::Decorators::ConceptSkuDetectDecoratedAttribute
+    include SOLR::Decorators::ConceptSkuUniqDecoratedAttribute
+    include SOLR::Decorators::FieldUniqDecoratedAttribute
+    include SOLR::Decorators::PricingDecoratedAttribute
+    include SOLR::Decorators::SkuUniqDecoratedAttribute
+    include SOLR::Decorators::TreeNodeDecoratedAttribute
 
     attribute :id
     ProductCoreFields.sku_fields.map do |field|
@@ -20,55 +26,50 @@ module SOLR
       ProductCoreFields.sku_fields
     end
 
-    rollup 'live', access_type: 'concept_skus_any', access_field: 'live'
+    decorate_any 'live', field: 'live'
 
-    rollup 'brand_id', access_type: 'concept_skus_uniq', access_field: 'concept_brand_id'
-    rollup 'brand_name', access_type: 'concept_skus_uniq', access_field: 'display_brand'
-    rollup 'description', access_type: 'concept_skus_uniq', access_field: 'description'
-    rollup 'vendor_id', access_type: 'concept_skus_uniq', access_field: 'concept_vendor_id'
-    rollup 'vendor_name', access_type: 'concept_skus_uniq', access_field: 'concept_vendor_name'
+    decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
+    decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
+    decorate_concept_sku_uniq 'description', field: 'description'
+    decorate_concept_sku_uniq 'vendor_id', field: 'concept_vendor_id'
+    decorate_concept_sku_uniq 'vendor_name', field: 'concept_vendor_name'
 
-    rollup 'color', access_type: 'decorated', access_field: 'color_family'
+    decorate_concept_sku_detect 'name', field: 'name'
+    decorate_concept_sku_detect 'external_image_url', field: 'primary_image'
 
-    rollup 'name', access_type: 'detect', access_field: 'name'
-    rollup 'external_image_url', access_type: 'detect', access_field: 'primary_image'
+    decorate_field_uniq 'concept_id', field: 'concept_id'
+    decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
+    decorate_field_uniq 'limited_qty', field: 'limited_qty', group: 'first'
+    decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
+    decorate_field_uniq 'max_aad_offset_days', field: 'aad_max_offset_days', group: 'max'
+    decorate_field_uniq 'on_order_qty', field: 'on_order_qty', group: 'max'
+    decorate_field_uniq 'shipping_method', field: 'shipping_method'
+    decorate_field_uniq 'store_avail_qty', field: 'stores_avail_qty', group: 'max'
+    decorate_field_uniq 'total_avail_qty', field: 'total_avail_qty', group: 'max'
+    decorate_field_uniq 'vdc_avail_qty', field: 'vdc_avail_qty', group: 'max'
+    decorate_field_uniq 'vendor_sku', field: 'vendor_sku', group: 'max'
+    decorate_field_uniq 'warehouse_avail_qty', field: 'warehouse_avail_qty', group: 'max'
 
-    rollup 'cost', access_type: 'pricing', access_field: 'cost', group: 'max'
-    rollup 'cost_cents', access_type: 'pricing', access_field: 'cost', group: 'max', format: 'currency_cents'
-    rollup 'margin_percent', access_type: 'pricing', access_field: 'margin_percent', group: 'max'
-    rollup 'min_price', access_type: 'pricing', access_field: 'retail_price', group: 'min', format: 'currency'
-    rollup 'max_price', access_type: 'pricing', access_field: 'retail_price', group: 'max', format: 'currency'
-    rollup 'min_price_cents', access_type: 'pricing', access_field: 'retail_price', group: 'min',
-                              format: 'currency_cents'
-    rollup 'max_price_cents', access_type: 'pricing', access_field: 'retail_price', group: 'max',
-                              format: 'currency_cents'
-    rollup 'min_margin_amount', access_type: 'pricing', access_field: 'margin_amount', group: 'min'
-    rollup 'max_margin_amount', access_type: 'pricing', access_field: 'margin_amount', group: 'max'
-    rollup 'min_margin_amount_cents', access_type: 'pricing', access_field: 'margin_amount', group: 'min',
-                                      format: 'currency_cents'
-    rollup 'max_margin_amount_cents', access_type: 'pricing', access_field: 'margin_amount', group: 'max',
-                                      format: 'currency_cents'
-    rollup 'pre_markdown_price', access_type: 'pricing', access_field: 'pre_markdown_price', group: 'max'
-    rollup 'pre_markdown_price_cents', access_type: 'pricing', access_field: 'pre_markdown_price', group: 'max',
-                                       format: 'currency_cents'
+    decorate_pricing 'cost', field: 'cost', group: 'max'
+    decorate_pricing 'cost_cents', field: 'cost', group: 'max', format: 'currency_cents'
+    decorate_pricing 'margin_percent', field: 'margin_percent', group: 'max'
+    decorate_pricing 'min_price', field: 'retail_price', group: 'min', format: 'currency'
+    decorate_pricing 'max_price', field: 'retail_price', group: 'max', format: 'currency'
+    decorate_pricing 'min_price_cents', field: 'retail_price', group: 'min', format: 'currency_cents'
+    decorate_pricing 'max_price_cents', field: 'retail_price', group: 'max', format: 'currency_cents'
+    decorate_pricing 'min_margin_amount', field: 'margin_amount', group: 'min'
+    decorate_pricing 'max_margin_amount', field: 'margin_amount', group: 'max'
+    decorate_pricing 'min_margin_amount_cents', field: 'margin_amount', group: 'min', format: 'currency_cents'
+    decorate_pricing 'max_margin_amount_cents', field: 'margin_amount', group: 'max', format: 'currency_cents'
+    decorate_pricing 'pre_markdown_price', field: 'pre_markdown_price', group: 'max'
+    decorate_pricing 'pre_markdown_price_cents', field: 'pre_markdown_price', group: 'max', format: 'currency_cents'
 
-    rollup 'concept_id', access_type: 'service', access_field: 'concept_id'
-    rollup 'exclusivity_tier', access_type: 'service', access_field: 'exclusivity_tier'
-    rollup 'limited_qty', access_type: 'service', access_field: 'limited_qty', group: 'first'
-    rollup 'min_aad_offset_days', access_type: 'service', access_field: 'aad_min_offset_days', group: 'min'
-    rollup 'max_aad_offset_days', access_type: 'service', access_field: 'aad_max_offset_days', group: 'max'
-    rollup 'on_order_qty', access_type: 'service', access_field: 'on_order_qty', group: 'max'
-    rollup 'shipping_method', access_type: 'service', access_field: 'shipping_method'
-    rollup 'store_avail_qty', access_type: 'service', access_field: 'stores_avail_qty', group: 'max'
-    rollup 'total_avail_qty', access_type: 'service', access_field: 'total_avail_qty', group: 'max'
-    rollup 'vdc_avail_qty', access_type: 'service', access_field: 'vdc_avail_qty', group: 'max'
-    rollup 'vendor_sku', access_type: 'service', access_field: 'vendor_sku', group: 'max'
-    rollup 'warehouse_avail_qty', access_type: 'service', access_field: 'warehouse_avail_qty', group: 'max'
+    decorate_sku_uniq 'color', field: 'color_family'
 
     # hierarchies
-    rollup 'eph_tree_node_id', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'tree_node_id'
-    rollup 'eph_tree_source_code', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'source_code'
-    rollup 'eph_tree_node_name', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'name'
+    decorate_tree_node 'eph_tree_node_id', tree: 'eph', field: 'id'
+    decorate_tree_node 'eph_tree_source_code', tree: 'eph', field: 'source_code'
+    decorate_tree_node 'eph_tree_node_name', tree: 'eph', field: 'name'
 
     #   { name: 'merch_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
     #   { name: 'merch_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
