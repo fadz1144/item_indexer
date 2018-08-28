@@ -83,18 +83,11 @@ module Serializers
         hierarchy&.map(&field_sym)
       end.flatten.compact
     end
-
-    # TODO: we need to move this (or something like it) to CatModels
+    
     def hierarchy_for(tree_node)
       return [] if tree_node.nil?
 
-      all_levels = [tree_node]
-      current = tree_node
-      while current.parent.present?
-        all_levels << current.parent
-        current = current.parent
-      end
-      all_levels
+      TreeCache.fetch(tree_node.tree_node_id)
     end
   end
 end

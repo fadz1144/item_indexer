@@ -36,6 +36,9 @@ module Indexer
                 num_threads = DEFAULT_NUM_PROCESSES)
       logger.info "Client init: #{client} set_size: #{set_size}, chunk_size: #{chunk_size}, num_threads: #{num_threads}"
 
+      # init the tree cache
+      TreeCache.build
+
       worker_benchmark = BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS',
                                              count:  @indexer.determine_count, with_summary: true)
       worker_benchmark.with_benchmark do
