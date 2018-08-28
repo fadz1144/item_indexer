@@ -52,5 +52,49 @@ module Serializers
         cs.concept_sku_pricing&.public_send(field_sym)
       end.sort
     end
+
+    SKU_LEVEL_TREE_NODES = %i[eph merch].freeze
+    CONCEPT_SKU_LEVEL_TREE_NODES = %i[bbby_site_nav ca_site_nav baby_site_nav].freeze
+    TREE_NODE_MAPPING = {
+      eph: :eph_tree_node
+    }.freeze
+    def tree_node_values(sub_type, field_sym)
+      tree_node_sym = TREE_NODE_MAPPING[sub_type]
+      if SKU_LEVEL_TREE_NODES.include?(sub_type)
+        sku_level_tree_node_values(tree_node_sym, field_sym)
+      else
+        concept_skus_node_values(tree_node_sym, field_sym)
+      end
+    end
+
+    private
+
+    def concept_skus_node_values(tree_node_sym, field_sym)
+      concept_skus_iterator do |cs|
+        tree_node = cs.public_send(tree_node_sym)
+        tree_node&.map(&field_sym)
+      end.flatten.compact
+    end
+
+    def sku_level_tree_node_values(tree_node_sym, field_sym)
+      decorated_skus.map do |s|
+        tree_node = s.public_send(tree_node_sym)
+        hierarchy = hierarchy_for(tree_node)
+        hierarchy&.map(&field_sym)
+      end.flatten.compact
+    end
+
+    # TODO: we need to move this (or something like it) to CatModels
+    def hierarchy_for(tree_node)
+      return [] if tree_node.nil?
+
+      all_levels = [tree_node]
+      current = tree_node
+      while current.parent.present?
+        all_levels << current.parent
+        current = current.parent
+      end
+      all_levels
+    end
   end
 end

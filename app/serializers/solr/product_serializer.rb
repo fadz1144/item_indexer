@@ -51,6 +51,10 @@ module SOLR
     rollup 'brand_id', access_type: 'concept_skus_uniq', access_field: 'concept_brand_id'
     rollup 'brand_name', access_type: 'concept_skus_uniq', access_field: 'display_brand'
 
+    rollup 'eph_tree_node_id', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'tree_node_id'
+    rollup 'eph_tree_source_code', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'source_code'
+    rollup 'eph_tree_node_name', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'name'
+
     # TODO: define rollups for these:
     #   { name: 'allow_exposure', type: 'boolean' indexed: true, stored: true },
     #   { name: 'available_in_ca', type: 'boolean' indexed: true, stored: true },
@@ -80,9 +84,8 @@ module SOLR
     #   { name: 'vdc_flag', type: 'boolean', indexed: true, stored: true },
     #   { name: 'vintage', type: 'boolean', indexed: true, stored: true },
     #   { name: 'web_enabled_date', type: 'date', indexed: true, stored: true },
-    #   { name: 'eph_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-    #   { name: 'eph_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'eph_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+
+    # hierarchy
     #   { name: 'merch_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
     #   { name: 'merch_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'merch_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },

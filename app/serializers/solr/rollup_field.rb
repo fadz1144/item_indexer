@@ -1,31 +1,31 @@
 module SOLR
   # rubocop:disable ClassLength
+  # TODO: rename this class to DecoratedField
   class RollupField
-    attr_reader :field_name, :access_field, :group_action, :format
+    attr_reader :field_name, :access_field, :access_sub_type, :group_action, :format
 
-    VALID_ACCESS_TYPES = %i[pricing service concept_skus_uniq concept_skus_any decorated detect].freeze
+    VALID_ACCESS_TYPES = %i[pricing service concept_skus_uniq concept_skus_any decorated detect tree_node].freeze
     VALID_GROUP_ACTIONS = [:min, :max, :avg, :first, nil].freeze
     VALID_FORMATS = [:currency, :currency_cents, nil].freeze
 
     # Defines how we roll up the field
     # field_name: the name of the field we want written to SOLR
     # access_type: should be one of the following:
-    #              :pricing, :service, :concept_skus_uniq, :decorated
+    #              :pricing, :service, :concept_skus_uniq, :decorated, :tree_node
     # group action: should be one of the following:
     #              :min, :max, :avg
     # format: should be one of the following:
     #              :currency_cents, :currency
     #
-    def initialize(field_name:, access_type:, access_field: nil, group: nil, format: nil)
-      @field_name = field_name.to_sym
-      @access_type = access_type.to_sym
-      @access_field = access_field&.to_sym
-      @group_action = group&.to_sym
-      @format = format&.to_sym
+    def initialize(options)
+      validate_options(options)
 
-      check_value('access_type', VALID_ACCESS_TYPES, @access_type)
-      check_value('group', VALID_GROUP_ACTIONS, @group_action)
-      check_value('format', VALID_FORMATS, @format)
+      @field_name = options[:field_name].to_sym
+      @access_type = options[:access_type].to_sym
+      @access_sub_type = options[:access_sub_type]&.to_sym
+      @access_field = options[:access_field]&.to_sym
+      @group_action = options[:group]&.to_sym
+      @format = options[:format]&.to_sym
     end
 
     def pricing?
@@ -50,6 +50,10 @@ module SOLR
 
     def concept_skus_any?
       @access_type == :concept_skus_any
+    end
+
+    def tree_node?
+      @access_type == :tree_node
     end
 
     def currency_cents?
@@ -113,6 +117,10 @@ module SOLR
       group_and_format_results(service.sku_pricing_field_values(access_field), group_action, format_type)
     end
 
+    def self.sku_tree_node_result(service, access_sub_type, access_field, group_action, format_type)
+      group_and_format_results(service.tree_node_values(access_sub_type, access_field), group_action, format_type)
+    end
+
     def self.field_unique_values_result(service, access_field, group_action, format_type)
       group_and_format_results(service.field_unique_values(access_field), group_action, format_type)
     end
@@ -135,6 +143,15 @@ module SOLR
     end
 
     private
+
+    def validate_options(options)
+      missing_keys = %i[field_name access_type] - options.keys
+      raise ArgumentError, "Missing keys #{missing_keys.join(',')}" unless missing_keys.empty?
+
+      check_value('access_type', VALID_ACCESS_TYPES, options[:access_type]&.to_sym)
+      check_value('group', VALID_GROUP_ACTIONS, options[:group_action]&.to_sym)
+      check_value('format', VALID_FORMATS, options[:format]&.to_sym)
+    end
 
     def check_value(field, valid_values, value)
       raise ArgumentError, error_msg(field, valid_values, value) unless valid_values.include?(value)

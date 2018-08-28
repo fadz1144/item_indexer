@@ -65,6 +65,54 @@ module SOLR
     rollup 'vendor_sku', access_type: 'service', access_field: 'vendor_sku', group: 'max'
     rollup 'warehouse_avail_qty', access_type: 'service', access_field: 'warehouse_avail_qty', group: 'max'
 
+    # hierarchies
+    rollup 'eph_tree_node_id', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'tree_node_id'
+    rollup 'eph_tree_source_code', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'source_code'
+    rollup 'eph_tree_node_name', access_type: 'tree_node', access_sub_type: 'eph', access_field: 'name'
+
+    #   { name: 'merch_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
+    #   { name: 'merch_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'merch_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+    #   { name: 'bbby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
+    #   { name: 'bbby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'bbby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+    #   { name: 'ca_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
+    #   { name: 'ca_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'ca_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+    #   { name: 'baby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
+    #   { name: 'baby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'baby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+
+    # TODO: define rollups for these:
+    #   { name: 'allow_exposure', type: 'boolean' indexed: true, stored: true },
+    #   { name: 'available_in_ca', type: 'boolean' indexed: true, stored: true },
+    #   { name: 'clearance_status', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'concept_eligibility', type: 'int' indexed: true, stored: true, multiValued: true },
+    #   { name: 'contribution_margin_percent', type: 'float' indexed: true, stored: true },
+    #   { name: 'dynamic_price_eligible', type: 'boolean' indexed: true, stored: true },
+    #   { name: 'inactive_reason', type: 'string' indexed: true, stored: true, multiValued: true },
+    #   { name: 'inventory_ecom_us', type: 'int' indexed: true, stored: true },
+    #   { name: 'inventory_ecom_ca', type: 'int' indexed: true, stored: true },
+    #   { name: 'inventory_okl_branded', type: 'int' indexed: true, stored: true },
+    #   { name: 'inventory_okl_vintage', type: 'int' indexed: true, stored: true },
+    #   { name: 'inventory_ropis', type: 'int' indexed: true, stored: true },
+    #   { name: 'inventory_total', type: 'int' indexed: true, stored: true },
+    #   { name: 'inventory_store_total', type: 'int' indexed: true, stored: true },
+    #   { name: 'inventory_vdc_total', type: 'int' indexed: true, stored: true },
+    #   { name: 'jda_status', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'line_of_business', type: 'string' indexed: true, stored: true, multiValued: true },
+    #   { name: 'ltl_flag', type: 'boolean' indexed: true, stored: true },
+    #   { name: 'personalized', type: 'boolean' indexed: true, stored: true },
+    #   { name: 'product_type', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'size', type: 'string', indexed: true, stored: true, multiValued: true },
+    #   { name: 'tbs_blocked', type: 'int', indexed: true, stored: true, multiValued: true },
+    #   { name: 'units_sold_last_week', type: 'int', indexed: true, stored: true },
+    #   { name: 'units_sold_last_8_weeks', type: 'int', indexed: true, stored: true },
+    #   { name: 'units_sold_last_year', type: 'int', indexed: true, stored: true },
+    #   { name: 'vdc_flag', type: 'boolean', indexed: true, stored: true },
+    #   { name: 'vintage', type: 'boolean', indexed: true, stored: true },
+    #   { name: 'web_enabled_date', type: 'date', indexed: true, stored: true },
+
     def id
       "S#{sku_id}"
     end

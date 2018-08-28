@@ -1,4 +1,5 @@
 module SOLR
+  # TODO: rename this class to DecoratedAttribute
   module RollupAttribute
     extend ActiveSupport::Concern
 
@@ -13,6 +14,7 @@ module SOLR
       #              :currency_cents, :currency
       #
       # rubocop:disable all
+      # TODO: rename this method to decorate
       def rollup(field_name, **args)
         field = RollupField.new(args.merge(field_name: field_name))
 
@@ -28,6 +30,8 @@ module SOLR
           define_concept_skus_any_method(field)
         elsif field.detect?
           define_detect_method(field)
+        elsif field.tree_node?
+          define_tree_node_method(field)
         end
       end
       # rubocop:enable all
@@ -76,6 +80,14 @@ module SOLR
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def #{field.field_name}
             RollupField.detect_value(object, :#{field.access_field}, #{field.quoted_group_action}, #{field.quoted_format})
+          end
+        RUBY
+      end
+
+      def define_tree_node_method(field)
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          def #{field.field_name}
+            RollupField.sku_tree_node_result(service, :#{field.access_sub_type}, :#{field.access_field}, #{field.quoted_group_action}, #{field.quoted_format})
           end
         RUBY
       end
