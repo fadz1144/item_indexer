@@ -22,11 +22,6 @@
 # this is mapped in docker
 wait_for_postgres.sh
 
-# files checked in with the .deploy version
-/config/database.yml
-/config/secrets.yml
-/config/settings.yml
-
 # test coverage reports
 coverage
 /.idea
