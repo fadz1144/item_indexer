@@ -1,20 +1,23 @@
 #!/bin/bash
 
+gsutil --version || ( echo "Sorry, you need gsutil to run the secrets-entrypoint. Try installing the Google Cloud SDK." ; exit 2 )
+
 # Check that the environment variable has been set correctly
 if [ -z "$SECRETS_BUCKET_NAME" ]; then
-  echo >&2 'error: missing SECRETS_BUCKET_NAME environment variable'
-  exit 1
+  echo >&2 "Using bucket: upc-dev-secrets (the default)"
+else
+  echo >&2 "Using bucket: ${SECRETS_BUCKET_NAME}"
 fi
 
-# Load the base S3 secrets file contents into the environment variables
-eval $(aws s3 cp s3://${SECRETS_BUCKET_NAME}/base.env - | sed 's/^/export /')
+SECRETS_BUCKET_NAME="${SECRETS_BUCKET_NAME:-upc-dev-secrets}"
 
-# Check that the environment variable has been set correctly
+eval $(gsutil cp gs://${SECRETS_BUCKET_NAME}/base.txt - | sed 's/^/export /')
+
 if [ -z "$ENVIRONMENT_TOKEN" ]; then
-  echo >&2 'warning: missing ENVIRONMENT_TOKEN environment variable.  only using BASE values'
+  echo >&2 'warning: missing ENVIRONMENT_TOKEN environment variable.  only using `base` values'
 else
   # Override the base with the environment specific variables
-  eval $(aws s3 cp s3://${SECRETS_BUCKET_NAME}/${ENVIRONMENT_TOKEN}/secrets.env - | sed 's/^/export /')
+  eval $(gsutil cp gs://${SECRETS_BUCKET_NAME}/${ENVIRONMENT_TOKEN}.txt - | sed 's/^/export /')
 fi
 
 exec "$@"
