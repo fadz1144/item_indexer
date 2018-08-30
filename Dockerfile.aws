@@ -31,8 +31,8 @@ RUN cd /tmp && \
     ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
     rm awscli-bundle.zip && rm -rf awscli-bundle
 
-RUN mkdir -p /okl/app
-WORKDIR /okl/app
+RUN mkdir -p /bbb/app
+WORKDIR /bbb/app
 
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler && bundle install --without test development --jobs 20 --retry 5
