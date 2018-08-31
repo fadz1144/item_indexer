@@ -16,7 +16,8 @@ module Transform
         references :merch_sub_dept_tree_node
         references :merch_class_tree_node
 
-        exclude :eph_tree_node_id, allow_primary_key: true
+        exclude :eph_tree_node_id, :chain_status, :ecom_status, :rollup_type_cd, :rollup_type_name,
+                allow_primary_key: true
 
         module Decorations
           def image_count
