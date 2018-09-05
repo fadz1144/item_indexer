@@ -27,11 +27,14 @@ module Indexer
     end
 
     def node_to_h(node)
-      { id: node.tree_node_id,
+      {
+        id: node.tree_node_id,
         parent_id: node.parent_id,
         name: node.name,
         level: node.level,
-        leaf: node.leaf }
+        leaf: node.leaf,
+        source_code: node.source_code
+      }
     end
   end
 end

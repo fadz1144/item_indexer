@@ -1,10 +1,10 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5.1
 LineLength:
   Max: 120
 ClassLength:
   Exclude:
-    - app/serializers/sku_serializer.rb
+    - app/serializers/es/sku_serializer.rb
 Documentation:
   Enabled: false
 Style/FrozenStringLiteralComment:
@@ -16,7 +16,7 @@ Style/RescueStandardError:
 Metrics/BlockLength:
   ExcludedMethods: ['describe', 'context']
   Exclude:
-    - spec/serializers/sku_serializer_spec.rb
+    - spec/serializers/es/sku_serializer_spec.rb
     - spec/services/serializers/decorated_skus_serializer_service_spec.rb
 Rails:
   Enabled: true

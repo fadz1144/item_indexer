@@ -31,7 +31,7 @@ describe Serializers::DecoratedSkusSerializerService do
     multi_sku_product
   end
 
-  let(:service) { described_class.new(product) }
+  let(:service) { described_class.new(Serializers::ProductDecoratorWrapper.new(product)) }
 
   context '#concept_skus_any?' do
     describe 'with a multi sku product' do

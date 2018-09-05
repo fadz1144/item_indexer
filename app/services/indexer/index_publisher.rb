@@ -5,15 +5,20 @@ module Indexer
     DEFAULT_DB_FETCH_SIZE = 10_000
     DEFAULT_ES_BATCH_SIZE = 1_000
     DEFAULT_NUM_PROCESSES = 4
-    attr_accessor :logger
 
-    def initialize(logger: Rails.logger, index_class:)
+    attr_accessor :logger, :client
+
+    def initialize(logger: Rails.logger, indexer:, client: ES::ESClient.new)
       @logger              = logger
       @total_num_processed = 0
       @start_time          = Time.current
 
-      @indexer   = index_class.new
+      @indexer   = indexer
       @benchmark = BenchmarkHelper.new(logger: logger)
+      @client = client
+
+      # init the tree cache
+      Indexer::TreeCache.build
     end
 
     def publish_to_search_by_ids(ids, chunk_size = 1_000)
@@ -21,8 +26,7 @@ module Indexer
       ids     = [ids] unless ids.is_a? Array
       ids.each_slice(chunk_size) do |id_chunk|
         items  = @indexer.fetch_items(id_chunk)
-        json   = items.map { |item| index_hash_for_item(item) }.compact
-        result = client.bulk body: json
+        result = client.publish_items(@indexer, items)
         results << result
       end
       # TODO: check for errors??
@@ -77,14 +81,6 @@ module Indexer
 
     private
 
-    def index_root
-      'catalog'
-    end
-
-    def client
-      @client ||= ES::ESClient.new
-    end
-
     def queue_work(chunk_size, num_chunks, num_threads, set_size)
       worker = Indexer::WorkQueueHandler.new(logger: @logger)
       worker.queue_work(num_chunks, num_threads, set_size) do |limit, offset|
@@ -96,14 +92,6 @@ module Indexer
       count = @indexer.determine_count
       logger.info "Total num items to index: #{count}"
       (count / set_size) + 1
-    end
-
-    def index_hash_for_item(item)
-      { index: { _index: index_root, _type: @indexer.index_type, _id: item.id, data: @indexer.raw_json(item) } }
-    rescue => e
-      logger.error("Unable to generate index hash for #{item}.  Reason: #{e.message}")
-      logger.error e.backtrace.join("\n")
-      nil
     end
 
     def with_publish_benchmark(iterator, id_chunk, limit, offset)

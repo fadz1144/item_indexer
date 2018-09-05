@@ -1,5 +1,9 @@
 module Indexer
   class SkuIndexer
+    def initialize(serializer_class: ES::SkuSerializer)
+      @serializer_class = serializer_class
+    end
+
     def determine_count
       CatModels::Sku.count
     end
@@ -17,7 +21,7 @@ module Indexer
     end
 
     def raw_json(item)
-      SkuSerializer.new(item).as_json
+      @serializer_class.new(item).as_json
     end
 
     def fetch_items(ids)

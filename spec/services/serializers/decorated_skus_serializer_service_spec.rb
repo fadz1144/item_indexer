@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Serializers::DecoratedSkusSerializerService do
-  let(:service) { described_class.new(product) }
+  let(:service) { described_class.new(Serializers::ProductDecoratorWrapper.new(product)) }
 
   # TODO: REPLACE WITH FACTORY GIRL
   # Pulled from sku_serializer_spec

@@ -1,25 +1,33 @@
 module Serializers
   class DecoratedSkusSerializerService
-    def initialize(product)
-      raise ArgumentError, 'Must specify a product' if product.blank?
-
-      @product = product
+    def initialize(wrapper)
+      raise ArgumentError, 'Must specify a wrapper' if wrapper.blank?
+      @wrapper = wrapper
     end
 
     def decorated_skus
-      @_decorated_skus ||= build_decorated_skus
+      @wrapper.decorated_skus
     end
 
     def concept_skus_iterator_uniq(&block)
       concept_skus_iterator(&block).uniq
     end
 
+    def decorated_skus_iterator_uniq(&block)
+      decorated_skus_iterator(&block).uniq
+    end
+
     def concept_skus_iterator
       decorated_skus.map do |s|
         s.concept_skus.map do |cs|
-          val = yield cs
-          val if val # rubocop:disable Style/UnneededCondition
+          yield cs
         end.compact
+      end.flatten.compact
+    end
+
+    def decorated_skus_iterator
+      decorated_skus.map do |s|
+        yield s
       end.flatten.compact
     end
 
@@ -45,20 +53,41 @@ module Serializers
       end.sort
     end
 
-    private
-
-    def build_decorated_skus
-      skus.map do |s|
-        s.concept_skus.each do |cs|
-          cs.extend(CatModels::ConceptSkuDecorator)
-        end
-        s.extend(CatModels::SkuDecorator)
+    SKU_LEVEL_TREE_NODES = %i[eph merch].freeze
+    CONCEPT_SKU_LEVEL_TREE_NODES = %i[bbby_site_nav ca_site_nav baby_site_nav].freeze
+    TREE_NODE_MAPPING = {
+      eph: :eph_tree_node
+    }.freeze
+    def tree_node_values(tree, field_sym)
+      tree_node_sym = TREE_NODE_MAPPING[tree]
+      if SKU_LEVEL_TREE_NODES.include?(tree)
+        sku_level_tree_node_values(tree_node_sym, field_sym)
+      else
+        concept_skus_node_values(tree_node_sym, field_sym)
       end
     end
 
-    def skus
-      # @product.skus
-      @product.product_memberships.map(&:sku)
+    private
+
+    def concept_skus_node_values(tree_node_sym, field_sym)
+      concept_skus_iterator do |cs|
+        tree_node = cs.public_send(tree_node_sym)
+        tree_node&.map(&field_sym)
+      end.flatten.compact
+    end
+
+    def sku_level_tree_node_values(tree_node_sym, field_sym)
+      decorated_skus.map do |s|
+        tree_node = s.public_send(tree_node_sym)
+        hierarchy = hierarchy_for(tree_node)
+        hierarchy&.map { |h| h[field_sym] }
+      end.flatten.compact.uniq
+    end
+
+    def hierarchy_for(tree_node)
+      return [] if tree_node.nil?
+
+      Indexer::TreeCache.fetch(tree_node.tree_node_id)
     end
   end
 end

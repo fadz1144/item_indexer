@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ProductSerializer do
+describe ES::ProductSerializer do
   let(:live_sku) do
     build(:sku).tap do |s|
       s.concept_skus.build(live: true)

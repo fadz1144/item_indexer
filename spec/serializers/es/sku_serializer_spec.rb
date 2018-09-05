@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SkuSerializer do
+RSpec.describe ES::SkuSerializer do
   # TODO: replace with FactoryGirl?
   let(:brand_model) do
     CatModels::Brand.new(
@@ -178,10 +178,5 @@ RSpec.describe SkuSerializer do
 
   it 'should have a sku_status_live that matches' do
     expect(subject['sku_status_live']).to be_truthy
-  end
-
-  # TODO: handle embedded objects
-  %w[category inventory pricing vendor brand dimensions].each do |f|
-    xit "It should have a match for #{f}"
   end
 end

@@ -18,7 +18,7 @@ jobs:
       REDIS_PORT: 1234
     docker:
       # specify the version you desire here
-       - image: circleci/ruby:2.4.3
+       - image: circleci/ruby:2.5.1
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -49,10 +49,6 @@ jobs:
           paths:
             - ./vendor/bundle
           key: v3-dependencies-{{ checksum "Gemfile.lock" }}
-
-      - run:
-          name: "Create .yml files from .deploy"
-          command: rake setup:deploy_yml
 
       # Database setup
       - run:
@@ -90,7 +86,7 @@ jobs:
           path: /tmp/test-results
           destination: test-results
 
-  deploy:
+  aws_deploy:
     environment:
       AWS_ACCOUNT_ID: "774076615373"
       AWS_DEFAULT_REGION: 'us-east-1'
@@ -144,11 +140,59 @@ jobs:
               aws ecs update-service --cli-input-json file://scripts/aws/update-service-definition.json
               echo "Update complete"
             fi
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    working_directory: ~/repo
+    steps:
+      - run:
+          name: Store Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run:
+          name: Init Gcloud
+          command: |
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud auth configure-docker
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+#           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+#           gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Add version and commit sha to build
+          # Note the first command uses a single > to overwrite version.rb completely. Important.
+          command: |
+            echo "ENV['BBB_CI_VERSION'] = '$CIRCLE_BRANCH:$CIRCLE_BUILD_NUM'" > config/ci_version.rb
+            echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/ci_version.rb
+      - run:
+          name: Push container to GCR
+          command: |
+            if [[ "master" = "$CIRCLE_BRANCH" ]] ; then
+              SHOULD_DEPLOY="true"
+            else
+              SHOULD_DEPLOY="false"
+            fi
+            BRANCH=$CIRCLE_BRANCH
+            NUMERIC_TAG="build-${CIRCLE_BUILD_NUM}"
+            pwd
+            find .
+            GCR_HOST=us.gcr.io
+            DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | sed -e 's/_/-/g')
+            DOCKERURL="${GCR_HOST}/${GOOGLE_PROJECT_ID}/appengine/${DOCKER_IMAGE_NAME}"
+            docker build -t ${DOCKERURL}.${BRANCH} -t ${DOCKERURL}:${NUMERIC_TAG} .
+            docker push ${DOCKERURL}.${BRANCH}:latest && echo "Pushed successfully 1/2" || echo "Failed to push ${TAG}"
+            docker push ${DOCKERURL}:${NUMERIC_TAG} && echo "Pushed successfully 2/2" || echo "Failed to push ${NUMERIC_TAG}"
+            if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
+              echo "Should-deploy was set to true - @TODO to deploy CI/CD env..."
+            fi
 workflows:
   version: 2
-  test_and_deploy:
+  dual_ci_workflow:
     jobs:
       - build
+      - aws_deploy:
+          requires:
+            - build
       - deploy:
           requires:
             - build

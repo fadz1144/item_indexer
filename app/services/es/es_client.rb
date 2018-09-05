@@ -11,9 +11,9 @@ module ES
       @client = build_client(endpoint)
     end
 
-    def bulk(arguments)
-      response = @client.bulk(arguments)
-      response
+    def publish_items(indexer, items)
+      json = items.map { |item| index_hash_for_item(indexer, item) }.compact
+      bulk body: json
     end
 
     def build_client(endpoint)
@@ -28,12 +28,27 @@ module ES
     def credentialed_client(endpoint)
       Elasticsearch::Client.new(url: endpoint) do |f|
         f.request :aws_signers_v4,
-                  credentials:  Aws::Credentials.new(ENV['ES_AWS_ACCESS_KEY_ID'],
-                                                     ENV['ES_AWS_SECRET_ACCESS_KEY']),
+                  credentials: Aws::Credentials.new(ENV['ES_AWS_ACCESS_KEY_ID'],
+                                                    ENV['ES_AWS_SECRET_ACCESS_KEY']),
                   service_name: 'es',
-                  region:       'us-east-1'
+                  region: 'us-east-1'
         f.adapter Faraday.default_adapter
       end
+    end
+
+    private
+
+    def index_hash_for_item(indexer, item)
+      { index: { _index: index_root, _type: indexer.index_type, _id: item.id, data: indexer.raw_json(item) } }
+    end
+
+    def bulk(arguments)
+      response = @client.bulk(arguments)
+      response
+    end
+
+    def index_root
+      'catalog'
     end
   end
 end

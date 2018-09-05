@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BrandSerializer do
+RSpec.describe ES::BrandSerializer do
   let(:brand_model) do
     CatModels::ConceptBrand.new(
       name: 'Some Brand',
