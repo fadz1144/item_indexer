@@ -10,10 +10,8 @@ solr_client = SolrSchemaApiClient.new(solr_base_url, core)
 all_fields = SOLR::ProductCoreFields.all_fields
 
 all_fields.each do |f|
-  begin
-    result = solr_client.add_fields(f)
-    puts result
-  rescue
-    puts "Unable to add field #{f} or perhaps it already exists"
-  end
+  result = solr_client.add_fields(f)
+  puts result
+rescue
+  puts "Unable to add field #{f} or perhaps it already exists"
 end
