@@ -20,4 +20,8 @@ else
   eval $(gsutil cp gs://${SECRETS_BUCKET_NAME}/${ENVIRONMENT_TOKEN}.txt - | sed 's/^/export /')
 fi
 
+if [[ -n "${CLOUD_SQL_PROXY_INSTANCE}" ]] ; then
+    bin/install_and_start_cloud_sql_proxy.sh "${CLOUD_SQL_PROXY_INSTANCE}"
+fi
+
 exec "$@"
