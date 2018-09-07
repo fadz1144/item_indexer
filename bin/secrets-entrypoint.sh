@@ -22,6 +22,8 @@ fi
 
 if [[ -n "${CLOUD_SQL_PROXY_INSTANCE}" ]] ; then
     bin/install_and_start_cloud_sql_proxy.sh "${CLOUD_SQL_PROXY_INSTANCE}"
+    source dbhost.sh
+    env | grep DATABASE_HOST
 fi
 
 exec "$@"

@@ -7,7 +7,9 @@ chmod +x cloud_sql_proxy
 ./cloud_sql_proxy -dir=/cloudsql -instances="${CS_INSTANCE}" &
 sleep 3
 echo "Cloud SQL Proxy started."
-export DATABASE_HOST="/cloudsql/${CS_INSTANCE}"
-echo "Use DATABASE_HOST: ${DATABASE_HOST} (this env var has been exported for you)."
+DATABASE_HOST="/cloudsql/${CS_INSTANCE}"
+echo "export DATABASE_HOST=${DATABASE_HOST}" > dbhost.sh
+
+echo "Use DATABASE_HOST: ${DATABASE_HOST} (source dbhost.sh to get this)"
 echo "Cloud SQL socket(s) available in /cloudsql/ :"
 ls -lFah /cloudsql
