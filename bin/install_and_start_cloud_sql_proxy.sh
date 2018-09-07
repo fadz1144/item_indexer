@@ -2,7 +2,7 @@
 
 CS_INSTANCE="$1"
 echo "Starting Cloud SQL Proxy..."
-wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+curl -o cloud_sql_proxy "https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64"
 chmod +x cloud_sql_proxy
 ./cloud_sql_proxy -dir=/cloudsql -instances="${CS_INSTANCE}" &
 sleep 3
