@@ -1,4 +1,7 @@
 default_settings: &defaults
+  solr:
+    enabled: <%= ENV.fetch('SOLR_ENABLED', 'true') == 'true' %>
+    endpoint: <%= ENV.fetch('SOLR_ENDPOINT') %>
   redis: &redis_defaults
     host: <%= ENV.fetch('REDIS_HOST') %>
     port: <%= ENV.fetch('REDIS_PORT', 6379) %>
