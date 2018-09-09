@@ -31,17 +31,16 @@ RUN cd /tmp && \
     ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
     rm awscli-bundle.zip && rm -rf awscli-bundle
 
-RUN mkdir -p /bbb/app
+RUN mkdir -p /bbb/app/public
 WORKDIR /bbb/app
 
-COPY Gemfile Gemfile.lock ./
-RUN gem install bundler && bundle install --without test development --jobs 20 --retry 5
+copy public public/
+copy bin bin/
 
-COPY . ./
+COPY nginx/nginx.conf nginx.conf
 
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
 # This line adjusts the nginx conf to account for the different port used in the aws version
-RUN sed -e 's/listen 8080/listen 3000/g' nginx/nginx.conf > /etc/nginx/nginx.conf
+RUN sed -e 's/listen 8080/listen 3000/g' nginx.conf > /etc/nginx/nginx.conf
 
 EXPOSE $PORT
 

@@ -4,88 +4,6 @@
 #
 version: 2
 jobs:
-  build:
-    environment:
-      # DATABASE_URL doesn't appear to override actually? :(
-      #DATABASE_URL: postgres://circle:circle@localhost:5432/universal_catalog_test
-      ELASTICSEARCH_HOST: localhost
-      DATABASE_HOST: localhost
-      DATABASE_USER: circle
-      DATABASE_PASSWORD: circle
-      SECRET_TOKEN: 12345
-      RAILS_ENV: test
-      REDIS_HOST: redis_host_not_a_real_param
-      REDIS_PORT: 1234
-    docker:
-      # specify the version you desire here
-       - image: circleci/ruby:2.5.1
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-       - image: circleci/postgres:latest
-         environment:
-         - POSTGRES_USER=circle
-         - POSTGRES_PASSWORD=circle
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v3-dependencies-{{ checksum "Gemfile.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - v3-dependencies-
-
-      - run:
-          name: install dependencies
-          command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle
-
-      - save_cache:
-          paths:
-            - ./vendor/bundle
-          key: v3-dependencies-{{ checksum "Gemfile.lock" }}
-
-      # Database setup
-      - run:
-          name: rails db:create and db:migrate
-          command: |
-            bundle exec rails db:create
-            bundle exec rails db:migrate
-      # run tests!
-      - run:
-          name: run tests
-          command: |
-            mkdir /tmp/test-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
-
-            bundle exec rspec --format progress \
-                            --format RspecJunitFormatter \
-                            --out /tmp/test-results/rspec.xml \
-                            --format progress \
-                            $TEST_FILES
-
-      - run:
-          name: run rubocop
-          command: |
-            test_reports_dir=/tmp/test-results/rubocop
-            mkdir -p $test_reports_dir
-            junit_formatter_ruby=$(bundle show rubocop-junit-formatter)/lib/rubocop/formatter/junit_formatter.rb
-            bundle exec rubocop -L | \
-            circleci tests split --split-by=timings --timings-type=filename | \
-            xargs bundle exec rubocop -P -D -R -r $junit_formatter_ruby -c .rubocop.yml --format RuboCop::Formatter::JUnitFormatter --out $test_reports_dir/rubocop.xml
-
-      # collect reports
-      - store_test_results:
-          path: /tmp/test-results
-      - store_artifacts:
-          path: /tmp/test-results
-          destination: test-results
-
   aws_deploy:
     environment:
       AWS_ACCOUNT_ID: "774076615373"
@@ -115,7 +33,7 @@ jobs:
             echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/initializers/ci_version.rb
             echo "ENV['CIRCLE_COMPARE_URL'] = '$CIRCLE_COMPARE_URL'" >> config/initializers/ci_version.rb
       - run:
-          name: Deploy if tests pass and branch is Master
+          name: Push to ECR
           command: |
             echo "Get login"
             login="$(aws ecr get-login)"
@@ -187,15 +105,9 @@ jobs:
             fi
 workflows:
   version: 2
-  dual_ci_workflow:
+  only_aws_workflow:
     jobs:
-      - build
-      - aws_deploy:
-          requires:
-            - build
-      - deploy:
-          requires:
-            - build
+      - aws_deploy
 
 #
 #==============
