@@ -4,9 +4,9 @@ module SOLR
 
     def initialize(core = 'product')
       dev_search_index = 'http://localhost:8983/solr/'
-      host = ENV['SOLR_HOST'] || dev_search_index
+      base_endpoint = Rails.configuration.settings['solr']['endpoint'] || dev_search_index
       actual_solr_core = ENV['SOLR_CORE'] || core
-      endpoint = "#{host}#{actual_solr_core}"
+      endpoint = "#{base_endpoint}#{actual_solr_core}"
 
       Rails.logger.info "SOLR endpoint is set to: #{endpoint}"
 

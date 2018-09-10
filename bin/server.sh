@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 set -e
+if [[ -n "${OVERRIDE_COMMAND}" ]] ; then
+    echo "*** About to run override command: ${OVERRIDE_COMMAND}"
+    eval "${OVERRIDE_COMMAND}"
+    echo "*** The command has exited. The container will now exit :)"
+    exit 0
+fi
 echo "Starting nginx web server..."
 nginx
 echo "nginx started"

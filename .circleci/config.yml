@@ -162,8 +162,9 @@ jobs:
           name: Add version and commit sha to build
           # Note the first command uses a single > to overwrite version.rb completely. Important.
           command: |
-            echo "ENV['BBB_CI_VERSION'] = '$CIRCLE_BRANCH:$CIRCLE_BUILD_NUM'" > config/ci_version.rb
-            echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/ci_version.rb
+            echo "ENV['BBB_CI_VERSION'] = '$CIRCLE_BRANCH:$CIRCLE_BUILD_NUM'" > config/initializers/ci_version.rb
+            echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/initializers/ci_version.rb
+            echo "ENV['CIRCLE_COMPARE_URL'] = '$CIRCLE_COMPARE_URL'" >> config/initializers/ci_version.rb
       - run:
           name: Push container to GCR
           command: |
