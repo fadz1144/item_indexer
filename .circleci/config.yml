@@ -173,12 +173,10 @@ jobs:
             else
               SHOULD_DEPLOY="false"
             fi
-            BRANCH=$CIRCLE_BRANCH
             NUMERIC_TAG="build-${CIRCLE_BUILD_NUM}"
-            pwd
             GCR_HOST=us.gcr.io
             DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
-            SAFEBRANCH=$(echo -n ${CIRCLE_BRANCH} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
+            SAFEBRANCH=$(echo -n ${CIRCLE_BRANCH} | sed -E -e 's/_/-/g' -e 's/([a-z0-9])([A-Z])/\1-\2/g' -e 's/[^A-Za-z0-9\-]//g' | tr '[:upper:]' '[:lower:]' )
             DOCKERURL="${GCR_HOST}/${GOOGLE_PROJECT_ID}/appengine/${DOCKER_IMAGE_NAME}"
             docker build -t ${DOCKERURL}.${SAFEBRANCH} -t ${DOCKERURL}:${NUMERIC_TAG} .
             docker push ${DOCKERURL}.${SAFEBRANCH}:latest && echo "Pushed successfully 1/2" || echo "Failed to push ${TAG}"
