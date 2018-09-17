@@ -176,12 +176,12 @@ jobs:
             BRANCH=$CIRCLE_BRANCH
             NUMERIC_TAG="build-${CIRCLE_BUILD_NUM}"
             pwd
-            find .
             GCR_HOST=us.gcr.io
-            DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | sed -e 's/_/-/g')
+            DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
+            SAFEBRANCH=$(echo -n ${CIRCLE_BRANCH} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
             DOCKERURL="${GCR_HOST}/${GOOGLE_PROJECT_ID}/appengine/${DOCKER_IMAGE_NAME}"
-            docker build -t ${DOCKERURL}.${BRANCH} -t ${DOCKERURL}:${NUMERIC_TAG} .
-            docker push ${DOCKERURL}.${BRANCH}:latest && echo "Pushed successfully 1/2" || echo "Failed to push ${TAG}"
+            docker build -t ${DOCKERURL}.${SAFEBRANCH} -t ${DOCKERURL}:${NUMERIC_TAG} .
+            docker push ${DOCKERURL}.${SAFEBRANCH}:latest && echo "Pushed successfully 1/2" || echo "Failed to push ${TAG}"
             docker push ${DOCKERURL}:${NUMERIC_TAG} && echo "Pushed successfully 2/2" || echo "Failed to push ${NUMERIC_TAG}"
             if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
               echo "Should-deploy was set to true - @TODO to deploy CI/CD env..."
