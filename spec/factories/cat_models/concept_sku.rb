@@ -3,7 +3,7 @@ FactoryBot.define do
     sequence(:concept_sku_id) { |n| 100 + n }
 
     trait :live do
-      live true
+      live { true }
     end
   end
 end
