@@ -2,8 +2,9 @@ module SOLR
   # rubocop:disable ClassLength
   class ProductCoreFields
     SHARED_FIELDS = [
-      { name: 'product_id', type: 'long', indexed: true, stored: true },
       { name: 'doc_type', type: 'string', indexed: true, stored: true },
+      { name: 'product_id', type: 'long', indexed: true, stored: true, multiValued: true },
+      { name: 'sku_id', type: 'long', indexed: true, stored: true, multiValued: true },
       { name: 'category_id', type: 'long', indexed: true, stored: true, multiValued: true },
       { name: 'category_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
       { name: 'concept_id', type: 'int', indexed: true, stored: true, multiValued: true },
@@ -84,7 +85,6 @@ module SOLR
     ].freeze
 
     SKU_ONLY_FIELDS = [
-      { name: 'sku_id', type: 'long', indexed: true, stored: true, multiValued: true },
       { name: 'brand_code', type: 'string', indexed: true, stored: true, multiValued: true },
       { name: 'commission_percent', type: 'float', indexed: true, stored: true },
       { name: 'cost_cents', type: 'int', indexed: true, stored: true },
