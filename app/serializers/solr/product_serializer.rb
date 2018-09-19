@@ -25,6 +25,7 @@ module SOLR
     decorate_concept_sku_uniq 'vendor_name', field: 'concept_vendor_name'
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
+    decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
 
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
     decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
