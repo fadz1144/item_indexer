@@ -1,0 +1,25 @@
+pg_defaults: &pg_defaults
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  database: universal_catalog
+  host: <%= ENV.fetch('DATABASE_HOST') %>
+  username: <%= ENV.fetch('DATABASE_USER') %>
+  password: "<%= ENV.fetch('DATABASE_PASSWORD') %>"
+
+production:
+  <<: *pg_defaults
+  host: <%= ENV.fetch('DATABASE_HOST') %>
+  database: <%= ENV.fetch('DATABASE_NAME', 'universal_catalog') %>
+  username: <%= ENV.fetch('DATABASE_USER') %>
+  password: "<%= ENV.fetch('DATABASE_PASSWORD') %>"
+
+external_pdm_production: &external_production
+  adapter: oracle_enhanced
+  statement_limit: 100
+  schema: 'PDMADMIN'
+  url: "<%= ENV.fetch('PDMADMIN_URL') %>"
+
+external_ecom_production:
+  <<: *external_production
+  schema: 'ECOMADMIN'

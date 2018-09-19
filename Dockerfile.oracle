@@ -1,0 +1,34 @@
+FROM us.gcr.io/upc-dev/ruby-base-gcr:2.5.1
+
+MAINTAINER tkummer@onekingslane.com
+
+# based on oracle dockerfile; see notes about required files
+# https://github.com/oracle/docker-images/blob/master/OracleInstantClient/dockerfiles/12.2.0.1/Dockerfile
+COPY --from=us.gcr.io/upc-dev/oracle_instant_client:latest /oracle_instant_client/oracle-instantclient*.rpm /tmp/
+
+RUN  apt-get -y install alien && \
+     apt-get -y install libaio1 && \
+     alien -i /tmp/oracle-instantclient12.2-*.rpm && \
+     rm -f /tmp/oracle-instantclient*.rpm && \
+     echo /usr/lib/oracle/12.2/client64/lib > /etc/ld.so.conf.d/oracle-instantclient12.2.conf && \
+     ldconfig
+
+ENV PATH=$PATH:/usr/lib/oracle/12.2/client64/bin
+ENV ENABLE_PDM_CONNECTION=true
+
+COPY Gemfile Gemfile.lock ./
+RUN gem install bundler && bundle install --without test development --jobs 20 --retry 5
+
+# works best as least likely to change to most likely to change, but all are small so not that important
+COPY Rakefile .
+COPY bin ./bin
+COPY app ./app
+COPY config ./config
+COPY db ./db
+COPY lib ./lib
+
+## Move config files into place
+RUN mv config/database.oracle.yml config/database.yml
+
+ENTRYPOINT ["bin/secrets-entrypoint.sh"]
+CMD ["/bin/bash"]
