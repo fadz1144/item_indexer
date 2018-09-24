@@ -11,6 +11,11 @@ echo "Cloud SQL Proxy started."
 DATABASE_HOST="/cloudsql/${CS_INSTANCE}"
 echo "export DATABASE_HOST=${DATABASE_HOST}" > dbhost.sh
 
-echo "Use DATABASE_HOST: ${DATABASE_HOST} (source dbhost.sh to get this)"
-echo "Cloud SQL socket(s) available in /cloudsql/ :"
-ls -lFah /cloudsql
+if [[ -S "${DATABASE_HOST}" ]] ; then
+    echo "Use DATABASE_HOST: ${DATABASE_HOST} (source dbhost.sh to get this)"
+    echo "Cloud SQL socket(s) available in /cloudsql/ :"
+    ls -lF /cloudsql
+else
+    echo "Cloud SQL Proxy failed. See above, error messages will probably be printed."
+    exit 42
+fi
