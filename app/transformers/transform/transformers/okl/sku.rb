@@ -17,6 +17,8 @@ module Transform
         references :merch_class_tree_node
 
         exclude :eph_tree_node_id, :chain_status, :ecom_status, :rollup_type_cd, :rollup_type_name,
+                :tbs_blocked_reason_cd, :tbs_blocked_reason_name, :available_in_ca_dist_cd, :transferable_to_canada,
+                :ca_fulfillment_cd, :ca_fulfillment_name, :vdc_sku, :jda_description, :pos_description,
                 allow_primary_key: true
 
         module Decorations
