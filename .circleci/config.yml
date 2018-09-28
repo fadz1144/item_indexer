@@ -86,60 +86,6 @@ jobs:
           path: /tmp/test-results
           destination: test-results
 
-  aws_deploy:
-    environment:
-      AWS_ACCOUNT_ID: "774076615373"
-      AWS_DEFAULT_REGION: 'us-east-1'
-
-    working_directory: ~/repo
-
-    docker:
-      - image: docker:17.05.0-ce-git
-    steps:
-      - setup_remote_docker:
-          reusable: true
-      - run:
-          name: Install awscli and docker-compose
-          command: |
-            apk add --no-cache \
-              py-pip=9.0.0-r1
-            pip install \
-              docker-compose==1.12.0 \
-              awscli==1.11.76
-      - checkout
-      - run:
-          name: Add version and commit sha to build
-          # Note the first command uses a single > to overwrite version.rb completely. Important.
-          command: |
-            echo "ENV['BBB_CI_VERSION'] = '$CIRCLE_BRANCH:$CIRCLE_BUILD_NUM'" > config/initializers/ci_version.rb
-            echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/initializers/ci_version.rb
-            echo "ENV['CIRCLE_COMPARE_URL'] = '$CIRCLE_COMPARE_URL'" >> config/initializers/ci_version.rb
-      - run:
-          name: Deploy if tests pass and branch is Master
-          command: |
-            echo "Get login"
-            login="$(aws ecr get-login)"
-            ${login}
-            if [[ "master" = "$CIRCLE_BRANCH" ]] ; then
-              TAG="latest"
-              SHOULD_DEPLOY="true"
-            else
-              TAG=$CIRCLE_BRANCH
-              SHOULD_DEPLOY="false"
-            fi
-            pwd
-            find .
-            mv Dockerfile.aws Dockerfile
-            docker build --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:$TAG -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:build-$CIRCLE_BUILD_NUM .
-            docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:$TAG
-            docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/bbb-labs/$CIRCLE_PROJECT_REPONAME:build-$CIRCLE_BUILD_NUM
-            if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
-              echo "Update task to point to new latest version"
-              aws ecs register-task-definition --cli-input-json file://scripts/aws/task-definition.json
-              echo "Update service"
-              aws ecs update-service --cli-input-json file://scripts/aws/update-service-definition.json
-              echo "Update complete"
-            fi
   deploy:
     docker:
       - image: google/cloud-sdk
@@ -186,12 +132,9 @@ jobs:
             fi
 workflows:
   version: 2
-  dual_ci_workflow:
+  ci_workflow:
     jobs:
       - build
-      - aws_deploy:
-          requires:
-            - build
       - deploy:
           requires:
             - build

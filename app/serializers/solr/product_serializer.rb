@@ -21,8 +21,6 @@ module SOLR
     delegate :product_id, to: :object
 
     decorate_concept_sku_uniq 'concept_id', field: 'concept_id'
-    decorate_concept_sku_uniq 'vendor_id', field: 'concept_vendor_id'
-    decorate_concept_sku_uniq 'vendor_name', field: 'concept_vendor_name'
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
@@ -46,6 +44,8 @@ module SOLR
     decorate_pricing 'max_margin_amount_cents', field: 'margin_amount', group: 'max', format: 'currency_cents'
     decorate_pricing 'avg_margin_percent', field: 'margin_percent', group: 'avg'
 
+    decorate_sku_uniq 'vendor_id', field: 'vendor_id'
+    decorate_sku_uniq 'vendor_name', field: 'vendor_name'
     decorate_sku_uniq 'web_status_buyer_reviewed', field: 'web_status_buyer_reviewed'
     decorate_sku_uniq 'web_status_in_progress', field: 'web_status_in_progress'
     decorate_sku_uniq 'web_status_active', field: 'web_status_active'

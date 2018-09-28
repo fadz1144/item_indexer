@@ -31,8 +31,6 @@ module SOLR
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'description', field: 'description'
-    decorate_concept_sku_uniq 'vendor_id', field: 'concept_vendor_id'
-    decorate_concept_sku_uniq 'vendor_name', field: 'concept_vendor_name'
 
     decorate_concept_sku_detect 'name', field: 'name'
     decorate_concept_sku_detect 'external_image_url', field: 'primary_image'
@@ -64,6 +62,9 @@ module SOLR
     decorate_pricing 'pre_markdown_price', field: 'pre_markdown_price', group: 'max'
     decorate_pricing 'pre_markdown_price_cents', field: 'pre_markdown_price', group: 'max', format: 'currency_cents'
 
+    # fetch directly from the sku
+    decorate_sku_uniq 'vendor_id', field: 'vendor_id'
+    decorate_sku_uniq 'vendor_name', field: 'vendor_name'
     decorate_sku_uniq 'color', field: 'color_family'
 
     # hierarchies
