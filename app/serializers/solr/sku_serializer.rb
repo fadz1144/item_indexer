@@ -177,7 +177,7 @@ module SOLR
     end
 
     def brand_code
-      CatModels::BrandCache.for_id(brand_id)&.map(&:brand_code)
+      CatModels::Brand.where(brand_id: brand_id)&.map(&:brand_code)
     end
 
     def dimensions
