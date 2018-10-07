@@ -20,4 +20,9 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'OKL'
   inflect.acronym 'PDM'
   inflect.acronym 'CPWM'
+  inflect.acronym 'XPDM'
+  inflect.acronym 'BBBY'
+  inflect.acronym 'BABY'
+  inflect.acronym 'CA'
+  inflect.acronym 'ECOM'
 end
