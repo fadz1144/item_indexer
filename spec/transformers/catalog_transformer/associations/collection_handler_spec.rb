@@ -51,23 +51,41 @@ RSpec.describe CatalogTransformer::Associations::CollectionHandler do
                                                                 CatalogTransformer::Base.to_s, :number, partial)
   end
 
+  let(:attributes) { %w[number name].map { |n| CatalogTransformer::Attributes::Attribute.new(n) } }
   before do
-    allow(CatalogTransformer::Base).to receive(:attributes_from_model).and_return(%w[name number])
-    allow(CatalogTransformer::Base).to receive(:references_from_model).and_return({})
+    allow(CatalogTransformer::Base).to receive(:attributes).and_return(attributes)
     association.handler_for(source, target).transform_association(association)
   end
 
-  it 'target has all five' do
-    expect(target.players.map(&:number)).to contain_exactly(1, 2, 3, 4, 5)
+  shared_examples 'it adds, updates, and destroys correctly' do
+    it 'target has all five' do
+      expect(target.players.map(&:number)).to contain_exactly(1, 2, 3, 4, 5)
+    end
+
+    it 'marks one and two for destruction' do
+      expect(target.players.select(&:marked_for_destruction).map(&:number)).to contain_exactly(1, 2)
+    end
+
+    it 'updates three' do
+      target_three = target.players.find { |p| p.number == 3 }
+      expect(target_three.name).to eq 'Not C'
+    end
   end
 
-  it 'marks one and two for destruction' do
-    expect(target.players.select(&:marked_for_destruction).map(&:number)).to contain_exactly(1, 2)
-  end
+  it_behaves_like 'it adds, updates, and destroys correctly'
 
-  it 'updates three' do
-    target_three = target.players.find { |p| p.number == 3 }
-    expect(target_three.name).to eq 'Not C'
+  context 'with match keys that have different names' do
+    let(:tres) { double('SourcePlayerThree', numero: 3, name: 'Not C') }
+    let(:quatro) { double('SourcePlayerFour', numero: 4, name: 'D') }
+    let(:cinco) { double('SourcePlayerFive', numero: 5, name: 'E') }
+    let(:source) { double('SourceTeam', source_players: [tres, quatro, cinco]) }
+
+    let(:attributes) do
+      [CatalogTransformer::Attributes::Attribute.new(:name),
+       CatalogTransformer::Attributes::Attribute.new(:number, source_name: :numero)]
+    end
+
+    it_behaves_like 'it adds, updates, and destroys correctly'
   end
 
   context 'with partial data set' do
