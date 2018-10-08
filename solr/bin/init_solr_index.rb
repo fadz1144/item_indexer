@@ -2,7 +2,7 @@ require_relative 'lib/solr_schema_api_client'
 require_relative '../../app/serializers/solr/product_core_fields'
 
 # TODO: need to parameterize this
-solr_base_url = ENV['SOLR_BASE_URL'] || 'http://localhost:8983/solr/'
+solr_base_url = ENV['SOLR_ENDPOINT'] || 'http://localhost:8983/solr/'
 core = ENV['SOLR_CORE'] || 'product'
 
 solr_client = SolrSchemaApiClient.new(solr_base_url, core)
