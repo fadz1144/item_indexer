@@ -31,7 +31,7 @@ module Transform
     def determine_transformer
       source = @batch.inbound_batch.source
       data_type = @batch.inbound_batch.data_type
-      "Transform::Transformers::#{source.upcase}::Concept#{data_type.titlecase}".constantize
+      "Transform::Transformers::#{source.upcase}::Concept#{data_type.camelize}".constantize
     end
   end
 end
