@@ -62,9 +62,18 @@ module SOLR
     decorate_pricing 'pre_markdown_price', field: 'pre_markdown_price', group: 'max'
     decorate_pricing 'pre_markdown_price_cents', field: 'pre_markdown_price', group: 'max', format: 'currency_cents'
 
+    # contribution margin
+    decorate_pricing 'min_contribution_margin_amount_cents', field: 'contribution_margin_amount', group: 'min',
+                                                             format: 'currency_cents'
+    decorate_pricing 'max_contribution_margin_amount_cents', field: 'contribution_margin_amount', group: 'max',
+                                                             format: 'currency_cents'
+    decorate_pricing 'min_contribution_margin_percent', field: 'contribution_margin_percent', group: 'min'
+    decorate_pricing 'max_contribution_margin_percent', field: 'contribution_margin_percent', group: 'max'
+
     # fetch directly from the sku
     decorate_sku_uniq 'vendor_id', field: 'vendor_id'
     decorate_sku_uniq 'vendor_name', field: 'vendor_name'
+
     decorate_sku_uniq 'color', field: 'color_family'
 
     # hierarchies

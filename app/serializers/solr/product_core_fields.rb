@@ -60,6 +60,7 @@ module SOLR
       { name: 'size', type: 'string', indexed: true, stored: true, multiValued: true },
       { name: 'tbs_blocked', type: 'int', indexed: true, stored: true, multiValued: true },
       { name: 'units_sold_last_week', type: 'int', indexed: true, stored: true },
+      { name: 'units_sold_last_4_weeks', type: 'int', indexed: true, stored: true },
       { name: 'units_sold_last_8_weeks', type: 'int', indexed: true, stored: true },
       { name: 'units_sold_last_year', type: 'int', indexed: true, stored: true },
       { name: 'vdc_flag', type: 'boolean', indexed: true, stored: true },
@@ -81,7 +82,14 @@ module SOLR
       { name: 'ca_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
       { name: 'baby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
       { name: 'baby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'baby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true }
+      { name: 'baby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+
+      # contribution margin
+      { name: 'min_contribution_margin_amount_cents', type: 'int', indexed: true, stored: true },
+      { name: 'max_contribution_margin_amount_cents', type: 'int', indexed: true, stored: true },
+      { name: 'min_contribution_margin_percent', type: 'float', indexed: true, stored: true },
+      { name: 'max_contribution_margin_percent', type: 'float', indexed: true, stored: true }
+
     ].freeze
 
     SKU_ONLY_FIELDS = [
