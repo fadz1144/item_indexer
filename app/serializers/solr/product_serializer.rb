@@ -46,6 +46,16 @@ module SOLR
     decorate_pricing 'max_margin_amount_cents', field: 'margin_amount', group: 'max', format: 'currency_cents'
     decorate_pricing 'avg_margin_percent', field: 'margin_percent', group: 'avg'
 
+    # contribution margin
+    decorate_pricing 'min_contribution_margin_per_unit_amount_cents', field: 'contribution_margin_dollars_per_unit',
+                     group: 'min', format: 'currency_cents'
+    decorate_pricing 'max_contribution_margin_per_unit_amount_cents', field: 'contribution_margin_dollars_per_unit',
+                     group: 'max', format: 'currency_cents'
+    decorate_pricing 'min_contribution_margin_per_unit_percent', field: 'contribution_margin_percent_per_unit',
+                     group: 'min'
+    decorate_pricing 'max_contribution_margin_per_unit_percent', field: 'contribution_margin_percent_per_unit',
+                     group: 'max'
+
     decorate_sku_uniq 'web_status_buyer_reviewed', field: 'web_status_buyer_reviewed'
     decorate_sku_uniq 'web_status_in_progress', field: 'web_status_in_progress'
     decorate_sku_uniq 'web_status_active', field: 'web_status_active'

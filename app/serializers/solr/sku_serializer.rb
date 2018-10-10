@@ -64,6 +64,16 @@ module SOLR
     decorate_pricing 'pre_markdown_price', field: 'pre_markdown_price', group: 'max'
     decorate_pricing 'pre_markdown_price_cents', field: 'pre_markdown_price', group: 'max', format: 'currency_cents'
 
+    # contribution margin
+    decorate_pricing 'min_contribution_margin_per_unit_amount_cents', field: 'contribution_margin_dollars_per_unit',
+                     group: 'min', format: 'currency_cents'
+    decorate_pricing 'max_contribution_margin_per_unit_amount_cents', field: 'contribution_margin_dollars_per_unit',
+                     group: 'max', format: 'currency_cents'
+    decorate_pricing 'min_contribution_margin_per_unit_percent', field: 'contribution_margin_percent_per_unit',
+                     group: 'min'
+    decorate_pricing 'max_contribution_margin_per_unit_percent', field: 'contribution_margin_percent_per_unit',
+                     group: 'max'
+
     decorate_sku_uniq 'color', field: 'color_family'
 
     # hierarchies
