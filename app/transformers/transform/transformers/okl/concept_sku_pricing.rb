@@ -4,7 +4,7 @@ module Transform
       class ConceptSkuPricing < CatalogTransformer::Base
         source_name 'Inbound::OKL::SkuRevision'
         attribute :retail_price, source_name: :price
-        exclude :concept_sku_id
+        exclude :concept_sku_id, :contribution_margin_amount, :contribution_margin_percent
 
         module Decorations
           include Transform::Transformers::Margin
