@@ -74,7 +74,8 @@ jobs:
           command: |
             test_reports_dir=/tmp/test-results/rubocop
             mkdir -p $test_reports_dir
-            junit_formatter_ruby=$(bundle show rubocop-junit-formatter | fgrep gems/rubocop-junit-formatter)/lib/rubocop/formatter/junit_formatter.rb
+            bundle config error_on_stderr true
+            junit_formatter_ruby=$(bundle show rubocop-junit-formatter 2>/dev/null)/lib/rubocop/formatter/junit_formatter.rb
             bundle exec rubocop -L | \
             circleci tests split --split-by=timings --timings-type=filename | \
             xargs bundle exec rubocop -P -D -R -r $junit_formatter_ruby -c .rubocop.yml --format RuboCop::Formatter::JUnitFormatter --out $test_reports_dir/rubocop.xml
