@@ -2,6 +2,11 @@
 
 gsutil --version || ( echo "Sorry, you need gsutil to run the secrets-entrypoint. Try installing the Google Cloud SDK." ; exit 2 )
 
+# Ensure some directories are there that we'll need
+mkdir -p /bbb/app/log
+mkdir -p /bbb/app/tmp
+chmod u+rwx log tmp
+
 # Check that the environment variable has been set correctly
 if [ -z "$SECRETS_BUCKET_NAME" ]; then
   echo >&2 "Using bucket: upc-dev-secrets (the default)"
