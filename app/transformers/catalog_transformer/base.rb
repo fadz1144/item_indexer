@@ -22,6 +22,11 @@ module CatalogTransformer
       target_class.includes(target_includes)
     end
 
+    # override me if you have a compound key or otherwise can't use the default fetch/index system
+    def self.load_indexed_targets(source_records)
+      target_relation.where(target_match_key => source_records.map(&source_match_key)).index_by(&target_match_key)
+    end
+
     def initialize(source)
       @source = source
       @source.extend(self.class.decorator) if self.class.decorator?

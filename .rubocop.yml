@@ -11,6 +11,10 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 Style/NumericPredicate:
   Enabled: false
+Style/FormatStringToken:
+  Enabled: false
+Style/FormatString:
+  EnforcedStyle: percent
 Style/RescueStandardError:
   EnforcedStyle: implicit
 Metrics/BlockLength:

@@ -13,11 +13,8 @@ module CatalogTransformer
     end
 
     def transform_items(source_records)
-      target_key = @transformer_class.target_match_key
       source_key = @transformer_class.source_match_key
-      indexed_targets =
-        @transformer_class.target_relation.where(target_key => source_records.map(&source_key)).index_by(&target_key)
-
+      indexed_targets = @transformer_class.load_indexed_targets(source_records)
       source_records.each do |source|
         transform_item(source,
                        indexed_targets.fetch(source.public_send(source_key), @transformer_class.target_class.new))
