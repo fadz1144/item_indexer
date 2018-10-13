@@ -13,7 +13,8 @@ module Transform
         attribute :map_price, source_name: :DPMAP
         attribute :source_updated_at, source_name: :DPCRTDT
         exclude :concept_sku_id, :concept_id, :source_sku_id, :cost,
-                :margin_amount, :margin_percent, :source_created_by, :source_created_at, :source_updated_by
+                :margin_amount, :margin_percent, :source_created_by, :source_created_at, :source_updated_by,
+                :contribution_margin_amount, :contribution_margin_percent
 
         def self.source_relation
           super.order(:DPCRTDT)
