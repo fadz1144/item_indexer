@@ -4,10 +4,3 @@ TransformationJob:
   args: 'OKL'
   queue: transform
   description: 'Transforms OKL data from inbound tables into polished tables - note this is secondary because they are usually kicked off as messages are received.'
-
-TransformationJob:
-  class: 'Transform::TransformationJob'
-  cron: '8,23,38,53 * * * *'
-  args: 'JDA'
-  queue: transform
-  description: 'Transforms JDA data from inbound tables into polished tables'
