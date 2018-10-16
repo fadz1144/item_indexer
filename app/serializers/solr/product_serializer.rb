@@ -52,6 +52,7 @@ module SOLR
     decorate_pricing 'min_contribution_margin_percent', field: 'contribution_margin_percent', group: 'min'
     decorate_pricing 'max_contribution_margin_percent', field: 'contribution_margin_percent', group: 'max'
 
+    decorate_sku_uniq 'pdp_url', field: 'pdp_urls'
     decorate_sku_uniq 'vendor_id', field: 'vendor_id'
     decorate_sku_uniq 'vendor_name', field: 'vendor_name'
 

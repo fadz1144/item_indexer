@@ -88,7 +88,10 @@ module SOLR
       { name: 'min_contribution_margin_amount_cents', type: 'int', indexed: true, stored: true },
       { name: 'max_contribution_margin_amount_cents', type: 'int', indexed: true, stored: true },
       { name: 'min_contribution_margin_percent', type: 'float', indexed: true, stored: true },
-      { name: 'max_contribution_margin_percent', type: 'float', indexed: true, stored: true }
+      { name: 'max_contribution_margin_percent', type: 'float', indexed: true, stored: true },
+
+      # PDP url
+      { name: 'pdp_url', type: 'string', indexed: true, stored: true, multiValued: true }
 
     ].freeze
 
