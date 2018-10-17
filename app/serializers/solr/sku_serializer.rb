@@ -71,6 +71,7 @@ module SOLR
     decorate_pricing 'max_contribution_margin_percent', field: 'contribution_margin_percent', group: 'max'
 
     # fetch directly from the sku
+    decorate_sku_uniq 'pdp_url', field: 'pdp_urls'
     decorate_sku_uniq 'vendor_id', field: 'vendor_id'
     decorate_sku_uniq 'vendor_name', field: 'vendor_name'
 

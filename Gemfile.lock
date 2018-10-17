@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: e1152dda9f6d5fff8006e5d41cbd0d64fbcbc309
+  revision: f5480a27e00abfde5f7c50b534772b2b6977ed45
   branch: master
   specs:
     cat_models (0.1.0)
@@ -92,6 +92,9 @@ GEM
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
+    debase (0.2.2)
+      debase-ruby_core_source (>= 0.10.2)
+    debase-ruby_core_source (0.10.3)
     diff-lcs (1.3)
     docile (1.3.1)
     elasticsearch (5.0.5)
@@ -344,6 +347,7 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   cat_models!
+  debase
   elasticsearch-model
   elasticsearch-rails
   factory_bot_rails
