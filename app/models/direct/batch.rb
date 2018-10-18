@@ -5,6 +5,8 @@ module Direct
                                  inverse_of: :direct_batch
     scope :most_recent, -> { order(direct_batch_id: :desc) }
     scope :incremental, -> { where(criteria_type: :incremental) }
+    scope :complete,
+          -> { joins(:transform_batch).references(:transform_batch).merge(Transform::Batch.where(status: :complete)) }
 
     delegate :start_datetime, to: :transform_batch
   end
