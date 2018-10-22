@@ -13,6 +13,7 @@ module Transform
         attribute :details, source_name: :mstr_web_desc
         attribute :web_offer_date, source_name: :web_offer_dt
         attribute :web_enable_date, source_name: :web_enable_dt
+        attribute :live, source_name: :active?
         attribute :pattern_cd, association: :sku
         attribute :pattern_name, association: :sku
         attribute :size_cd, association: :sku
@@ -27,7 +28,7 @@ module Transform
                 :care_instructions_other, :lead_time, :lead_time_bucket, :aad_min_offset_days, :aad_max_offset_days,
                 :ltl_eligible, :threshold_eligible, :shipping_method,
                 :total_avail_qty, :warehouse_avail_qty, :stores_avail_qty, :vdc_avail_qty, :on_order_qty, :limited_qty,
-                :live, :allow_exposure, :returnable, :made_to_order, :assembly_required,
+                :allow_exposure, :returnable, :made_to_order, :assembly_required,
                 :exclusivity_tier, :suspended_reason,
                 :finish
 
