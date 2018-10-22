@@ -22,6 +22,10 @@ module CatalogTransformer
     # the belongs_to association. In order to match up the target and source items, this association allows one or more
     # attributes to be specified as match_keys. If there is only one match key and it is simply a singular version of
     # the association plus _id, it does not need to be specified.
+    #
+    # If the source data contains a partial set of data, set the partial flag to true. This will prevent the transformer
+    # from deleting entries that are not present. This is used when there is more than once source of data that
+    # contributes to an association and each source does not know about the other.
     module ClassMethods
       def belongs_to(name, source_name: nil, transformer_name: nil, match_keys: nil)
         add_singular_association(name, source_name, transformer_name, match_keys)
@@ -35,11 +39,11 @@ module CatalogTransformer
       end
 
       # rubocop:disable Naming/PredicateName
-      def has_many(name, source_name: nil, transformer_name: nil, match_keys: nil)
+      def has_many(name, source_name: nil, transformer_name: nil, match_keys: nil, partial: false)
         associations <<
           CatalogTransformer::Associations::CollectionAssociation.new(
             name, source_name, derive_transformer(name.to_s.singularize, transformer_name),
-            derive_match_key(name, match_keys)
+            derive_match_key(name, match_keys), partial
           )
       end
       # rubocop:enable Naming/PredicateName

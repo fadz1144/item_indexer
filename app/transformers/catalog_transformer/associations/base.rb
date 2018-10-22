@@ -3,11 +3,15 @@ module CatalogTransformer
     class Base
       attr_reader :name, :match_keys
 
-      def initialize(name, source_name, transformer_name, match_keys = nil)
+      def initialize(name, source_name, transformer_name, match_keys)
         @name = name
         @source_name = source_name
         @transformer_name = transformer_name
         @match_keys = build_match_keys(match_keys)
+      end
+
+      def handler_for(source, target)
+        handler_class.new(source, target)
       end
 
       def source_name

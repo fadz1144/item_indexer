@@ -44,17 +44,17 @@ RSpec.describe CatalogTransformer::Associations::CollectionHandler do
 
   let(:target) { double('TargetTeam', players: players.init_with_build_class(player_class, one, two, three)) }
   let(:source) { double('SourceTeam', source_players: [three_changed, four, five]) }
+  let(:partial) { false }
 
   let(:association) do
     CatalogTransformer::Associations::CollectionAssociation.new(:players, :source_players,
-                                                                CatalogTransformer::Base.to_s, :number)
+                                                                CatalogTransformer::Base.to_s, :number, partial)
   end
 
-  let(:transformer) { described_class.new(source, target) }
   before do
     allow(CatalogTransformer::Base).to receive(:attributes_from_model).and_return(%w[name number])
     allow(CatalogTransformer::Base).to receive(:references_from_model).and_return({})
-    described_class.new(source, target).transform_association(association)
+    association.handler_for(source, target).transform_association(association)
   end
 
   it 'target has all five' do
@@ -68,5 +68,13 @@ RSpec.describe CatalogTransformer::Associations::CollectionHandler do
   it 'updates three' do
     target_three = target.players.find { |p| p.number == 3 }
     expect(target_three.name).to eq 'Not C'
+  end
+
+  context 'with partial data set' do
+    let(:partial) { true }
+
+    it 'does not mark any for destruction' do
+      expect(target.players.select(&:marked_for_destruction)).to be_empty
+    end
   end
 end

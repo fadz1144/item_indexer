@@ -1,9 +1,10 @@
 module CatalogTransformer
   module Associations
     class CollectionHandler
-      def initialize(source, target)
+      def initialize(source, target, partial)
         @source = source
         @target = target
+        @partial = partial
       end
 
       def transform_association(association)
@@ -11,7 +12,7 @@ module CatalogTransformer
         transformers = indexed_transformers(association)
 
         update_matches(target_records, transformers, nil)
-        delete_missing(target_records, transformers)
+        delete_missing(target_records, transformers) unless @partial
         add_new(target_records, transformers, association.name, nil)
       end
 

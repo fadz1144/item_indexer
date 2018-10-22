@@ -59,7 +59,7 @@ module CatalogTransformer
 
     def apply_association_transformations(target)
       associations.each do |association|
-        handler = association.handler_class.new(@source, target)
+        handler = association.handler_for(@source, target)
         handler.transform_association(association)
       end
     end

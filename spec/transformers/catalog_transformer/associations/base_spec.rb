@@ -54,7 +54,7 @@ RSpec.describe CatalogTransformer::Associations::Base do
   let(:team_name) { 'CatalogTransformerAssociationsBaseTests::Team' }
 
   context 'association with no source' do
-    let(:association) { described_class.new(:commissioner, nil, comm_name) }
+    let(:association) { described_class.new(:commissioner, nil, comm_name, nil) }
 
     it 'specifies source includes from nested transformers' do
       expect(association.source_includes).to eq [:commissioner_hat_source]
@@ -70,7 +70,7 @@ RSpec.describe CatalogTransformer::Associations::Base do
   end
 
   context 'association with source' do
-    let(:association) { described_class.new(:league, :league_source, league_name) }
+    let(:association) { described_class.new(:league, :league_source, league_name, nil) }
 
     it 'specifies source includes' do
       expect(association.source_includes).to eq(:league_source)
@@ -86,7 +86,7 @@ RSpec.describe CatalogTransformer::Associations::Base do
   end
 
   context 'association with nested includes' do
-    let(:association) { described_class.new(:teams, :teams_source, team_name) }
+    let(:association) { described_class.new(:teams, :teams_source, team_name, nil) }
 
     it 'specifies target includes' do
       expect(association.target_includes).to eq(teams: %i[coach players])
