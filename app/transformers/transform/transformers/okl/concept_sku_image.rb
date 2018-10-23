@@ -3,7 +3,7 @@ module Transform
     module OKL
       class ConceptSkuImage < CatalogTransformer::Base
         source_name 'Inbound::OKL::SkuImageRevision'
-        belongs_to :sku_image
+        belongs_to :sku_image, match_keys: %i[sku_id image_url]
 
         attribute :sku_image_id, source_name: :image_id
         attribute :source_sku_image_id, source_name: :image_id

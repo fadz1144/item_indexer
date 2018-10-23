@@ -6,7 +6,7 @@ module Transform
         match_keys :source_sku_id
         decorator_name 'Transform::Transformers::OKL::Decorators::SkuConceptSkuDecorator'
 
-        belongs_to :sku
+        belongs_to :sku, match_keys: [:sku_id]
         has_one :concept_sku_dimensions, source_name: :dimensions
         has_one :concept_sku_pricing
         has_many :concept_sku_images, source_name: :images, match_keys: [:source_sku_image_id]

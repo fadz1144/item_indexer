@@ -33,7 +33,7 @@ module CatalogTransformer
         return nil if criteria.values.all?(&:blank?)
 
         # apply criteria to target class to look for existing match
-        association.transformer_class.target_class.where(match_criteria(association)).first.tap do |match|
+        association.transformer_class.target_class.where(criteria).first.tap do |match|
           @target.public_send("#{association.name}=", match) if match.present?
         end
       end
