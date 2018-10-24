@@ -19,12 +19,13 @@ module CatalogTransformer
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def before_transform(method_name = nil, &block)
-        add_callback(:before, method_name, &block)
-      end
-
-      def after_transform(method_name = nil, &block)
-        add_callback(:after, method_name, &block)
+      %i[before after].each do |preposition|
+        %i[transform save].each do |event|
+          callback_name = "#{preposition}_#{event}".to_sym
+          define_method(callback_name) do |method_name = nil, &block|
+            add_callback(callback_name, method_name, &block)
+          end
+        end
       end
 
       def transform_callbacks
@@ -33,13 +34,21 @@ module CatalogTransformer
 
       private
 
-      def add_callback(preposition, method_name, &block)
-        transform_callbacks[preposition] << (method_name.presence || block)
+      def add_callback(callback_name, method_name, &block)
+        transform_callbacks[callback_name] << (method_name.presence || block)
       end
     end
 
-    def run_callbacks(preposition, target)
-      self.class.transform_callbacks[preposition.to_sym].each do |callback|
+    def with_callbacks(event, target)
+      run_callbacks("before_#{event}", target)
+      yield
+      run_callbacks("after_#{event}", target)
+    end
+
+    private
+
+    def run_callbacks(callback_name, target)
+      self.class.transform_callbacks[callback_name.to_sym].each do |callback|
         callback.respond_to?(:call) ? callback.call(target) : public_send(callback, target)
       end
     end

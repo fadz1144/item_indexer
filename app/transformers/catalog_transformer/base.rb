@@ -34,10 +34,10 @@ module CatalogTransformer
     end
 
     def apply_transformation(target, excluded_attributes = nil)
-      run_callbacks(:before, target)
-      target.assign_attributes(attribute_values.except(excluded_attributes))
-      apply_association_transformations(target)
-      run_callbacks(:after, target)
+      with_callbacks(:transform, target) do
+        target.assign_attributes(attribute_values.except(excluded_attributes))
+        apply_association_transformations(target)
+      end
     end
 
     def attribute_values
@@ -46,6 +46,10 @@ module CatalogTransformer
         next if record.nil?
         memo[attribute.name] = attribute_value(record, attribute.source_name)
       end
+    end
+
+    def save_target!(target)
+      with_callbacks(:save, target) { target.save! }
     end
 
     private

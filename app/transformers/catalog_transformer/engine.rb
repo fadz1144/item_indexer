@@ -24,14 +24,14 @@ module CatalogTransformer
     def transform_item(source, target)
       transformer = @transformer_class.new(source)
       transformer.apply_transformation(target)
-      save_item(source, target)
+      save_item(transformer, source, target)
     end
 
     private
 
-    def save_item(source, target)
+    def save_item(transformer, source, target)
       if target.valid?
-        target.save! if target.changed_for_autosave?
+        transformer.save_target!(target) if target.changed_for_autosave?
       else
         record_errors(source, target.errors.full_messages)
       end
