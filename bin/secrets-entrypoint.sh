@@ -31,4 +31,9 @@ if [[ -n "${CLOUD_SQL_PROXY_INSTANCE}" ]] ; then
     env | grep DATABASE_HOST
 fi
 
+if [[ "${RUNTIME_ENV}" == "kube" ]] ; then
+    echo "Swapping Redis to internal IP because we are running in K8"
+    export REDIS_HOST=${REDIS_INTERNAL_HOST}
+fi
+
 exec "$@"
