@@ -33,6 +33,9 @@ module Transform
           super.where(concept_id: CONCEPT_ID)
         end
 
+        before_transform :handle_sku_id_change
+        after_save :destroy_sku_with_previous_id
+
         module Decorations
           REGEX_MADE_TO_ORDER = /(cut|made|finished) to order/i
           REGEX_ASSEMBLY_REQUIRED = /(?<!no )assembly (may be )?(is )?required/i
@@ -87,6 +90,24 @@ module Transform
           def please_note
             @please_note ||= sku_attributes.find { |a| a.code = 'please_note' }&.value || ''
           end
+        end
+
+        def handle_sku_id_change(target)
+          return unless sku_id_changed?(target)
+
+          @sku_id_to_retire = target.sku_id
+          target.sku = CatModels::Sku.find_or_initialize_by(sku_id: @source.sku_id)
+        end
+
+        def destroy_sku_with_previous_id(_target)
+          return if @sku_id_to_retire.blank?
+          CatModels::Sku.destroy(@sku_id_to_retire)
+        end
+
+        private
+
+        def sku_id_changed?(target)
+          target.persisted? && target.sku_id != @source.sku_id
         end
       end
     end
