@@ -85,6 +85,7 @@ RSpec.describe SOLR::SkuSerializer do
     cs.extend(CatModels::ConceptSkuDecorator)
     cs
   end
+  let(:concept_sku_models) { [concept_sku_model] }
 
   let(:sku_model) do
     # :sku_id, :gtin, :product_id, :product_name, :upc_ean, :name, :category, :inventory, :pricing, :vendor,
@@ -106,16 +107,13 @@ RSpec.describe SOLR::SkuSerializer do
     )
     sku.category = category_model
     sku.brand = brand_model
-    sku.concept_skus = [concept_sku_model]
+    sku.concept_skus = concept_sku_models
     sku.products = [product_model]
     sku.extend(CatModels::SkuDecorator)
     sku
   end
-  let(:serializer) { described_class.new(sku_model) }
 
-  subject { JSON.parse(serializer.to_json) }
-
-  let(:result) { ActiveModelSerializers::SerializableResource.new(sku_model, serializer: described_class) }
+  let(:result) { described_class.new(sku_model).as_json }
 
   before(:each) do
     allow(CatModels::CategoryCache).to receive(:hierarchy_for).and_return([category_model])
@@ -124,75 +122,84 @@ RSpec.describe SOLR::SkuSerializer do
   context 'test dynamic serializer' do
     describe 'check if it compiles' do
       it 'should not raise and error' do
-        expect { result.as_json }.not_to raise_exception
+        expect { result }.not_to raise_exception
       end
     end
   end
 
   context 'sku_model fields' do
-    %w[sku_id gtin vmf].each do |field|
+    %i[sku_id gtin vmf].each do |field|
       it "should have #{field} that matches" do
-        expect(subject[field]).to eql(sku_model.send(field.to_sym))
+        expect(result[field]).to eql(sku_model.send(field.to_sym))
       end
     end
   end
 
   context 'concept_sku_model fields' do
     # primitive fields
-    %w[name].each do |field|
+    %i[name].each do |field|
       it "should have #{field} that matches" do
-        expect(subject[field]).to eql(concept_sku_model.send(field.to_sym))
+        expect(result[field]).to eql(concept_sku_model.send(field.to_sym))
       end
     end
 
     # TODO: active allow_exposure lead_time aad_min_offset_days aad_max_offset_days ?
 
     # array fields
-    %w[description shipping_method].each do |field|
+    %i[description shipping_method].each do |field|
       it "should have #{field} that matches" do
         arr = [concept_sku_model.send(field.to_sym)]
-        expect(subject[field]).to eql(arr)
+        expect(result[field]).to eql(arr)
       end
     end
   end
 
   it 'should have a color that matches' do
-    expect(subject['color'].first).to eql(sku_model.color_family)
+    expect(result[:color]).to contain_exactly(sku_model.color_family)
   end
 
   it 'should have a product_id that matches' do
-    expect(subject['product_id']).to eql([product_model.product_id])
+    expect(result[:product_id]).to contain_exactly(product_model.product_id)
   end
 
   xit 'should have a product_name that matches' do
-    expect(subject['product_name']).to eql([concept_product_model.name])
+    expect(result[:product_name]).to contain_exactly(concept_product_model.name)
   end
 
   it 'should have a upc_ean that matches' do
-    expect(subject['upc_ean']).to eql(concept_sku_model.gtin)
+    expect(result[:upc_ean]).to eql(concept_sku_model.gtin)
   end
 
   it 'should have a external_image_url that matches' do
-    expect(subject['external_image_url']).to eql(concept_sku_model.primary_image)
+    expect(result[:external_image_url]).to eql(concept_sku_model.primary_image)
   end
 
-  it 'should have a web_status' do
-    expect(subject['web_status']).to eql(sku_model.web_status)
-  end
+  context 'web status' do
+    let(:concept_sku_models) do
+      [build(:full_concept_sku, concept_id: 1, web_status: CatModels::WebStatus::ACTIVE),
+       build(:full_concept_sku, concept_id: 2, web_status: CatModels::WebStatus::BUYER_REVIEWED),
+       build(:full_concept_sku, concept_id: 3, web_status: CatModels::WebStatus::IN_PROGRESS),
+       build(:full_concept_sku, concept_id: 4, web_status: CatModels::WebStatus::SUSPENDED)]
+    end
 
-  it 'should have a web_status_buyer_reviewed' do
-    expect(subject['web_status_buyer_reviewed']).to eql(sku_model.web_status_buyer_reviewed)
-  end
+    it 'should have a web_status' do
+      expect(result[:web_status]).to contain_exactly(*concept_sku_models.map(&:web_status))
+    end
 
-  it 'should have a web_status_in_progress' do
-    expect(subject['web_status_in_progress']).to eql(sku_model.web_status_in_progress)
-  end
+    it 'should have a web_status_buyer_reviewed' do
+      expect(result[:web_status_buyer_reviewed]).to eql(sku_model.web_status_buyer_reviewed)
+    end
 
-  it 'should have a web_status_active' do
-    expect(subject['web_status_active']).to eql(sku_model.web_status_active)
-  end
+    it 'should have a web_status_in_progress' do
+      expect(result[:web_status_in_progress]).to eql(sku_model.web_status_in_progress)
+    end
 
-  it 'should have a web_status_suspended' do
-    expect(subject['web_status_suspended']).to eql(sku_model.web_status_suspended)
+    it 'should have a web_status_active' do
+      expect(result[:web_status_active]).to eql(sku_model.web_status_active)
+    end
+
+    it 'should have a web_status_suspended' do
+      expect(result[:web_status_suspended]).to eql(sku_model.web_status_suspended)
+    end
   end
 end
