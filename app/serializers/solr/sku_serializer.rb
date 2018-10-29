@@ -18,13 +18,8 @@ module SOLR
 
     attribute :inventory?, key: :has_inventory
 
-    delegate :sku_id, to: :object
-    delegate :gtin, to: :object
-    delegate :vmf, to: :object
-
-    def serializable_fields
-      ProductCoreFields.sku_fields
-    end
+    # these attributes do not exist
+    stub_attributes :brand_code
 
     decorate_any 'live', field: 'live'
 
@@ -127,7 +122,7 @@ module SOLR
     #   { name: 'web_enabled_date', type: 'date', indexed: true, stored: true },
 
     def id
-      "S#{sku_id}"
+      "S#{object.sku_id}"
     end
 
     def product_id
@@ -201,6 +196,21 @@ module SOLR
       ''
     end
 
+    # attribute name in index does not match name on sku
+    def units_sold_last_week
+      object.units_sold_last_1_week
+    end
+
+    # attribute name in index does not match name on sku
+    def units_sold_last_year
+      object.units_sold_last_52_weeks
+    end
+
+    # attribute name in index does not match name on sku
+    def vdc_flag
+      object.vdc_sku
+    end
+
     def item_status
       # active
       if service.concept_skus_any? { |cs| cs.status == 'Active' }
@@ -230,10 +240,6 @@ module SOLR
 
     WEB_STATUS_TO_DISPLAY_VALUE.keys.each do |method_name|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{method_name}
-          object.send("#{method_name}".to_sym)
-        end
-
         def #{method_name}?
           object.send("#{method_name}".to_sym).present?
         end

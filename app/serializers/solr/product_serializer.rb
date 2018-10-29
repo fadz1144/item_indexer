@@ -18,7 +18,9 @@ module SOLR
       attribute field[:name].to_sym
     end
 
-    delegate :product_id, to: :object
+    # these attributes do not exist
+    stub_attributes :allow_exposure, :units_sold_last_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks,
+                    :units_sold_last_year, :vdc_flag, :vintage
 
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
@@ -109,12 +111,8 @@ module SOLR
     #   { name: 'baby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'baby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
 
-    def serializable_fields
-      ProductCoreFields.product_fields
-    end
-
     def id
-      "P#{product_id}"
+      "P#{object.product_id}"
     end
 
     def concept_id
