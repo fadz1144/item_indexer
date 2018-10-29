@@ -56,7 +56,8 @@ module Serializers
     SKU_LEVEL_TREE_NODES = %i[eph merch].freeze
     CONCEPT_SKU_LEVEL_TREE_NODES = %i[bbby_site_nav ca_site_nav baby_site_nav].freeze
     TREE_NODE_MAPPING = {
-      eph: :eph_tree_node
+      eph: :eph_tree_node,
+      merch: :merch_class_tree_node
     }.freeze
     def tree_node_values(tree, field_sym)
       tree_node_sym = TREE_NODE_MAPPING[tree]

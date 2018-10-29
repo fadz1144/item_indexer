@@ -82,9 +82,10 @@ module SOLR
     decorate_tree_node 'eph_tree_source_code', tree: 'eph', field: 'source_code'
     decorate_tree_node 'eph_tree_node_name', tree: 'eph', field: 'name'
 
-    #   { name: 'merch_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-    #   { name: 'merch_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'merch_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+    decorate_tree_node 'merch_tree_node_id', tree: 'merch', field: 'id'
+    decorate_tree_node 'merch_tree_source_code', tree: 'merch', field: 'source_code'
+    decorate_tree_node 'merch_tree_node_name', tree: 'merch', field: 'name'
+
     #   { name: 'bbby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
     #   { name: 'bbby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'bbby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
