@@ -20,7 +20,6 @@ module SOLR
 
     delegate :product_id, to: :object
 
-    decorate_concept_sku_uniq 'concept_id', field: 'concept_id'
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
@@ -117,6 +116,14 @@ module SOLR
       "P#{product_id}"
     end
 
+    def concept_id
+      concept_ids = []
+      service.concept_skus_iterator do |cs|
+        concept_ids << cs.concept_id if include_concept?(cs, cs.concept_id)
+      end
+      concept_ids.uniq
+    end
+
     def skus
       result = []
 
@@ -204,6 +211,26 @@ module SOLR
       else
         result
       end
+    end
+
+    def include_concept?(concept_sku, concept_id)
+      case concept_id
+      when 1, 3 # bed bath and okl
+        true
+      when 2 # canada
+        # TODO: this should be in a decorator
+        concept_sku.sku&.available_in_canada? || concept_sku.sku&.transferable_to_canada?
+      when 4 # baby
+        # tree_node = concept_sku.baby_site_nav
+        # tree_node&.map(:baby_site_nav_id).present?
+        offered?(concept_sku)
+      else
+        false
+      end
+    end
+
+    def offered?(concept_sku)
+      concept_sku.web_offered || concept_sku.web_enable_date.present? || concept_sku.web_offer_date.present?
     end
 
     def service
