@@ -193,7 +193,7 @@ module SOLR
     end
 
     def inventory?
-      total_avail_qty > 0
+      total_avail_qty.present? && total_avail_qty > 0
     end
 
     # TODO: implement me
