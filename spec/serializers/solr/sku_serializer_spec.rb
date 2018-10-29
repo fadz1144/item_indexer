@@ -174,6 +174,26 @@ RSpec.describe SOLR::SkuSerializer do
     expect(result[:external_image_url]).to eql(concept_sku_model.primary_image)
   end
 
+  context '#inventory' do
+    context 'with nil inventory' do
+      before do
+        concept_sku_model[:total_avail_qty] = nil
+      end
+
+      it 'should have nil inventory' do
+        expect(concept_sku_model[:total_avail_qty]).to be_nil
+      end
+
+      it 'should not report as having inventory if inventory is nil' do
+        expect(result[:has_inventory]).to be_falsey
+      end
+    end
+
+    it 'should report as having inventory' do
+      expect(result[:has_inventory]).to be_truthy
+    end
+  end
+
   context 'web status' do
     let(:concept_sku_models) do
       [build(:full_concept_sku, concept_id: 1, web_status: CatModels::WebStatus::ACTIVE),
