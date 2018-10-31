@@ -10,6 +10,10 @@ module Serializers
       @decorated_skus ||= build_decorated_skus
     end
 
+    def concept_items
+      @product.concept_products
+    end
+
     private
 
     def build_decorated_skus

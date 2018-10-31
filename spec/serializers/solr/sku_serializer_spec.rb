@@ -162,10 +162,6 @@ RSpec.describe SOLR::SkuSerializer do
     expect(result[:product_id]).to contain_exactly(product_model.product_id)
   end
 
-  xit 'should have a product_name that matches' do
-    expect(result[:product_name]).to contain_exactly(concept_product_model.name)
-  end
-
   it 'should have a upc_ean that matches' do
     expect(result[:upc_ean]).to eql(concept_sku_model.gtin)
   end
@@ -194,32 +190,34 @@ RSpec.describe SOLR::SkuSerializer do
     end
   end
 
-  context 'web status' do
+  context 'web flags summary' do
     let(:concept_sku_models) do
-      [build(:full_concept_sku, concept_id: 1, web_status: CatModels::WebStatus::ACTIVE),
-       build(:full_concept_sku, concept_id: 2, web_status: CatModels::WebStatus::BUYER_REVIEWED),
-       build(:full_concept_sku, concept_id: 3, web_status: CatModels::WebStatus::IN_PROGRESS),
-       build(:full_concept_sku, concept_id: 4, web_status: CatModels::WebStatus::SUSPENDED)]
+      [build(:full_concept_sku, concept_id: 1, web_flags_summary: CatModels::Constants::WebFlagsSummary::LIVE_ON_SITE),
+       build(:full_concept_sku, concept_id: 2,
+                                web_flags_summary: CatModels::Constants::WebFlagsSummary::BUYER_REVIEWED),
+       build(:full_concept_sku, concept_id: 3, web_flags_summary: CatModels::Constants::WebFlagsSummary::IN_WORKFLOW),
+       build(:full_concept_sku, concept_id: 4, web_flags_summary: CatModels::Constants::WebFlagsSummary::SUSPENDED)]
     end
 
-    it 'should have a web_status' do
-      expect(result[:web_status]).to contain_exactly(*concept_sku_models.map(&:web_status))
+    it 'reads web_flags_summary from sku' do
+      sku_model.web_flags_summary = 'oski'
+      expect(result[:web_flags_summary]).to eq 'oski'
     end
 
-    it 'should have a web_status_buyer_reviewed' do
-      expect(result[:web_status_buyer_reviewed]).to eql(sku_model.web_status_buyer_reviewed)
+    it 'should have a web_flags_summary_buyer_reviewed' do
+      expect(result[:web_flags_summary_buyer_reviewed]).to contain_exactly(2)
     end
 
-    it 'should have a web_status_in_progress' do
-      expect(result[:web_status_in_progress]).to eql(sku_model.web_status_in_progress)
+    it 'should have a web_flags_summary_in_workflow' do
+      expect(result[:web_flags_summary_in_workflow]).to contain_exactly(3)
     end
 
-    it 'should have a web_status_active' do
-      expect(result[:web_status_active]).to eql(sku_model.web_status_active)
+    it 'should have a web_flags_summary_live_on_site' do
+      expect(result[:web_flags_summary_live_on_site]).to contain_exactly(1)
     end
 
-    it 'should have a web_status_suspended' do
-      expect(result[:web_status_suspended]).to eql(sku_model.web_status_suspended)
+    it 'should have a web_flags_summary_suspended' do
+      expect(result[:web_flags_summary_suspended]).to contain_exactly(4)
     end
   end
 end

@@ -10,6 +10,7 @@ module SOLR
     include SOLR::Decorators::PricingDecoratedAttribute
     include SOLR::Decorators::SkuUniqDecoratedAttribute
     include SOLR::Decorators::TreeNodeDecoratedAttribute
+    include SOLR::Decorators::ConstantAttributeBuckets
 
     attribute :id
     attribute :skus, key: :_childDocuments_
@@ -69,6 +70,8 @@ module SOLR
     decorate_tree_node 'merch_tree_node_id', tree: 'merch', field: 'id'
     decorate_tree_node 'merch_tree_source_code', tree: 'merch', field: 'source_code'
     decorate_tree_node 'merch_tree_node_name', tree: 'merch', field: 'name'
+
+    bucket 'web_flags_summary', CatModels::Constants::WebFlagsSummary
 
     # TODO: define rollups for these:
     #   { name: 'allow_exposure', type: 'boolean' indexed: true, stored: true },

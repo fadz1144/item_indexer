@@ -45,12 +45,15 @@ module SOLR
     shared 'max_margin_amount_cents', type: 'int'
     shared 'name', type: 'text_general'
     shared 'shipping_method', type: 'string', multiValued: true
-    ## web status fields
     shared 'web_status', type: 'string', multiValued: true
-    shared 'web_status_buyer_reviewed', type: 'int', multiValued: true
-    shared 'web_status_in_progress', type: 'int', multiValued: true
-    shared 'web_status_active', type: 'int', multiValued: true
-    shared 'web_status_suspended', type: 'int', multiValued: true
+
+    ## web flags summary fields
+    shared 'web_flags_summary', type: 'string'
+    shared 'web_flags_summary_live_on_site', type: 'int', multiValued: true
+    shared 'web_flags_summary_in_workflow', type: 'int', multiValued: true
+    shared 'web_flags_summary_suspended', type: 'int', multiValued: true
+    shared 'web_flags_summary_buyer_reviewed', type: 'int', multiValued: true
+
     # solr_field_expansion
     shared 'allow_exposure', type: 'boolean'
     shared 'available_in_ca', type: 'boolean'

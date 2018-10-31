@@ -68,6 +68,10 @@ module Serializers
       end
     end
 
+    def which_concepts(&matcher)
+      @wrapper.concept_items.select(&matcher).map(&:concept_id)
+    end
+
     private
 
     def concept_skus_node_values(tree_node_sym, field_sym)
