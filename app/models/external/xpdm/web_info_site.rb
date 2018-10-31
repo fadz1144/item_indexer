@@ -13,7 +13,7 @@ module External
     # - free_shp_promo_vld_status_ind
     # - web_afs_qty
     # - web_enable_dt
-    # - web_status_flg
+    # - web_status_flg (A / D / I / N / P / U)
     class WebInfoSite < External::XPDM::Base
       self.table_name = 'pdm_item_web_info_site'
       belongs_to :item, foreign_key: :pdm_object_id, primary_key: :pdm_object_id, inverse_of: :web_info_sites

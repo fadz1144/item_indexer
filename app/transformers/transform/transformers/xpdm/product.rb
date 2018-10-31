@@ -4,6 +4,7 @@ module Transform
       class Product < CatalogTransformer::Base
         source_name 'External::XPDM::Product'
         match_keys :source_product_id, source_key: :pdm_object_id
+        include Transform::Transformers::XPDM::WebFlagsSummaryRollup
         include Transform::Transformers::XPDM::WebStatusRollup
         include Transform::Transformers::XPDM::SharedReferences
 
@@ -20,6 +21,10 @@ module Transform
            { bbby_site_navigation: { site_nav_tree_node: :tree } },
            { ca_site_navigation: { site_nav_tree_node: :tree } },
            { baby_site_navigation: { site_nav_tree_node: :tree } }]
+        end
+
+        def assign_web_flags_summary(target)
+          target.web_flags_summary = web_flags_summary_rollup(target.concept_products)
         end
 
         def assign_web_status(target)

@@ -8,8 +8,6 @@ module Transform
         attribute :description, source_name: :mstr_shrt_desc
         attribute :details, source_name: :mstr_web_desc
         attribute :source_product_id, association: :product, source_name: :pdm_object_id
-        attribute :active, source_name: :active?
-        attribute :status
 
         exclude :product_id, :concept_category_id
 
@@ -22,8 +20,12 @@ module Transform
             mstr_prod_desc.presence || vdr_web_prod_desc
           end
 
+          def active
+            live_on_site?
+          end
+
           def status
-            active? ? 'Active' : 'Inactive'
+            active ? 'Active' : 'Inactive'
           end
         end
       end

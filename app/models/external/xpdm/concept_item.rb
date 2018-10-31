@@ -7,7 +7,7 @@ module External
     # the transformer calls to inspect the model.
     class ConceptItem
       include External::XPDM::Concept
-      include PDM::WebStatus
+      include PDM::WebFlagsSummarizer
       include External::XPDM::TransformerNonActiveRecordModel
 
       WEB_SITES = { 'BBBY' => 'www.bedbathandbeyond.com',
@@ -17,7 +17,7 @@ module External
       attr_reader :parent
 
       delegate :web_site_cd, :web_offer_ind, :web_dsable_ind, :web_offer_dt, to: :@state
-      delegate :blck_status_ind, :web_enable_dt, to: :@web_info_site, allow_nil: true
+      delegate :blck_status_ind, :web_enable_dt, :web_status_flg, to: :@web_info_site, allow_nil: true
       delegate :mstr_prod_desc, :mstr_shrt_desc, :mstr_web_desc, :prod_desc, :vdr_web_prod_desc,
                to: :@description, allow_nil: true
       delegate :concept_vendor, :concept_brand, :source_created_by, :source_created_at, :source_updated_by, to: :parent
@@ -41,6 +41,10 @@ module External
         additional_associations.each do |name, value|
           instance_variable_set("@#{name}", value)
         end
+      end
+
+      def web_status
+        PDM::SystemStatusMapper.value(web_status_flg)
       end
 
       def site_navigation

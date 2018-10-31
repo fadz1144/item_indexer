@@ -27,6 +27,10 @@ module External
       belongs_to :eph_tree_node, -> { eph }, class_name: 'CatModels::TreeNode', primary_key: :source_code,
                                              foreign_key: :eph_prod_node_id, optional: true
 
+      def chain_status
+        PDM::SystemStatusMapper.value(chain_status_cd)
+      end
+
       # the preloader accesses keys this way, and at least one of the items has a SPACE in the brand_cd
       def [](attr_name)
         if attr_name == :brand_cd

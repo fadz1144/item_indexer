@@ -119,4 +119,96 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
       expect(target.concept_skus.all? { |cs| cs.concept_brand == concept_brand }).to be true
     end
   end
+
+  context 'web flags summary rollup' do
+    let(:web_flags_summary) do
+      transformer.apply_transformation(target)
+      target.web_flags_summary
+    end
+
+    it 'Buyer Reviewed with no values' do
+      expect(web_flags_summary).to eql CatModels::Constants::WebFlagsSummary::BUYER_REVIEWED
+    end
+
+    it 'Live on Site' do
+      allow(source.concept_skus.first).to receive(:live_on_site?).and_return(true)
+      allow(source.concept_skus.second).to receive(:in_workflow?).and_return(true)
+      allow(source.concept_skus.third).to receive(:suspended?).and_return(true)
+      expect(web_flags_summary).to eql CatModels::Constants::WebFlagsSummary::LIVE_ON_SITE
+    end
+
+    it 'In Workflow' do
+      allow(source.concept_skus.first).to receive(:in_workflow?).and_return(true)
+      allow(source.concept_skus.second).to receive(:suspended?).and_return(true)
+      allow(source.concept_skus.third).to receive(:buyer_reviewed?).and_return(true)
+      expect(web_flags_summary).to eql CatModels::Constants::WebFlagsSummary::IN_WORKFLOW
+    end
+
+    it 'Suspended' do
+      allow(source.concept_skus.first).to receive(:suspended?).and_return(true)
+      allow(source.concept_skus.second).to receive(:buyer_reviewed?).and_return(true)
+      expect(web_flags_summary).to eql CatModels::Constants::WebFlagsSummary::SUSPENDED
+    end
+
+    it 'Buyer Reviewed' do
+      allow(source.concept_skus.first).to receive(:buyer_reviewed?).and_return(true)
+      expect(web_flags_summary).to eql CatModels::Constants::WebFlagsSummary::BUYER_REVIEWED
+    end
+  end
+
+  context 'web status rollup' do
+    let(:web_status) do
+      transformer.apply_transformation(target)
+      target.web_status
+    end
+
+    it 'Unknown with no values' do
+      expect(web_status).to eql CatModels::Constants::SystemStatus::UNKNOWN
+    end
+
+    it 'Active' do
+      allow(source.concept_skus.first).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::ACTIVE)
+      allow(source.concept_skus.second).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::INACTIVE)
+      allow(source.concept_skus.third).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::DROPPED)
+      expect(web_status).to eql CatModels::Constants::SystemStatus::ACTIVE
+    end
+
+    it 'Inactive' do
+      allow(source.concept_skus.first).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::DROPPED)
+      allow(source.concept_skus.second).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::INACTIVE)
+      allow(source.concept_skus.third).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::DROPPED)
+      expect(web_status).to eql CatModels::Constants::SystemStatus::INACTIVE
+    end
+
+    it 'Dropped' do
+      allow(source.concept_skus.first).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      allow(source.concept_skus.second).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      allow(source.concept_skus.third).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::DROPPED)
+      expect(web_status).to eql CatModels::Constants::SystemStatus::DROPPED
+    end
+
+    it 'Discontinued' do
+      allow(source.concept_skus.first).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      allow(source.concept_skus.second).to receive(:web_status)
+        .and_return(CatModels::Constants::SystemStatus::TO_BE_PURGED)
+      allow(source.concept_skus.third).to receive(:web_status)
+        .and_return(CatModels::Constants::SystemStatus::DISCONTINUED)
+      expect(web_status).to eql CatModels::Constants::SystemStatus::DISCONTINUED
+    end
+
+    it 'To be Purged' do
+      allow(source.concept_skus.first).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      allow(source.concept_skus.second).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      allow(source.concept_skus.third).to receive(:web_status)
+        .and_return(CatModels::Constants::SystemStatus::TO_BE_PURGED)
+      expect(web_status).to eql CatModels::Constants::SystemStatus::TO_BE_PURGED
+    end
+
+    it 'Unknown' do
+      allow(source.concept_skus.first).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      allow(source.concept_skus.second).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      allow(source.concept_skus.third).to receive(:web_status).and_return(CatModels::Constants::SystemStatus::UNKNOWN)
+      expect(web_status).to eql CatModels::Constants::SystemStatus::UNKNOWN
+    end
+  end
 end

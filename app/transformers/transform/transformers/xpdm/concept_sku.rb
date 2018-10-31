@@ -7,13 +7,11 @@ module Transform
 
         attribute :sku_id, association: :sku, source_name: :pdm_object_id
         attribute :source_sku_id, association: :sku, source_name: :pdm_object_id
-        attribute :active, source_name: :active?
         attribute :vendor_sku, association: :sku, source_name: :pmry_vdr_part_modl_num
         attribute :description, source_name: :mstr_shrt_desc
         attribute :details, source_name: :mstr_web_desc
         attribute :web_offer_date, source_name: :web_offer_dt
         attribute :web_enable_date, source_name: :web_enable_dt
-        attribute :live, source_name: :active?
         attribute :pattern_cd, association: :sku
         attribute :pattern_name, association: :sku
         attribute :size_cd, association: :sku
@@ -51,8 +49,16 @@ module Transform
             mstr_prod_desc.presence || prod_desc.presence || vdr_web_prod_desc
           end
 
+          def active
+            live || web_status_flg == 'A'
+          end
+
+          def live
+            live_on_site?
+          end
+
           def status
-            active? ? 'Active' : 'Inactive'
+            active ? 'Active' : 'Inactive'
           end
 
           def web_offered

@@ -4,6 +4,7 @@ module Transform
       class Sku < CatalogTransformer::Base
         source_name 'External::XPDM::Sku'
         match_keys :sku_id, source_key: :pdm_object_id
+        include Transform::Transformers::XPDM::WebFlagsSummaryRollup
         include Transform::Transformers::XPDM::WebStatusRollup
         include Transform::Transformers::XPDM::SharedReferences
 
@@ -14,7 +15,6 @@ module Transform
         attribute :gtin, source_name: :prmry_upc_num
         attribute :jda_description, association: :description, source_name: :jda_desc
         attribute :pos_description, association: :description, source_name: :pos_desc
-        attribute :chain_status, source_name: :chain_status_cd
         attribute :rollup_type_name, source_name: :rlup_type_name
         attribute :color_family, source_name: :color_grp_name
         attribute :available_in_ca_dist_cd, association: :compliance, source_name: :avail_for_dstrbn_ca_cd
@@ -26,7 +26,7 @@ module Transform
 
         # TODO: unit of measure
         # TODO: non-taxable
-        exclude :category_id, :unit_of_measure_cd, :non_taxable, :ecom_status, :units_sold_last_1_week,
+        exclude :category_id, :unit_of_measure_cd, :non_taxable, :web_status, :ecom_status, :units_sold_last_1_week,
                 :units_sold_last_4_weeks, :units_sold_last_8_weeks, :units_sold_last_52_weeks,
                 allow_primary_key: true
 
@@ -47,6 +47,10 @@ module Transform
         # def self.taget_includes
         #   super + (concept_skus: { concept_vendor: [:concept, :vendor] })
         # end
+
+        def assign_web_flags_summary(target)
+          target.web_flags_summary = web_flags_summary_rollup(target.concept_skus)
+        end
 
         def assign_web_status(target)
           target.web_status = web_status_rollup(target.concept_skus)
