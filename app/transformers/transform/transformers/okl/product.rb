@@ -2,6 +2,8 @@ module Transform
   module Transformers
     module OKL
       class Product < CatalogTransformer::Base
+        include Transform::Transformers::OKL::ProductAndSkuSharedRollups
+
         source_name 'Inbound::OKL::ProductRevision'
         decorator_name 'Transform::Transformers::OKL::Decorators::ProductConceptProductDecorator'
 
@@ -13,6 +15,13 @@ module Transform
         references :merch_dept_tree_node
         references :merch_sub_dept_tree_node
         references :merch_class_tree_node
+
+        private
+
+        def other_concept_items
+          @other_concept_items ||=
+            CatModels::ConceptProduct.where(product_id: @source.product_id).where.not(concept_id: 3)
+        end
       end
     end
   end

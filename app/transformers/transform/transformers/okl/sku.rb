@@ -2,6 +2,8 @@ module Transform
   module Transformers
     module OKL
       class Sku < CatalogTransformer::Base
+        include Transform::Transformers::OKL::ProductAndSkuSharedRollups
+
         source_name 'Inbound::OKL::SkuRevision'
         decorator_name 'Transform::Transformers::OKL::Decorators::SkuConceptSkuDecorator'
 
@@ -29,6 +31,12 @@ module Transform
           def image_count
             images.size
           end
+        end
+
+        private
+
+        def other_concept_items
+          @other_concept_items ||= CatModels::ConceptSku.where(sku_id: @source.sku_id).where.not(concept_id: 3)
         end
       end
     end

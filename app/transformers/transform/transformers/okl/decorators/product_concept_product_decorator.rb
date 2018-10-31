@@ -8,7 +8,19 @@ module Transform
           end
 
           def web_status
-            active ? 'Active' : 'In Progress'
+            if active
+              CatModels::Constants::SystemStatus::ACTIVE
+            else
+              CatModels::Constants::SystemStatus::INACTIVE
+            end
+          end
+
+          def web_flags_summary
+            if active
+              CatModels::Constants::WebFlagsSummary::LIVE_ON_SITE
+            else
+              CatModels::Constants::WebFlagsSummary::SUSPENDED
+            end
           end
         end
       end
