@@ -15,12 +15,12 @@ module SOLR
     attribute :skus, key: :_childDocuments_
 
     ProductCoreFields.product_fields.map do |field|
-      attribute field[:name].to_sym
+      attribute field.source_name, key: field.name
     end
 
     # these attributes do not exist
-    stub_attributes :allow_exposure, :units_sold_last_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks,
-                    :units_sold_last_year, :vdc_flag, :vintage
+    stub_attributes :allow_exposure, :units_sold_last_1_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks,
+                    :units_sold_last_52_weeks, :vdc_sku, :vintage
 
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
@@ -194,7 +194,7 @@ module SOLR
       service.concept_skus_any?(&:live)
     end
 
-    def has_inventory # rubocop:disable PredicateName
+    def inventory?
       service.concept_skus_any? do |cs|
         cs.total_avail_qty > 0
       end

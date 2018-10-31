@@ -1,139 +1,154 @@
 module SOLR
   # rubocop:disable ClassLength
   class ProductCoreFields
-    SHARED_FIELDS = [
-      { name: 'doc_type', type: 'string', indexed: true, stored: true },
-      { name: 'product_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'sku_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'category_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'category_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'concept_id', type: 'int', indexed: true, stored: true, multiValued: true },
-      { name: 'eph_category_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'eph_category_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'vendor_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'vendor_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'brand_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'brand_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'color', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'description', type: 'text_general', indexed: true, stored: true },
-      { name: 'long_description', type: 'text_general', indexed: true, stored: true },
-      { name: 'exclusivity_tier', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'has_inventory', type: 'boolean', indexed: true, stored: true },
-      { name: 'internal_color_family', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'item_status', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'live', type: 'boolean', indexed: true, stored: true },
-      { name: 'min_aad_offset_days', type: 'int', indexed: true, stored: true },
-      { name: 'max_aad_offset_days', type: 'int', indexed: true, stored: true },
-      { name: 'min_price_cents', type: 'int', indexed: true, stored: true },
-      { name: 'max_price_cents', type: 'int', indexed: true, stored: true },
-      { name: 'min_margin_amount_cents', type: 'int', indexed: true, stored: true },
-      { name: 'max_margin_amount_cents', type: 'int', indexed: true, stored: true },
-      { name: 'name', type: 'text_general', indexed: true, stored: true },
-      { name: 'shipping_method', type: 'string', indexed: true, stored: true, multiValued: true },
-      ## web status fields
-      { name: 'web_status', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'web_status_buyer_reviewed', type: 'int', indexed: true, stored: true, multiValued: true },
-      { name: 'web_status_in_progress', type: 'int', indexed: true, stored: true, multiValued: true },
-      { name: 'web_status_active', type: 'int', indexed: true, stored: true, multiValued: true },
-      { name: 'web_status_suspended', type: 'int', indexed: true, stored: true, multiValued: true },
-      # solr_field_expansion
-      { name: 'allow_exposure', type: 'boolean', indexed: true, stored: true },
-      { name: 'available_in_ca', type: 'boolean', indexed: true, stored: true },
-      { name: 'clearance_status', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'concept_eligibility', type: 'int', indexed: true, stored: true, multiValued: true },
-      { name: 'contribution_margin_percent', type: 'float', indexed: true, stored: true },
-      { name: 'dynamic_price_eligible', type: 'boolean', indexed: true, stored: true },
-      { name: 'inactive_reason', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'inventory_ecom_us', type: 'int', indexed: true, stored: true },
-      { name: 'inventory_ecom_ca', type: 'int', indexed: true, stored: true },
-      { name: 'inventory_okl_branded', type: 'int', indexed: true, stored: true },
-      { name: 'inventory_okl_vintage', type: 'int', indexed: true, stored: true },
-      { name: 'inventory_ropis', type: 'int', indexed: true, stored: true },
-      { name: 'inventory_total', type: 'int', indexed: true, stored: true },
-      { name: 'inventory_store_total', type: 'int', indexed: true, stored: true },
-      { name: 'inventory_vdc_total', type: 'int', indexed: true, stored: true },
-      { name: 'jda_status', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'line_of_business', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'ltl_flag', type: 'boolean', indexed: true, stored: true },
-      { name: 'personalized', type: 'boolean', indexed: true, stored: true },
-      { name: 'product_type', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'size', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'tbs_blocked', type: 'int', indexed: true, stored: true, multiValued: true },
-      { name: 'units_sold_last_week', type: 'int', indexed: true, stored: true },
-      { name: 'units_sold_last_4_weeks', type: 'int', indexed: true, stored: true },
-      { name: 'units_sold_last_8_weeks', type: 'int', indexed: true, stored: true },
-      { name: 'units_sold_last_year', type: 'int', indexed: true, stored: true },
-      { name: 'vdc_flag', type: 'boolean', indexed: true, stored: true },
-      { name: 'vintage', type: 'boolean', indexed: true, stored: true },
-      { name: 'web_enabled_date', type: 'date', indexed: true, stored: true },
+    def self.shared(name, options)
+      @shared_fields << SOLR::FieldDefinition.new(name, options)
+    end
 
-      # hierarchies
-      { name: 'eph_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'eph_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'eph_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'merch_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'merch_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'merch_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'bbby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'bbby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'bbby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'ca_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'ca_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'ca_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-      { name: 'baby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-      { name: 'baby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'baby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
+    def self.product(name, options)
+      @product_fields << SOLR::FieldDefinition.new(name, options)
+    end
 
-      # contribution margin
-      { name: 'min_contribution_margin_amount_cents', type: 'int', indexed: true, stored: true },
-      { name: 'max_contribution_margin_amount_cents', type: 'int', indexed: true, stored: true },
-      { name: 'min_contribution_margin_percent', type: 'float', indexed: true, stored: true },
-      { name: 'max_contribution_margin_percent', type: 'float', indexed: true, stored: true },
+    def self.sku(name, options)
+      @sku_fields << SOLR::FieldDefinition.new(name, options)
+    end
 
-      # PDP url
-      { name: 'pdp_url', type: 'string', indexed: true, stored: true, multiValued: true }
+    @shared_fields = []
+    @product_fields = []
+    @sku_fields = []
 
-    ].freeze
+    shared 'doc_type', type: 'string'
+    shared 'product_id', type: 'long', multiValued: true
+    shared 'sku_id', type: 'long', multiValued: true
+    shared 'category_id', type: 'long', multiValued: true
+    shared 'category_name', type: 'text_general', multiValued: true
+    shared 'concept_id', type: 'int', multiValued: true
+    shared 'eph_category_id', type: 'long', multiValued: true
+    shared 'eph_category_name', type: 'text_general', multiValued: true
+    shared 'vendor_id', type: 'long', multiValued: true
+    shared 'vendor_name', type: 'text_general', multiValued: true
+    shared 'brand_id', type: 'long', multiValued: true
+    shared 'brand_name', type: 'text_general', multiValued: true
+    shared 'color', type: 'string', multiValued: true
+    shared 'description', type: 'text_general'
+    shared 'long_description', type: 'text_general'
+    shared 'exclusivity_tier', type: 'string', multiValued: true
+    shared 'has_inventory', type: 'boolean', source_name: :inventory?
+    shared 'internal_color_family', type: 'string', multiValued: true
+    shared 'item_status', type: 'string', multiValued: true
+    shared 'live', type: 'boolean'
+    shared 'min_aad_offset_days', type: 'int'
+    shared 'max_aad_offset_days', type: 'int'
+    shared 'min_price_cents', type: 'int'
+    shared 'max_price_cents', type: 'int'
+    shared 'min_margin_amount_cents', type: 'int'
+    shared 'max_margin_amount_cents', type: 'int'
+    shared 'name', type: 'text_general'
+    shared 'shipping_method', type: 'string', multiValued: true
+    ## web status fields
+    shared 'web_status', type: 'string', multiValued: true
+    shared 'web_status_buyer_reviewed', type: 'int', multiValued: true
+    shared 'web_status_in_progress', type: 'int', multiValued: true
+    shared 'web_status_active', type: 'int', multiValued: true
+    shared 'web_status_suspended', type: 'int', multiValued: true
+    # solr_field_expansion
+    shared 'allow_exposure', type: 'boolean'
+    shared 'available_in_ca', type: 'boolean'
+    shared 'clearance_status', type: 'string', multiValued: true
+    shared 'concept_eligibility', type: 'int', multiValued: true
+    shared 'contribution_margin_percent', type: 'float'
+    shared 'dynamic_price_eligible', type: 'boolean'
+    shared 'inactive_reason', type: 'string', multiValued: true
+    shared 'inventory_ecom_us', type: 'int'
+    shared 'inventory_ecom_ca', type: 'int'
+    shared 'inventory_okl_branded', type: 'int'
+    shared 'inventory_okl_vintage', type: 'int'
+    shared 'inventory_ropis', type: 'int'
+    shared 'inventory_total', type: 'int'
+    shared 'inventory_store_total', type: 'int'
+    shared 'inventory_vdc_total', type: 'int'
+    shared 'jda_status', type: 'string', multiValued: true
+    shared 'line_of_business', type: 'string', multiValued: true
+    shared 'ltl_flag', type: 'boolean'
+    shared 'personalized', type: 'boolean'
+    shared 'product_type', type: 'string', multiValued: true
+    shared 'size', type: 'string', multiValued: true
+    shared 'tbs_blocked', type: 'int', multiValued: true
+    shared 'units_sold_last_week', type: 'int', source_name: 'units_sold_last_1_week'
+    shared 'units_sold_last_4_weeks', type: 'int'
+    shared 'units_sold_last_8_weeks', type: 'int'
+    shared 'units_sold_last_year', type: 'int', source_name: 'units_sold_last_52_weeks'
+    shared 'vdc_flag', type: 'boolean', source_name: 'vdc_sku'
+    shared 'vintage', type: 'boolean'
+    shared 'web_enabled_date', type: 'date'
 
-    SKU_ONLY_FIELDS = [
-      { name: 'brand_code', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'commission_percent', type: 'float', indexed: true, stored: true },
-      { name: 'cost_cents', type: 'int', indexed: true, stored: true },
-      { name: 'dimensions', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'external_image_url', type: 'string', indexed: true, stored: true, multiValued: true },
-      { name: 'gtin', type: 'string', indexed: true, stored: true },
-      { name: 'limited_qty', type: 'boolean', indexed: true, stored: true },
-      { name: 'margin_percent', type: 'float', indexed: true, stored: true },
-      { name: 'msrp_cents', type: 'int', indexed: true, stored: true },
-      { name: 'on_order_qty', type: 'int', indexed: true, stored: true },
-      { name: 'owned_available', type: 'int', indexed: true, stored: true },
-      { name: 'pre_markdown_price_cents', type: 'int', indexed: true, stored: true },
-      { name: 'store_avail_qty', type: 'int', indexed: true, stored: true },
-      { name: 'total_avail_qty', type: 'int', indexed: true, stored: true },
-      { name: 'vendor_remaining', type: 'int', indexed: true, stored: true },
-      { name: 'upc_ean', type: 'long', indexed: true, stored: true },
-      { name: 'vdc_avail_qty', type: 'int', indexed: true, stored: true },
-      { name: 'vendor_sku', type: 'text_general', indexed: true, stored: true },
-      { name: 'vmf', type: 'boolean', indexed: true, stored: true },
-      { name: 'warehouse_avail_qty', type: 'int', indexed: true, stored: true }
-    ].freeze
+    # hierarchies
+    shared 'eph_tree_node_id', type: 'long', multiValued: true
+    shared 'eph_tree_source_code', type: 'string', multiValued: true
+    shared 'eph_tree_node_name', type: 'text_general', multiValued: true
+    shared 'merch_tree_node_id', type: 'long', multiValued: true
+    shared 'merch_tree_source_code', type: 'string', multiValued: true
+    shared 'merch_tree_node_name', type: 'text_general', multiValued: true
+    shared 'bbby_site_nav_tree_node_id', type: 'long', multiValued: true
+    shared 'bbby_site_nav_tree_source_code', type: 'string', multiValued: true
+    shared 'bbby_site_nav_tree_node_name', type: 'text_general', multiValued: true
+    shared 'ca_site_nav_tree_node_id', type: 'long', multiValued: true
+    shared 'ca_site_nav_tree_source_code', type: 'string', multiValued: true
+    shared 'ca_site_nav_tree_node_name', type: 'text_general', multiValued: true
+    shared 'baby_site_nav_tree_node_id', type: 'long', multiValued: true
+    shared 'baby_site_nav_tree_source_code', type: 'string', multiValued: true
+    shared 'baby_site_nav_tree_node_name', type: 'text_general', multiValued: true
 
-    PRODUCT_ONLY_FIELDS = [
-      { name: 'avg_margin_percent', type: 'float', indexed: true, stored: true },
-      { name: 'min_lead_time', type: 'int', indexed: true, stored: true },
-      { name: 'max_lead_time', type: 'int', indexed: true, stored: true }
-    ].freeze
+    # contribution margin
+    shared 'min_contribution_margin_amount_cents', type: 'int'
+    shared 'max_contribution_margin_amount_cents', type: 'int'
+    shared 'min_contribution_margin_percent', type: 'float'
+    shared 'max_contribution_margin_percent', type: 'float'
+
+    # PDP url
+    shared 'pdp_url', type: 'string', multiValued: true
+
+    #
+    # sku-only fields
+    #
+    sku 'brand_code', type: 'string', multiValued: true
+    sku 'commission_percent', type: 'float'
+    sku 'cost_cents', type: 'int'
+    sku 'dimensions', type: 'string', multiValued: true
+    sku 'external_image_url', type: 'string', multiValued: true
+    sku 'gtin', type: 'string'
+    sku 'limited_qty', type: 'boolean'
+    sku 'margin_percent', type: 'float'
+    sku 'msrp_cents', type: 'int'
+    sku 'on_order_qty', type: 'int'
+    sku 'owned_available', type: 'int'
+    sku 'pre_markdown_price_cents', type: 'int'
+    sku 'store_avail_qty', type: 'int'
+    sku 'total_avail_qty', type: 'int'
+    sku 'vendor_remaining', type: 'int'
+    sku 'upc_ean', type: 'long'
+    sku 'vdc_avail_qty', type: 'int'
+    sku 'vendor_sku', type: 'text_general'
+    sku 'vmf', type: 'boolean'
+    sku 'warehouse_avail_qty', type: 'int'
+
+    #
+    # product-only fields
+    #
+    product 'avg_margin_percent', type: 'float'
+    product 'min_lead_time', type: 'int'
+    product 'max_lead_time', type: 'int'
 
     def self.product_fields
-      SHARED_FIELDS + PRODUCT_ONLY_FIELDS
+      @shared_fields + @product_fields
     end
 
     def self.sku_fields
-      SHARED_FIELDS + SKU_ONLY_FIELDS
+      @shared_fields + @sku_fields
     end
 
     def self.all_fields
-      SHARED_FIELDS + SKU_ONLY_FIELDS + PRODUCT_ONLY_FIELDS
+      @shared_fields + @sku_fields + @product_fields
     end
   end
   # rubocop:enable all

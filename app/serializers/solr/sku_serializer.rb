@@ -13,10 +13,8 @@ module SOLR
 
     attribute :id
     ProductCoreFields.sku_fields.map do |field|
-      attribute field[:name].to_sym
+      attribute field.source_name, key: field.name
     end
-
-    attribute :inventory?, key: :has_inventory
 
     # these attributes do not exist
     stub_attributes :brand_code
@@ -194,21 +192,6 @@ module SOLR
     # TODO: implement me
     def internal_color_family
       ''
-    end
-
-    # attribute name in index does not match name on sku
-    def units_sold_last_week
-      object.units_sold_last_1_week
-    end
-
-    # attribute name in index does not match name on sku
-    def units_sold_last_year
-      object.units_sold_last_52_weeks
-    end
-
-    # attribute name in index does not match name on sku
-    def vdc_flag
-      object.vdc_sku
     end
 
     def item_status
