@@ -9,7 +9,7 @@ solr_client = SolrSchemaApiClient.new(solr_base_url, core)
 
 all_fields = SOLR::ProductCoreFields.all_fields
 
-all_fields.each do |f|
+all_fields.map(&:solr_field_definition).each do |f|
   result = solr_client.add_fields(f)
   puts result
 rescue
