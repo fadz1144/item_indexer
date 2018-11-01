@@ -145,6 +145,10 @@ module SOLR
       object.concept_products&.map(&:name)&.first
     end
 
+    def source_product_id
+      object.concept_products&.map(&:source_product_id)&.uniq
+    end
+
     def category_id
       CatModels::CategoryCache.hierarchy_for(object.category&.category_id).map(&:id)
     end

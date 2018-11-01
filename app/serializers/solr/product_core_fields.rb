@@ -19,6 +19,7 @@ module SOLR
 
     shared 'doc_type', type: 'string'
     shared 'product_id', type: 'long', multiValued: true
+    shared 'source_product_id', type: 'string', multiValued: true
     shared 'sku_id', type: 'long', multiValued: true
     shared 'category_id', type: 'long', multiValued: true
     shared 'category_name', type: 'text_general', multiValued: true
