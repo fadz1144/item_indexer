@@ -1,4 +1,5 @@
 require_relative 'lib/solr_schema_api_client'
+require_relative '../../app/serializers/solr/field_definition'
 require_relative '../../app/serializers/solr/product_core_fields'
 
 # TODO: need to parameterize this
