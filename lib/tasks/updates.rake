@@ -11,5 +11,10 @@ namespace :bridge do
     task web_flags_summary: %i[environment to_stdout] do
       CatalogUpdates::WebFlagsSummary.each { |model| CatalogUpdates::UpdateService.new(model).execute }
     end
+
+    desc 'Update chain status from letter to value (A -> Active'
+    task chain_status: %i[environment to_stdout] do
+      CatalogUpdates::ChainStatus.each { |model| CatalogUpdates::UpdateService.new(model).execute }
+    end
   end
 end
