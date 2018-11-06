@@ -130,6 +130,10 @@ module SOLR
       object.product_ids
     end
 
+    def source_product_id
+      object.products&.flat_map(&:concept_products)&.map(&:source_product_id)&.uniq
+    end
+
     def doc_type
       'sku'
     end
