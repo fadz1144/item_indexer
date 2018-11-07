@@ -27,11 +27,25 @@ module External
       private
 
       def target_skus(sku_ids)
+        target_skus_arel(sku_ids).in_batches do |batch|
+          batch.group_by(&:sku_id).each_pair { |sku_id, concept_skus| yield sku_id, concept_skus }
+        end
+      end
+
+      def target_skus_arel(sku_ids)
         CatModels::ConceptSku
           .where(sku_id: sku_ids, concept_id: CONCEPT_IDS_WITH_INVENTORY)
-          .in_batches do |batch|
-            batch.group_by(&:sku_id).each_pair { |sku_id, concept_skus| yield sku_id, concept_skus }
-          end
+          .joins(:sku)
+          .where.not(canadian_sku_not_sellable_there)
+      end
+
+      def canadian_sku_not_sellable_there
+        <<~SQL
+              concept_skus.concept_id = 2
+          and skus.available_in_ca_dist_cd is null
+          and skus.ca_fulfillment_cd not in ('E', 'R')
+          and skus.transferable_to_canada = false
+        SQL
       end
 
       def update_concept_sku(source, concept_sku)

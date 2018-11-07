@@ -34,6 +34,7 @@ module Transform
 
         def conditionally_load_inventory(target)
           return unless @source.sku.association(:inventory).loaded? && @source.sku.inventory.present?
+          return if @source.canadian_sku_not_sellable_there?
 
           %w[total_avail_qty warehouse_avail_qty vdc_avail_qty].each do |name|
             target.public_send("#{name}=", @source.public_send(name))
@@ -83,6 +84,10 @@ module Transform
 
           def vdc_avail_qty
             vdc_inventory? ? total_avail_qty : 0
+          end
+
+          def canadian_sku_not_sellable_there?
+            concept_id == 2 && !sku&.compliance&.sellable_in_canada?
           end
         end
       end
