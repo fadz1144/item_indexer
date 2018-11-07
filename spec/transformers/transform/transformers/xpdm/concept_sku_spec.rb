@@ -45,6 +45,17 @@ RSpec.describe Transform::Transformers::XPDM::ConceptSku,
         it('updates warehouse_avail_qty') { expect(results.warehouse_avail_qty).to eq 333 }
         it('updates vdc_avail_qty') { expect(results.vdc_avail_qty).to eq 0 }
       end
+
+      context 'canadian_sku_not_sellable_there?' do
+        before { sku.build_inventory(afs_qty: 111, bbb_alt_afs_qty: 222, inv_source: 'W') }
+        let(:compliance) { sku.build_compliance }
+
+        it 'is not loaded when canadian sku not sellable there' do
+          allow(source).to receive(:concept_id).and_return(2)
+          allow(compliance).to receive(:sellable_in_canada?).and_return(false)
+          expect(results.total_avail_qty).to eq 123
+        end
+      end
     end
   end
 

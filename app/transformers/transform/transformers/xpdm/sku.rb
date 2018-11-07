@@ -18,6 +18,7 @@ module Transform
         attribute :rollup_type_name, source_name: :rlup_type_name
         attribute :color_family, source_name: :color_grp_name
         attribute :available_in_ca_dist_cd, association: :compliance, source_name: :avail_for_dstrbn_ca_cd
+        attribute :transferable_to_canada, association: :compliance, source_name: :transferable_to_canada?
         attribute :ca_fulfillment_cd, association: :compliance, source_name: :ec_fulfil_rule_ca_cd
         attribute :ca_fulfillment_name, association: :compliance, source_name: :ec_fulfil_rule_ca_name
         attribute :vdc_sku, association: :logistics, source_name: :vdc_ind
@@ -79,10 +80,6 @@ module Transform
           # testing with subsets sometimes brings in only one of a sku's products, so this just excludes the others
           def product_memberships
             super.reject { |pm| pm.concept_product.nil? }
-          end
-
-          def transferable_to_canada
-            compliance&.transfrbl_to_ca_ind == 'Y'
           end
 
           def vdc_ind
