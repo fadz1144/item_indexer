@@ -57,14 +57,24 @@ module Serializers
     CONCEPT_SKU_LEVEL_TREE_NODES = %i[bbby_site_nav ca_site_nav baby_site_nav].freeze
     TREE_NODE_MAPPING = {
       eph: :eph_tree_node,
-      merch: :merch_class_tree_node
+      merch: :merch_class_tree_node,
+      bbby_site_nav: :site_nav_tree_node,
+      ca_site_nav: :site_nav_tree_node,
+      baby_site_nav: :site_nav_tree_node
     }.freeze
+    CONCEPT_ID_MAPPING = {
+      bbby_site_nav: 1,
+      ca_site_nav: 2,
+      baby_site_nav: 4
+    }.freeze
+
     def tree_node_values(tree, field_sym)
       tree_node_sym = TREE_NODE_MAPPING[tree]
       if SKU_LEVEL_TREE_NODES.include?(tree)
         sku_level_tree_node_values(tree_node_sym, field_sym)
       else
-        concept_skus_node_values(tree_node_sym, field_sym)
+        concept_id = CONCEPT_ID_MAPPING[tree]
+        concept_skus_node_values(tree_node_sym, field_sym, concept_id)
       end
     end
 
@@ -74,11 +84,14 @@ module Serializers
 
     private
 
-    def concept_skus_node_values(tree_node_sym, field_sym)
+    def concept_skus_node_values(tree_node_sym, field_sym, concept_id)
       concept_skus_iterator do |cs|
-        tree_node = cs.public_send(tree_node_sym)
-        tree_node&.map(&field_sym)
-      end.flatten.compact
+        if cs.concept_id == concept_id
+          tree_node = cs.public_send(tree_node_sym)
+          hierarchy = hierarchy_for(tree_node)
+          hierarchy&.map { |h| h[field_sym] }
+        end
+      end.flatten.compact.uniq
     end
 
     def sku_level_tree_node_values(tree_node_sym, field_sym)

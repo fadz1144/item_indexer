@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# this will add any fields that need to be added to the index; equivalent of a db:migrate for SOLR
+bin/apply_solr_schema.sh
+
 if [[ "$INDEX_SEARCH_ENGINE" == "es" ]] ; then
     echo "ES not supported anymore. Only SOLR"
     exit 1
