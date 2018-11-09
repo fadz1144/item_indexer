@@ -1,3 +1,3 @@
 #!/bin/bash
 export SOLR_ENDPOINT="${SOLR_INTERNAL_ENDPOINT}"
-ruby solr/bin/init_solr_index.rb
+ruby solr/bin/apply_solr_schema.rb
