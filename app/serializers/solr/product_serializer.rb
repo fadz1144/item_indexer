@@ -71,6 +71,18 @@ module SOLR
     decorate_tree_node 'merch_tree_source_code', tree: 'merch', field: 'source_code'
     decorate_tree_node 'merch_tree_node_name', tree: 'merch', field: 'name'
 
+    decorate_tree_node 'bbby_site_nav_tree_node_id', tree: 'bbby_site_nav', field: 'id'
+    decorate_tree_node 'bbby_site_nav_tree_source_code', tree: 'bbby_site_nav', field: 'source_code'
+    decorate_tree_node 'bbby_site_nav_tree_node_name', tree: 'bbby_site_nav', field: 'name'
+
+    decorate_tree_node 'ca_site_nav_tree_node_id', tree: 'ca_site_nav', field: 'id'
+    decorate_tree_node 'ca_site_nav_tree_source_code', tree: 'ca_site_nav', field: 'source_code'
+    decorate_tree_node 'ca_site_nav_tree_node_name', tree: 'ca_site_nav', field: 'name'
+
+    decorate_tree_node 'baby_site_nav_tree_node_id', tree: 'baby_site_nav', field: 'id'
+    decorate_tree_node 'baby_site_nav_tree_source_code', tree: 'baby_site_nav', field: 'source_code'
+    decorate_tree_node 'baby_site_nav_tree_node_name', tree: 'baby_site_nav', field: 'name'
+
     bucket 'web_flags_summary', CatModels::Constants::WebFlagsSummary
 
     # TODO: define rollups for these:
@@ -103,13 +115,6 @@ module SOLR
     #   { name: 'vintage', type: 'boolean', indexed: true, stored: true },
     #   { name: 'web_enabled_date', type: 'date', indexed: true, stored: true },
 
-    # hierarchy
-    #   { name: 'bbby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-    #   { name: 'bbby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'bbby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
-    #   { name: 'ca_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-    #   { name: 'ca_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'ca_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
     #   { name: 'baby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
     #   { name: 'baby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'baby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
