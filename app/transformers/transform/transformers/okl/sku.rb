@@ -20,7 +20,7 @@ module Transform
         # references :merch_sub_dept_tree_node
         # references :merch_class_tree_node
 
-        exclude :eph_tree_node_id, :chain_status, :ecom_status, :rollup_type_cd, :rollup_type_name,
+        exclude :eph_tree_node_id, :ecom_status, :rollup_type_cd, :rollup_type_name,
                 :tbs_blocked_reason_cd, :tbs_blocked_reason_name, :available_in_ca_dist_cd, :transferable_to_canada,
                 :ca_fulfillment_cd, :ca_fulfillment_name, :vdc_sku, :jda_description, :pos_description,
                 :units_sold_last_1_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks, :units_sold_last_52_weeks,
@@ -30,6 +30,10 @@ module Transform
         module Decorations
           def image_count
             images.size
+          end
+
+          def chain_status
+            CatModels::Constants::SystemStatus::UNKNOWN
           end
         end
 
