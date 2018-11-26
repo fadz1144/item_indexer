@@ -7,10 +7,6 @@ module External
       scope :beyond_sku, -> { where(pdm_object_type: %w[BeyondSKU BEYONDSKU]) }
       include External::XPDM::DimensionsAccessors
 
-      def self.updates_since(datetime)
-        date_gteq(datetime)
-      end
-
       with_options primary_key: :pdm_object_id, foreign_key: :pdm_object_id, dependent: :destroy do
         has_many :assembly_dimensions, class_name: 'External::XPDM::AssemblyDimensions'
         has_many :package_dimensions, class_name: 'External::XPDM::PackageDimensions'
@@ -36,15 +32,6 @@ module External
 
       def concept_skus
         @concept_skus ||= External::XPDM::ConceptSku.from_parent(self)
-      end
-
-      def description
-        @description ||= External::XPDM::ConceptSkuDescription.new(descriptions)
-      end
-
-      # this allows concept-specific description instances to be created if needed
-      def concept_description(_web_site_id)
-        description
       end
 
       def alt_image_suffixes

@@ -27,6 +27,19 @@ module External
       belongs_to :eph_tree_node, -> { eph }, class_name: 'CatModels::TreeNode', primary_key: :source_code,
                                              foreign_key: :eph_prod_node_id, optional: true
 
+      def self.updates_since(datetime)
+        date_gteq(datetime)
+      end
+
+      def description
+        @description ||= External::XPDM::ConceptSkuDescription.new(descriptions)
+      end
+
+      # this allows concept-specific description instances to be created if needed
+      def concept_description(_web_site_id)
+        description
+      end
+
       def chain_status
         PDM::SystemStatusMapper.value(chain_status_cd)
       end
