@@ -10,10 +10,6 @@ module External
       include PDM::WebFlagsSummarizer
       include External::XPDM::TransformerNonActiveRecordModel
 
-      WEB_SITES = { 'BBBY' => 'www.bedbathandbeyond.com',
-                    'CA' => 'www.bedbathandbeyond.ca',
-                    'BABY' => 'www.buybuybaby.com' }.freeze
-
       attr_reader :parent
 
       delegate :web_site_cd, :web_offer_ind, :web_dsable_ind, :web_offer_dt, to: :@state
