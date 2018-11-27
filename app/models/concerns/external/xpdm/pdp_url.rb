@@ -7,7 +7,8 @@ module External
                     'BABY' => 'www.buybuybaby.com' }.freeze
 
       def pdp_url
-        "#{WEB_SITES[web_site_cd]}/store/product/#{mstr_prod_desc&.parameterize || 'pc'}/#{parent.pdm_object_id.to_i}"
+        descr_param = mstr_prod_desc&.parameterize || 'pc'
+        "https://#{WEB_SITES[web_site_cd]}/store/product/#{descr_param}/#{parent.pdm_object_id.to_i}"
       end
     end
   end

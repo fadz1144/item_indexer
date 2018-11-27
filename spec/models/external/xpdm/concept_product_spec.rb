@@ -36,23 +36,23 @@ RSpec.describe External::XPDM::ConceptProduct, skip: !Rails.configuration.settin
 
     it 'for BBBY' do
       state.web_site_cd = 'BBBY'
-      expect(concept_product.pdp_url).to eq 'www.bedbathandbeyond.com/store/product/roll-on-you-bears/123456'
+      expect(concept_product.pdp_url).to eq 'https://www.bedbathandbeyond.com/store/product/roll-on-you-bears/123456'
     end
 
     it 'for CA' do
       state.web_site_cd = 'CA'
-      expect(concept_product.pdp_url).to eq 'www.bedbathandbeyond.ca/store/product/roll-on-you-bears/123456'
+      expect(concept_product.pdp_url).to eq 'https://www.bedbathandbeyond.ca/store/product/roll-on-you-bears/123456'
     end
 
     it 'for BABY' do
       state.web_site_cd = 'BABY'
-      expect(concept_product.pdp_url).to eq 'www.buybuybaby.com/store/product/roll-on-you-bears/123456'
+      expect(concept_product.pdp_url).to eq 'https://www.buybuybaby.com/store/product/roll-on-you-bears/123456'
     end
 
     it 'uses pc as default when no name present' do
       description.mstr_prod_desc = nil
       state.web_site_cd = 'BBBY'
-      expect(concept_product.pdp_url).to eq 'www.bedbathandbeyond.com/store/product/pc/123456'
+      expect(concept_product.pdp_url).to eq 'https://www.bedbathandbeyond.com/store/product/pc/123456'
     end
   end
 
