@@ -17,6 +17,13 @@ module External
         0
       end
 
+      def created_updated_stamp_attributes
+        { source_created_at: source_created_at,
+          source_updated_at: source_updated_at,
+          source_created_by: source_created_by,
+          source_updated_by: source_updated_by }
+      end
+
       private
 
       def default_timestamp
