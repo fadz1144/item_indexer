@@ -9,6 +9,7 @@ module Transform
         include Transform::Transformers::XPDM::SharedReferences
 
         has_many :concept_products, source_name: :concept_products, match_keys: [:concept]
+        has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
 
         exclude :category_id, :membership_hash
 
@@ -20,7 +21,8 @@ module Transform
            :states, :descriptions,
            { bbby_site_navigation: { site_nav_tree_node: :tree } },
            { ca_site_navigation: { site_nav_tree_node: :tree } },
-           { baby_site_navigation: { site_nav_tree_node: :tree } }]
+           { baby_site_navigation: { site_nav_tree_node: :tree } },
+           :cm_tags]
         end
 
         def assign_web_flags_summary(target)

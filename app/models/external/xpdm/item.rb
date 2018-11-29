@@ -14,6 +14,7 @@ module External
         has_many :web_info_sites
         has_many :descriptions
         has_one :image_relation
+        has_many :cm_tags
       end
 
       belongs_to :concept_brand, -> { where(concept_id: 99) },

@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'support/transformer_examples'
+require 'support/shared_examples_for_cm_tags_transformation'
 
 RSpec.describe Transform::Transformers::XPDM::Collection,
                skip: !Rails.configuration.settings['enable_pdm_connection'] do
@@ -20,6 +21,7 @@ RSpec.describe Transform::Transformers::XPDM::Collection,
   before { allow(Transform::ConceptCache).to receive(:fetch).and_return(CatModels::Concept.new) }
 
   it_behaves_like 'valid transformer'
+  it_behaves_like 'transformation includes tags'
 
   context 'with two products' do
     before do

@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'support/transformer_examples'
+require 'support/shared_examples_for_cm_tags_transformation'
 
 RSpec.describe Transform::Transformers::XPDM::Product, skip: !Rails.configuration.settings['enable_pdm_connection'] do
   let(:concept_vendor) { CatModels::ConceptVendor.new(concept_id: 99) }
@@ -19,4 +20,5 @@ RSpec.describe Transform::Transformers::XPDM::Product, skip: !Rails.configuratio
   before { allow(Transform::ConceptCache).to receive(:fetch).and_return(CatModels::Concept.new) }
 
   it_behaves_like 'valid transformer'
+  it_behaves_like 'transformation includes tags'
 end

@@ -10,6 +10,7 @@ module Transform
 
         has_many :concept_collections, source_name: :concept_collections, match_keys: [:concept]
         has_many :collection_memberships, source_name: :collection_memberships, match_keys: [:product_id]
+        has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help
         def self.source_includes
@@ -21,7 +22,8 @@ module Transform
            { ca_site_navigation: { site_nav_tree_node: :tree } },
            { baby_site_navigation: { site_nav_tree_node: :tree } },
            :web_info_sites,
-           { collection_memberships: { concept_product: :product } }]
+           { collection_memberships: { concept_product: :product } },
+           :cm_tags]
         end
 
         def assign_web_flags_summary(target)
