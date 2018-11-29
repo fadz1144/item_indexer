@@ -48,6 +48,17 @@ namespace :xpdm do # rubocop:disable all
       .full
   end
 
+  desc 'Load collections'
+  task load_collections: %i[verify_token environment build_concept_cache] do
+    External::DirectLoadService.new(External::XPDM::CollectionLoader.new).full
+  end
+
+  desc 'Load tags for products and skus (one-time only, does not check for existing values!)'
+  task load_tags: %i[verify_token environment build_concept_cache] do
+    External::DirectLoadService.new(External::XPDM::ProductTagLoader.new).full
+    External::DirectLoadService.new(External::XPDM::SkuTagLoader.new).full
+  end
+
   desc 'One task to rule them all'
   task load_all_data: %i[load_support_data load_products load_skus]
 
@@ -105,13 +116,14 @@ namespace :xpdm do # rubocop:disable all
       .partial(External::XPDM::Sku.beyond_sku.where(update_ts: (start..stop)))
   end
 
-  desc 'Load product and sku changes, ' \
+  desc 'Load product, collection, and sku changes with ' \
        'optional last updated timestamp (`rails xpdm:incremental_products_and_skus[2018-10-27T00:00]`)'
-  task :incremental_products_and_skus, %i[updates_since] =>
+  task :incremental_products_collections_and_skus, %i[updates_since] =>
     %i[verify_token environment build_concept_cache reload_product_membership] do |_task, args|
     updates_since = args.updates_since&.to_datetime
     Rails.logger.info "xpdm::incremental_products_and_skus #{updates_since}"
     External::DirectLoadService.new(External::XPDM::ProductLoader.new).incremental(updates_since)
+    External::DirectLoadService.new(External::XPDM::CollectionLoader.new).incremental(updates_since)
     External::DirectLoadService.new(External::XPDM::SkuLoader.new).incremental(updates_since)
   end
 
