@@ -53,10 +53,12 @@ module External
       self.table_name = 'pdm_item_web_info'
       INCLUDED_COLUMNS = %w[pdm_object_id
                             blck_rsn_cd
-                            blck_rsn_name].freeze
+                            blck_rsn_name
+                            email_cust_for_oos_ind].freeze
       default_scope -> { select(INCLUDED_COLUMNS) }
 
       belongs_to :item, foreign_key: :pdm_object_id, primary_key: :pdm_object_id, inverse_of: :web_info
+      attribute :email_cust_for_oos_ind, :xpdm_boolean_ind
     end
   end
 end

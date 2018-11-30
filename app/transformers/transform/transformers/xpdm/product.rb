@@ -11,6 +11,7 @@ module Transform
         has_many :concept_products, source_name: :concept_products, match_keys: [:concept]
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
 
+        attribute :restock_notifiable, association: :web_info, source_name: :email_cust_for_oos_ind
         exclude :category_id, :membership_hash
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help

@@ -25,6 +25,7 @@ module Transform
         attribute :vdc_sku, association: :logistics, source_name: :vdc_ind
         attribute :tbs_blocked_reason_cd, association: :web_info, source_name: :blck_rsn_cd
         attribute :tbs_blocked_reason_name, association: :web_info, source_name: :blck_rsn_name
+        attribute :restock_notifiable, association: :web_info, source_name: :email_cust_for_oos_ind
 
         # TODO: unit of measure
         # TODO: non-taxable

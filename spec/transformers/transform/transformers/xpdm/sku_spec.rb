@@ -59,6 +59,11 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
       it('ca_fulfillment_cd') { expect(values['ca_fulfillment_cd']).to eq 'E' }
       it('ca_fulfillment_name') { expect(values['ca_fulfillment_name']).to eq 'Standard ECOM Processing' }
     end
+
+    it 'restock_notifiable' do
+      source.build_web_info(email_cust_for_oos_ind: true)
+      expect(values['restock_notifiable']).to be true
+    end
   end
 
   context 'with two products' do
