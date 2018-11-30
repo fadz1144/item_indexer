@@ -24,7 +24,7 @@ module Transform
                 :tbs_blocked_reason_cd, :tbs_blocked_reason_name, :available_in_ca_dist_cd, :transferable_to_canada,
                 :ca_fulfillment_cd, :ca_fulfillment_name, :vdc_sku, :jda_description, :pos_description,
                 :units_sold_last_1_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks, :units_sold_last_52_weeks,
-                :merch_dept_tree_node_id, :merch_sub_dept_tree_node_id, :merch_class_tree_node_id,
+                :merch_dept_tree_node_id, :merch_sub_dept_tree_node_id, :merch_class_tree_node_id, :restock_notifiable,
                 allow_primary_key: true
 
         module Decorations
