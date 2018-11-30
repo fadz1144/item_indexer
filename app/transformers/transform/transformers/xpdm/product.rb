@@ -12,6 +12,8 @@ module Transform
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
 
         attribute :restock_notifiable, association: :web_info, source_name: :email_cust_for_oos_ind
+        attribute :vdc_min_days_to_ship, association: :logistics, source_name: :vdc_min_day_to_shp
+        attribute :vdc_max_days_to_ship, association: :logistics, source_name: :vdc_max_day_to_shp
         exclude :category_id, :membership_hash
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help

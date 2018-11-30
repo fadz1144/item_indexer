@@ -26,6 +26,8 @@ module Transform
         attribute :tbs_blocked_reason_cd, association: :web_info, source_name: :blck_rsn_cd
         attribute :tbs_blocked_reason_name, association: :web_info, source_name: :blck_rsn_name
         attribute :restock_notifiable, association: :web_info, source_name: :email_cust_for_oos_ind
+        attribute :vdc_min_days_to_ship, association: :logistics, source_name: :vdc_min_day_to_shp
+        attribute :vdc_max_days_to_ship, association: :logistics, source_name: :vdc_max_day_to_shp
 
         # TODO: unit of measure
         # TODO: non-taxable

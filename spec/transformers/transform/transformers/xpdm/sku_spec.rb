@@ -64,6 +64,12 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
       source.build_web_info(email_cust_for_oos_ind: true)
       expect(values['restock_notifiable']).to be true
     end
+
+    context 'VDC ship days' do
+      before { source.build_logistics(vdc_min_day_to_shp: 18, vdc_max_day_to_shp: 68) }
+      it('vdc_min_days_to_ship') { expect(values['vdc_min_days_to_ship']).to eq 18 }
+      it('vdc_max_days_to_ship') { expect(values['vdc_max_days_to_ship']).to eq 68 }
+    end
   end
 
   context 'with two products' do
