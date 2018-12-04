@@ -132,4 +132,14 @@ namespace :xpdm do # rubocop:disable all
     puts "Product count from PC: #{CatModels::Product.count}"
     puts "Product count from XPDM: #{External::XPDM::Product.count}"
   end
+
+  desc 'Backfill product web status'
+  task backfill_product_web_status: %i[verify_token environment] do
+    External::DirectLoadService.new(External::XPDM::ProductWebStatusBackfill.new).full
+  end
+
+  desc 'Backfill sku web status'
+  task backfill_sku_web_status: %i[verify_token environment] do
+    External::DirectLoadService.new(External::XPDM::SkuWebStatusBackfill.new).full
+  end
 end
