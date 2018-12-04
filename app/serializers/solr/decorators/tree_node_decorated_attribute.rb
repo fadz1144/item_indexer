@@ -19,11 +19,9 @@ module SOLR
         end
 
         def define_tree_node_method(field, tree)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{field.field_name}
-            RollupField.sku_tree_node_result(service, :#{tree}, :#{field.field}, #{field.quoted_group_action}, #{field.quoted_format})
+          define_method(field.field_name) do
+            field.group_and_format(service.tree_node_values(tree.to_sym, field.field))
           end
-          RUBY
         end
       end
     end

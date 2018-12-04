@@ -45,6 +45,8 @@ module SOLR
     decorate_pricing 'min_margin_amount_cents', field: 'margin_amount', group: 'min', format: 'currency_cents'
     decorate_pricing 'max_margin_amount_cents', field: 'margin_amount', group: 'max', format: 'currency_cents'
     decorate_pricing 'avg_margin_percent', field: 'margin_percent', group: 'avg'
+    decorate_pricing 'min_margin', field: 'margin_percent', group: 'min', format: 'percent_units'
+    decorate_pricing 'max_margin', field: 'margin_percent', group: 'max', format: 'percent_units'
 
     # contribution margin
     decorate_pricing 'min_contribution_margin_amount_cents', field: 'contribution_margin_amount', group: 'min',

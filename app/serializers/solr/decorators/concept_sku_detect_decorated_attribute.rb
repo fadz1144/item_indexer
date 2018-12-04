@@ -18,11 +18,11 @@ module SOLR
         end
 
         def define_detect_method(field)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{field.field_name}
-            RollupField.detect_value(object, :#{field.field}, #{field.quoted_group_action}, #{field.quoted_format})
+          define_method(field.field_name) do
+            field_sym = field.field.to_sym
+            value = object.concept_skus&.detect(&field_sym)&.public_send(field_sym)
+            field.group_and_format(value)
           end
-          RUBY
         end
       end
     end
