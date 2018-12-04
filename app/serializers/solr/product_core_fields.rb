@@ -44,6 +44,8 @@ module SOLR
     shared 'max_price_cents', type: 'int'
     shared 'min_margin_amount_cents', type: 'int'
     shared 'max_margin_amount_cents', type: 'int'
+    shared 'min_margin', type: 'int'
+    shared 'max_margin', type: 'int'
     shared 'name', type: 'text_general'
     shared 'shipping_method', type: 'string', multiValued: true
     shared 'web_status', type: 'string', multiValued: true

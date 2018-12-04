@@ -53,6 +53,8 @@ module SOLR
     decorate_pricing 'max_margin_amount', field: 'margin_amount', group: 'max'
     decorate_pricing 'min_margin_amount_cents', field: 'margin_amount', group: 'min', format: 'currency_cents'
     decorate_pricing 'max_margin_amount_cents', field: 'margin_amount', group: 'max', format: 'currency_cents'
+    decorate_pricing 'min_margin', field: 'margin_percent', group: 'min', format: 'percent_units'
+    decorate_pricing 'max_margin', field: 'margin_percent', group: 'max', format: 'percent_units'
     decorate_pricing 'pre_markdown_price', field: 'pre_markdown_price', group: 'max'
     decorate_pricing 'pre_markdown_price_cents', field: 'pre_markdown_price', group: 'max', format: 'currency_cents'
 

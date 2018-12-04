@@ -4,7 +4,7 @@ module SOLR
     attr_reader :field_name, :field, :access_sub_type, :group_action, :format
 
     VALID_GROUP_ACTIONS = [:min, :max, :avg, :first, nil].freeze
-    VALID_FORMATS = [:currency, :currency_cents, nil].freeze
+    VALID_FORMATS = [:currency, :currency_cents, :percent_units, nil].freeze
 
     # Defines how we roll up the field
     # field_name: the name of the field we want written to SOLR
@@ -31,6 +31,10 @@ module SOLR
       @format == :currency
     end
 
+    def percent_units?
+      @format == :percent_units
+    end
+
     def quoted_group_action
       @group_action.present? ? ":#{@group_action}" : 'nil'
     end
@@ -44,6 +48,8 @@ module SOLR
         as_currency(value)
       elsif currency_cents?
         as_currency_cents(value)
+      elsif percent_units?
+        as_percent_units(value)
       end
     end
 
@@ -65,6 +71,8 @@ module SOLR
         as_currency(value)
       elsif type&.to_sym == :currency_cents
         as_currency_cents(value)
+      elsif type&.to_sym == :percent_units
+        as_percent_units(value)
       else
         value
       end
@@ -75,6 +83,12 @@ module SOLR
     end
 
     def self.as_currency_cents(value)
+      return 0 unless value
+
+      (value * 100.0).to_i
+    end
+
+    def self.as_percent_units(value)
       return 0 unless value
 
       (value * 100.0).to_i
