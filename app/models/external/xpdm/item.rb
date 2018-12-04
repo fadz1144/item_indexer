@@ -32,6 +32,10 @@ module External
         date_gteq(datetime)
       end
 
+      def self.no_updates_since(datetime)
+        date_lteq(datetime)
+      end
+
       def description
         @description ||= External::XPDM::ConceptSkuDescription.new(descriptions)
       end
