@@ -17,6 +17,7 @@ module Transform
         attribute :size_cd, association: :sku
         attribute :size_name, association: :sku
         attribute :color, association: :sku, source_name: :color_name
+        attribute :ltl_eligible, association: :sku, source_name: :ltl_item_ind
 
         has_one :concept_sku_dimensions
         has_one :concept_sku_pricing
@@ -24,7 +25,7 @@ module Transform
 
         exclude :concept_category_id, :status_reason_cd, :era, :style, :materials, :care_instructions,
                 :care_instructions_other, :lead_time, :lead_time_bucket, :aad_min_offset_days, :aad_max_offset_days,
-                :ltl_eligible, :threshold_eligible, :shipping_method,
+                :threshold_eligible, :shipping_method,
                 :total_avail_qty, :warehouse_avail_qty, :stores_avail_qty, :vdc_avail_qty, :on_order_qty, :limited_qty,
                 :allow_exposure, :returnable, :made_to_order, :assembly_required,
                 :exclusivity_tier, :suspended_reason,

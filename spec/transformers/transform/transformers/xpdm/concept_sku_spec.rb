@@ -65,5 +65,10 @@ RSpec.describe Transform::Transformers::XPDM::ConceptSku,
     it('name') { expect(values['name']).to eq 'Oski' }
     it('description') { expect(values['description']).to eq 'Golden Bear' }
     it('details') { expect(values['details']).to eq 'Roll on you Bears!' }
+
+    it 'ltl_eligible' do
+      sku.build_logistics(ltl_item_ind: true)
+      expect(values['ltl_eligible']).to be true
+    end
   end
 end
