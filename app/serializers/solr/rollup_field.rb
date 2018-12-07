@@ -1,6 +1,6 @@
 module SOLR
   # TODO: rename this class to DecoratedField
-  class RollupField # rubocop:disable ClassLength
+  class RollupField
     attr_reader :field_name, :field, :access_sub_type, :group_action, :format
 
     VALID_GROUP_ACTIONS = [:min, :max, :avg, :first, nil].freeze
@@ -94,10 +94,6 @@ module SOLR
 
       def sku_pricing_result(service, access_field, group_action, format_type)
         group_and_format_results(service.sku_pricing_field_values(access_field), group_action, format_type)
-      end
-
-      def sku_tree_node_result(service, tree, access_field, group_action, format_type)
-        group_and_format_results(service.tree_node_values(tree, access_field), group_action, format_type)
       end
 
       def field_unique_values_result(service, access_field, group_action, format_type)

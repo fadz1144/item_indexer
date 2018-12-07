@@ -20,7 +20,8 @@ module SOLR
 
         def define_tree_node_method(field, tree)
           define_method(field.field_name) do
-            RollupField.sku_tree_node_result(service, tree.to_sym, field.field, field.group_action, field.format)
+            RollupField.group_and_format_results(service.tree_node_values(tree.to_sym, field.field),
+                                                 field.group_action, field.format)
           end
         end
       end
