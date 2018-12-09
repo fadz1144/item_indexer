@@ -20,8 +20,7 @@ module Transform
 
           target.brand = External::MissingBrandService.no_brand_assigned
           concept_brand = target.brand.concept_brands.first
-          association_name = "concept_#{target.class.name.demodulize.downcase.pluralize}"
-          target.public_send(association_name).each { |ci| ci.concept_brand = concept_brand }
+          target.concept_children.each { |ci| ci.concept_brand = concept_brand }
         end
       end
     end

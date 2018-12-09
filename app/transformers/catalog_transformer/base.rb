@@ -43,8 +43,7 @@ module CatalogTransformer
     def attribute_values
       attributes.each_with_object({}) do |attribute, memo|
         record = @source.public_send(attribute.source_record_name)
-        next if record.nil?
-        memo[attribute.name] = attribute_value(record, attribute.source_name)
+        memo[attribute.name] = record.nil? ? nil : attribute_value(record, attribute.source_name)
       end
     end
 
