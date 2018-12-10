@@ -14,7 +14,7 @@ module External
       end
 
       def transform(engine, arel)
-        arel.preload(Transform::Transformers::XPDM::Collection.source_includes).in_batches(of: 10) do |collections|
+        arel.preload(Transform::Transformers::XPDM::Collection.source_includes).in_batches do |collections|
           engine.transform_items(collections)
         end
       end
