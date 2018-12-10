@@ -8,7 +8,7 @@ module External
     end
 
     def date_lteq(datetime, field_name = :update_ts)
-      where_clause(datetime, field_name, '<=')
+      where_clause(datetime, field_name, '<=').or(where(field_name => nil))
     end
 
     private

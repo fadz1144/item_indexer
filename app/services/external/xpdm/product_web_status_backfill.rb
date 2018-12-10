@@ -6,7 +6,7 @@ module External
 
       # on the parent, we only need pdm_object_id
       def base_arel
-        model.no_updates_since('2018-11-05'.to_datetime)
+        model.no_updates_since('2018-11-04'.to_datetime)
       end
 
       def transformer_class
