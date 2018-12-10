@@ -121,15 +121,34 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
     before do
       source.concept_brand = nil
       allow(External::MissingBrandService).to receive(:no_brand_assigned).and_return(no_brand_assigned)
-      transformer.apply_transformation(target)
     end
 
-    it 'assigns dummy brand' do
-      expect(target.brand).to be no_brand_assigned
+    context 'for new sku' do
+      before { transformer.apply_transformation(target) }
+      it 'assigns dummy brand' do
+        expect(target.brand).to be no_brand_assigned
+      end
+
+      it 'assigns dummy concept brand' do
+        expect(target.concept_skus.all? { |cs| cs.concept_brand == concept_brand }).to be true
+      end
     end
 
-    it 'assigns dummy concept brand' do
-      expect(target.concept_skus.all? { |cs| cs.concept_brand == concept_brand }).to be true
+    context 'for existing sku with brand' do
+      let(:target) do
+        CatModels::Sku.new.tap do |s|
+          s.brand = no_brand_assigned
+          [1, 2, 4].each do |concept_id|
+            s.concept_skus.build(concept_id: concept_id, concept_brand: concept_brand)
+          end
+        end
+      end
+      before { transformer.apply_transformation(target) }
+
+      it 'does not clear concept brands' do
+        expect(target.concept_skus.map(&:concept_brand).map(&:object_id).uniq)
+          .to contain_exactly(concept_brand.object_id)
+      end
     end
   end
 
