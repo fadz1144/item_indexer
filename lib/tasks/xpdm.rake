@@ -127,6 +127,20 @@ namespace :xpdm do # rubocop:disable all
     External::DirectLoadService.new(External::XPDM::SkuLoader.new).incremental(updates_since)
   end
 
+  desc 'Updates for items without a brand'
+  task update_items_without_brand: %i[verify_token environment build_concept_cache] do
+    Rails.logger.info 'xpdm::update_items_without_brand'
+    External::DirectLoadService
+      .new(External::XPDM::ProductLoader.new)
+      .partial(External::XPDM::Product.web_product.where(brand_cd: nil).updates_since('2018-10-03'.to_datetime))
+    External::DirectLoadService
+      .new(External::XPDM::CollectionLoader.new)
+      .partial(External::XPDM::Collection.web_collection.where(brand_cd: nil).updates_since('2018-11-29'.to_datetime))
+    External::DirectLoadService
+      .new(External::XPDM::SkuLoader.new)
+      .partial(External::XPDM::Sku.beyond_sku.where(brand_cd: nil).updates_since('2018-10-03'.to_datetime))
+  end
+
   desc 'Test connectivity'
   task test_connectivity: %i[verify_token environment] do
     puts "Product count from PC: #{CatModels::Product.count}"
