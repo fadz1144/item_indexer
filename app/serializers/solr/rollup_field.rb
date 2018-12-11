@@ -96,20 +96,12 @@ module SOLR
         group_and_format_results(service.sku_pricing_field_values(access_field), group_action, format_type)
       end
 
-      def field_unique_values_result(service, access_field, group_action, format_type)
-        group_and_format_results(service.field_unique_values(access_field), group_action, format_type)
-      end
-
       def concept_skus_any(service, field, group_action, format_type)
         group_and_format_results(service.concept_skus_any?(&field), group_action, format_type)
       end
 
       def concept_skus_uniq_values(service, field, group_action, format_type)
         group_and_format_results(service.concept_skus_iterator_uniq(&field), group_action, format_type)
-      end
-
-      def decorated_skus_uniq_values(service, field, group_action, format_type)
-        group_and_format_results(service.decorated_skus_iterator_uniq(&field), group_action, format_type)
       end
 
       def detect_value(object, field, group_action, format_type)

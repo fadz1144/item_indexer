@@ -18,11 +18,15 @@ module SOLR
         end
 
         def define_concept_skus_method(field)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{field.field_name}
-            RollupField.concept_skus_uniq_values(service, :#{field.field}, #{field.quoted_group_action}, #{field.quoted_format})
+          define_method(field.field_name) do
+            RollupField.concept_skus_uniq_values(service, field.field.to_sym, field.group_action, field.format)
           end
-          RUBY
+          # class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          # def #{field.field_name}
+          #   RollupField.concept_skus_uniq_values(service, :#{field.field}, #{field.quoted_group_action},
+          #                                        #{field.quoted_format})
+          # end
+          # RUBY
         end
       end
     end

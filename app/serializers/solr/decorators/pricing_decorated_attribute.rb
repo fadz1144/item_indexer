@@ -20,11 +20,10 @@ module SOLR
         end
 
         def define_pricing_method(field)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{field.field_name}
-            RollupField.sku_pricing_result(service, :#{field.field}, #{field.quoted_group_action}, #{field.quoted_format})
+          define_method(field.field_name) do
+            pricing_value = service.sku_pricing_field_values(field.field)
+            RollupField.group_and_format_results(pricing_value, field.group_action, field.format)
           end
-          RUBY
         end
       end
     end

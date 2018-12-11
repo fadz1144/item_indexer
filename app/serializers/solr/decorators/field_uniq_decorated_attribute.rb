@@ -19,11 +19,10 @@ module SOLR
         end
 
         def define_field_unique_method(field)
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{field.field_name}
-            RollupField.field_unique_values_result(service, :#{field.field}, #{field.quoted_group_action}, #{field.quoted_format})
+          define_method(field.field_name) do
+            RollupField.group_and_format_results(service.field_unique_values(field.field),
+                                                 field.group_action, field.format)
           end
-          RUBY
         end
       end
     end
