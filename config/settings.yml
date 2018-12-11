@@ -1,4 +1,5 @@
 default_settings: &defaults
+  enable_pdm_connection: <%= 'true' == ENV.fetch('ENABLE_PDM_CONNECTION', 'false') %>
   solr:
     enabled: <%= ENV.fetch('SOLR_ENABLED', 'true') == 'true' %>
     endpoint: <%= ENV.fetch('SOLR_ENDPOINT') %>

@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'support/transformer_examples'
 require 'support/shared_examples_for_cm_tags_transformation'
+require 'support/shared_examples_for_promo_attributes_transformation'
 
 RSpec.describe Transform::Transformers::XPDM::Collection,
                skip: !Rails.configuration.settings['enable_pdm_connection'] do
@@ -22,6 +23,7 @@ RSpec.describe Transform::Transformers::XPDM::Collection,
 
   it_behaves_like 'valid transformer'
   it_behaves_like 'transformation includes tags'
+  it_behaves_like 'transformation includes promo attributes'
 
   context 'with two products' do
     before do

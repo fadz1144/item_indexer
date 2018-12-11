@@ -31,3 +31,20 @@ production:
   host: <%= ENV.fetch('DATABASE_HOST') %>
   username: <%= ENV.fetch('DATABASE_USER') %>
   password: "<%= ENV.fetch('DATABASE_PASSWORD') %>"
+
+external_pdm_development: &external_development
+  adapter: oracle_enhanced
+  statement_limit: 300
+  schema: 'PDMADMIN'
+  url: "<%= ENV.fetch('PDMADMIN_URL', 'no-oracle-present://lalala') %>"
+
+external_pdm_test: &external_pdm_test
+  adapter: oracle_enhanced
+  statement_limit: 300
+  schema: 'TESTUSER'
+  url: "oracle-enhanced://TESTUSER:test@localhost:1521/XE"
+
+external_ecom_test:
+  <<: *external_pdm_test
+  schema: 'ECOMADMIN'
+  url: "oracle-enhanced://ECOMADMIN:test@localhost:1521/XE"

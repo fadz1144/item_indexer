@@ -8,10 +8,10 @@ RSpec.shared_examples 'valid transformer' do
   end
 
   it '#attribute_values does not raise error' do
-    expect { transformer.attribute_values }.not_to raise_exception
+    expect { transformer.attribute_values }.not_to raise_error
   end
 
   it '#apply_transformation does not raise error' do
-    expect { transformer.apply_transformation(target) }.not_to raise_exception
+    expect { transformer.apply_transformation(target) }.not_to raise_error
   end
 end

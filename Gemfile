@@ -77,7 +77,7 @@ group :development do
 
   gem 'guard'
   gem 'guard-rspec'
-  gem 'rubocop', '~> 0.49', require: false
+  gem 'rubocop', '= 0.58.2', require: false
   gem 'rubocop-rspec'
   gem 'guard-rubocop'
   gem 'debase'  # I was unable to debug locally without adding this

@@ -11,9 +11,10 @@ module Transform
         has_many :concept_collections, source_name: :concept_collections, match_keys: [:concept]
         has_many :collection_memberships, source_name: :collection_memberships, match_keys: [:product_id]
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
+        has_many :promo_attributes, source_name: :promo_attribute_attachments, match_keys: [:promo_cd]
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help
-        def self.source_includes
+        def self.source_includes # rubocop:disable Metrics/MethodLength
           [{ item_vendor: { concept_vendor: :vendor } }, { concept_brand: :brand },
            { eph_tree_node: :tree },
            { merch_dept_tree_node: :tree }, { merch_sub_dept_tree_node: :tree }, { merch_class_tree_node: :tree },
@@ -23,6 +24,7 @@ module Transform
            { baby_site_navigation: { site_nav_tree_node: :tree } },
            :web_info_sites,
            { collection_memberships: { concept_product: :product } },
+           { promo_attribute_attachments: :all_concept_flags },
            :cm_tags]
         end
 
