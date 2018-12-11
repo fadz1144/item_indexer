@@ -22,7 +22,7 @@ module SOLR
         def define_pricing_method(field)
           define_method(field.field_name) do
             pricing_value = service.sku_pricing_field_values(field.field)
-            RollupField.group_and_format_results(pricing_value, field.group_action, field.format)
+            field.group_and_format(pricing_value)
           end
         end
       end

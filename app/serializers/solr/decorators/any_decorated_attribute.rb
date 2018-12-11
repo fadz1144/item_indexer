@@ -20,7 +20,8 @@ module SOLR
 
         def define_concept_skus_any_method(field)
           define_method(field.field_name) do
-            RollupField.concept_skus_any(service, field.field.to_sym, field.group_action, field.format)
+            value = service.concept_skus_any?(&field.field.to_sym)
+            field.group_and_format(value)
           end
         end
       end

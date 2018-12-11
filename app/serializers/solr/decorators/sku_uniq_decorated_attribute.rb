@@ -20,7 +20,7 @@ module SOLR
         def define_decorated_unique_method(field)
           define_method(field.field_name) do
             uniq_value = service.decorated_skus_iterator_uniq(&field.field)
-            RollupField.group_and_format_results(uniq_value, field.group_action, field.format)
+            field.group_and_format(uniq_value)
           end
         end
       end

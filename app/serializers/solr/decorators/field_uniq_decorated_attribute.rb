@@ -20,8 +20,7 @@ module SOLR
 
         def define_field_unique_method(field)
           define_method(field.field_name) do
-            RollupField.group_and_format_results(service.field_unique_values(field.field),
-                                                 field.group_action, field.format)
+            field.group_and_format(service.field_unique_values(field.field))
           end
         end
       end
