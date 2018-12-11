@@ -1,22 +1,19 @@
 require 'rails_helper'
 
-module SOLR
-  module Decorators
-    module Constants
-      class TestConstants
-        CONSTANT_ONE = 'Constant 1'.freeze
-        CONSTANT_TWO = 'Constant Two'.freeze
-      end
-    end
-  end
-end
-
 RSpec.describe SOLR::Decorators::ConstantAttributeBuckets do
   let(:serializer) do
     Class.new do
       include SOLR::Decorators::ConstantAttributeBuckets
 
-      bucket 'some_constants', SOLR::Decorators::Constants::TestConstants
+      constants_class = Class.new do
+        attr_reader :constants
+
+        def initialize(constants)
+          @constants = constants
+        end
+      end.new %w[Cardinal White]
+
+      bucket 'some_constants', constants_class
 
       attr_reader :service
 
@@ -27,9 +24,21 @@ RSpec.describe SOLR::Decorators::ConstantAttributeBuckets do
   end
 
   context 'one' do
-    let(:concepts) { Object.new }
-    it { expect { serializer.some_constants_constant_one }.not_to raise_exception }
-    it { expect { serializer.some_constants_constant_two }.not_to raise_exception }
-    it { expect { serializer.some_constants_constant_three }.to raise_error(NoMethodError) }
+    let(:concepts) { [1] }
+    it { expect { serializer.some_constants_cardinal }.not_to raise_exception }
+    it { expect { serializer.some_constants_white }.not_to raise_exception }
+    it { expect { serializer.some_constants_blue }.to raise_error(NoMethodError) }
+  end
+
+  context 'constants' do
+    let(:concepts) { [2] }
+    it { expect(serializer.respond_to?(:cardinal?)) }
+    it { expect(serializer.respond_to?(:white?)) }
+    it { expect(!serializer.respond_to?(:blue?)) }
+  end
+
+  context 'concept ids as result' do
+    let(:concepts) { [3] }
+    it { expect(serializer.some_constants_cardinal).to eq [3] }
   end
 end
