@@ -28,14 +28,6 @@ module External
       belongs_to :eph_tree_node, -> { eph }, class_name: 'CatModels::TreeNode', primary_key: :source_code,
                                              foreign_key: :eph_prod_node_id, optional: true
 
-      def self.updates_since(datetime)
-        date_gteq(datetime)
-      end
-
-      def self.no_updates_since(datetime)
-        date_lteq(datetime)
-      end
-
       def description
         @description ||= External::XPDM::ConceptSkuDescription.new(descriptions)
       end

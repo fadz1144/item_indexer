@@ -1,7 +1,6 @@
 module External
   module XPDM
     class Sku < External::XPDM::Item
-      extend External::DateComparisonQueryBuilders
       # this is not a default scope, because it's not needed when in_batches fetches by id
       # for all other queries, it does need to be included
       scope :beyond_sku, -> { where(pdm_object_type: %w[BeyondSKU BEYONDSKU]) }

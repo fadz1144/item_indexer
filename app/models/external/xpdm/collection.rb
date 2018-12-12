@@ -1,8 +1,6 @@
 module External
   module XPDM
     class Collection < External::XPDM::Item
-      extend External::DateComparisonQueryBuilders
-
       with_options foreign_key: :pdm_object_id, primary_key: :pdm_object_id, dependent: :destroy,
                    inverse_of: :collection do
         has_one :bbby_site_navigation
