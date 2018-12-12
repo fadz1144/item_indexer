@@ -95,7 +95,7 @@ RSpec.describe External::DirectLoadService, skip: !Rails.configuration.settings[
     end
 
     RSpec::Matchers.define :arel_with_updates_since do
-      match { |arel| arel.to_sql.match?(/.update_ts >= TO_DATE/) }
+      match { |arel| arel.to_sql.match?(/coalesce\("\w+".update_ts, "\w+".create_ts\) >= TO_DATE/) }
     end
 
     it 'restricts by timestamp' do
