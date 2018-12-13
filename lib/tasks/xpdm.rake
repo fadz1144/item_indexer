@@ -83,6 +83,7 @@ namespace :xpdm do # rubocop:disable all
 
   desc 'Truncate and reload local product membership'
   task reload_product_membership: %i[verify_token environment] do
+    Rails.logger.info 'xpdm:reload_product_membership'
     External::XPDM::ProductMembershipLocal.connection.truncate(:xpdm_product_memberships)
     External::DirectLoadService
       .new(External::XPDM::ProductMembershipLoader.new)
@@ -116,16 +117,41 @@ namespace :xpdm do # rubocop:disable all
       .partial(External::XPDM::Sku.beyond_sku.where(update_ts: (start..stop)))
   end
 
-  desc 'Load product, collection, and sku changes with ' \
-       'optional last updated timestamp (`rails xpdm:incremental_products_and_skus[2018-10-27T00:00]`)'
-  task :incremental_products_collections_and_skus, %i[updates_since] =>
+  desc 'Incremental brand updates'
+  task :incremental_brand_updates, %i[updates_since] =>
+    %i[verify_token environment build_concept_cache] do |_task, args|
+    updates_since = args.updates_since&.to_datetime
+    Rails.logger.info "xpdm::incremental_brands #{updates_since}"
+    External::DirectLoadService.new(External::XPDM::BrandLoader.new).incremental(updates_since)
+  end
+
+  desc 'Incremental product updates'
+  task :incremental_product_updates, %i[updates_since] =>
     %i[verify_token environment build_concept_cache reload_product_membership] do |_task, args|
     updates_since = args.updates_since&.to_datetime
-    Rails.logger.info "xpdm::incremental_products_and_skus #{updates_since}"
+    Rails.logger.info "xpdm::incremental_products #{updates_since}"
     External::DirectLoadService.new(External::XPDM::ProductLoader.new).incremental(updates_since)
+  end
+
+  desc 'Incremental collection updates'
+  task :incremental_collection_updates, %i[updates_since] =>
+    %i[verify_token environment build_concept_cache] do |_task, args|
+    updates_since = args.updates_since&.to_datetime
+    Rails.logger.info "xpdm::incremental_collections #{updates_since}"
     External::DirectLoadService.new(External::XPDM::CollectionLoader.new).incremental(updates_since)
+  end
+
+  desc 'Incremental sku updates'
+  task :incremental_sku_updates, %i[updates_since] => %i[verify_token environment build_concept_cache] do |_task, args|
+    updates_since = args.updates_since&.to_datetime
+    Rails.logger.info "xpdm::incremental_skus #{updates_since}"
     External::DirectLoadService.new(External::XPDM::SkuLoader.new).incremental(updates_since)
   end
+
+  desc 'Incremental updates with ' \
+       'optional last updated timestamp (`rails xpdm:incremental_updates[2018-10-27T00:00]`)'
+  task :incremental_updates, %i[updates_since] =>
+    %i[incremental_brand_updates incremental_product_updates incremental_collection_updates incremental_sku_updates]
 
   desc 'Updates for items without a brand'
   task update_items_without_brand: %i[verify_token environment build_concept_cache] do
