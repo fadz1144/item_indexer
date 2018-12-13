@@ -7,7 +7,7 @@ module Transform
         source_name 'Inbound::OKL::SkuRevision'
         decorator_name 'Transform::Transformers::OKL::Decorators::SkuConceptSkuDecorator'
 
-        has_many :product_memberships, match_keys: [:product_id], partial: true
+        has_many :product_memberships, source_name: :itself, match_keys: [:product_id], partial: true
         attribute :sku_id, source_name: :sku_id
         attribute :gtin, source_name: :upc
 

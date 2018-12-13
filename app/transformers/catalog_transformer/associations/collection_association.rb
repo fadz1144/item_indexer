@@ -2,7 +2,7 @@ module CatalogTransformer
   module Associations
     class CollectionAssociation < CatalogTransformer::Associations::Base
       def initialize(name, source_name, transformer_name, match_keys, partial)
-        super(name, source_name, transformer_name, match_keys)
+        super(name, source_name.presence || name, transformer_name, match_keys)
         @partial = partial
       end
 
