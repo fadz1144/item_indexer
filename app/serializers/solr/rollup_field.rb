@@ -3,7 +3,7 @@ module SOLR
   class RollupField
     attr_reader :field_name, :field, :access_sub_type, :group_action, :format
 
-    VALID_GROUP_ACTIONS = [:min, :max, :avg, :first, nil].freeze
+    VALID_GROUP_ACTIONS = [:min, :max, :avg, :first, :sum, nil].freeze
     VALID_FORMATS = [:currency, :currency_cents, :percent_units, nil].freeze
 
     # Defines how we roll up the field
@@ -61,7 +61,7 @@ module SOLR
     end
 
     def apply_group(result, action)
-      if %i[min max first].include? action
+      if %i[min max first sum].include? action
         result.public_send(action)
       elsif action == :avg
         result.empty? ? 0 : result.sum.fdiv(result.size)

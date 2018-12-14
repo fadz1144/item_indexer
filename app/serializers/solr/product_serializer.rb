@@ -20,12 +20,16 @@ module SOLR
     end
 
     # these attributes do not exist
-    stub_attributes :allow_exposure, :units_sold_last_1_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks,
-                    :units_sold_last_52_weeks, :vdc_sku, :vintage
+    stub_attributes :allow_exposure, :vdc_sku, :vintage
 
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
+
+    decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week', group: 'sum'
+    decorate_sku_uniq 'units_sold_last_4_weeks', field: 'units_sold_last_4_weeks', group: 'sum'
+    decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks', group: 'sum'
+    decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks', group: 'sum'
 
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
     decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
@@ -191,6 +195,22 @@ module SOLR
     # TODO: implement me
     def internal_color_family
       ''
+    end
+
+    def units_sold_last_1_week
+      service.decorated_skus.map(&:units_sold_last_1_week)
+    end
+
+    def units_sold_last_4_weeks
+      service.decorated_skus.map(&:units_sold_last_4_weeks)
+    end
+
+    def units_sold_last_8_weeks
+      service.decorated_skus.map(&:units_sold_last_8_weeks)
+    end
+
+    def units_sold_last_52_weeks
+      service.decorated_skus.map(&:units_sold_last_8_weeks)
     end
 
     def item_status

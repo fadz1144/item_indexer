@@ -70,7 +70,10 @@ module SOLR
     decorate_sku_uniq 'pdp_url', field: 'pdp_urls'
     decorate_sku_uniq 'vendor_id', field: 'vendor_id'
     decorate_sku_uniq 'vendor_name', field: 'vendor_name'
-
+    decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week'
+    decorate_sku_uniq 'units_sold_last_4_weeks', field: 'units_sold_last_4_weeks'
+    decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks'
+    decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks'
     decorate_sku_uniq 'color', field: 'color_family'
 
     # hierarchies
