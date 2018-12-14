@@ -16,5 +16,11 @@ namespace :bridge do
     task chain_status: %i[environment to_stdout] do
       CatalogUpdates::ChainStatus.each { |model| CatalogUpdates::UpdateService.new(model).execute }
     end
+
+    desc 'Update OKL concept product and product web status'
+    task okl_product_web_status: %i[environment to_stdout] do
+      CatalogUpdates::UpdateService.new(CatalogUpdates::OKL::ConceptProductWebStatus.new).execute
+      CatalogUpdates::OKL::ProductWebStatus.each { |status| CatalogUpdates::UpdateService.new(status).execute }
+    end
   end
 end
