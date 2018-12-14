@@ -26,10 +26,11 @@ module SOLR
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
 
-    decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week', group: 'sum'
-    decorate_sku_uniq 'units_sold_last_4_weeks', field: 'units_sold_last_4_weeks', group: 'sum'
-    decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks', group: 'sum'
-    decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks', group: 'sum'
+    # can't use the groupings because these are defined by the serializer (below)
+    decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week'
+    decorate_sku_uniq 'units_sold_last_4_weeks', field: 'units_sold_last_4_weeks'
+    decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks'
+    decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks'
 
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
     decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
@@ -197,20 +198,21 @@ module SOLR
       ''
     end
 
+    # the sales data are not properties of the product; so we can just define them here
     def units_sold_last_1_week
-      service.decorated_skus.map(&:units_sold_last_1_week)
+      service.decorated_skus.map(&:units_sold_last_1_week).compact.sum
     end
 
     def units_sold_last_4_weeks
-      service.decorated_skus.map(&:units_sold_last_4_weeks)
+      service.decorated_skus.map(&:units_sold_last_4_weeks).compact.sum
     end
 
     def units_sold_last_8_weeks
-      service.decorated_skus.map(&:units_sold_last_8_weeks)
+      service.decorated_skus.map(&:units_sold_last_8_weeks).compact.sum
     end
 
     def units_sold_last_52_weeks
-      service.decorated_skus.map(&:units_sold_last_8_weeks)
+      service.decorated_skus.map(&:units_sold_last_8_weeks).compact.sum
     end
 
     def item_status

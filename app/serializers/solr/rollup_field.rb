@@ -61,8 +61,10 @@ module SOLR
     end
 
     def apply_group(result, action)
-      if %i[min max first sum].include? action
+      if %i[min max first].include? action
         result.public_send(action)
+      elsif action == :sum
+        result.compact.empty? ? 0 : result.compact.sum
       elsif action == :avg
         result.empty? ? 0 : result.sum.fdiv(result.size)
       end
