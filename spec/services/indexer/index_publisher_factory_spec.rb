@@ -15,7 +15,7 @@ describe Indexer::IndexPublisherFactory do
       expect(subject.publisher_for(type: :product, platform: :solr)).not_to be_nil
     end
 
-    xit 'should return a publisher for :solr, :sku' do
+    it 'should return a publisher for :solr, :sku' do
       expect(subject.publisher_for(type: :sku, platform: :solr)).not_to be_nil
     end
   end
