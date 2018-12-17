@@ -70,6 +70,21 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
       it('vdc_min_days_to_ship') { expect(values['vdc_min_days_to_ship']).to eq 18 }
       it('vdc_max_days_to_ship') { expect(values['vdc_max_days_to_ship']).to eq 68 }
     end
+
+    context 'vdc_sku' do
+      let(:vdc_sku) { values['vdc_sku'] }
+      it('false without a logistics entry') { expect(vdc_sku).to be false }
+
+      it 'false when logistics vdc_ind is false' do
+        source.build_logistics(vdc_ind: false)
+        expect(vdc_sku).to be false
+      end
+
+      it 'true when logistics vdc_ind is true' do
+        source.build_logistics(vdc_ind: true)
+        expect(vdc_sku).to be true
+      end
+    end
   end
 
   context 'with two products' do

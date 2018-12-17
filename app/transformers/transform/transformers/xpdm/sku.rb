@@ -22,7 +22,6 @@ module Transform
         attribute :transferable_to_canada, association: :compliance, source_name: :transferable_to_canada?
         attribute :ca_fulfillment_cd, association: :compliance, source_name: :ec_fulfil_rule_ca_cd
         attribute :ca_fulfillment_name, association: :compliance, source_name: :ec_fulfil_rule_ca_name
-        attribute :vdc_sku, association: :logistics, source_name: :vdc_ind
         attribute :tbs_blocked_reason_cd, association: :web_info, source_name: :blck_rsn_cd
         attribute :tbs_blocked_reason_name, association: :web_info, source_name: :blck_rsn_name
         attribute :restock_notifiable, association: :web_info, source_name: :email_cust_for_oos_ind
@@ -86,8 +85,9 @@ module Transform
             super.reject { |pm| pm.concept_product.nil? }
           end
 
-          def vdc_ind
-            logistics&.vdc_ind.to_s.start_with? 'Y'
+          # if the logistics entry is missing, return false instead of nil (it's a required field)
+          def vdc_sku
+            logistics&.vdc_ind || false
           end
         end
       end
