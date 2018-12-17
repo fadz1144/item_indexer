@@ -162,6 +162,7 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
 
       it 'entryway is Threshold, White Glove' do
         source.shipping.entryway = true
+        source.shipping.white_glove = true
         expect(shipping_method).to eq 'Threshold, White Glove'
       end
 
@@ -171,10 +172,48 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
         expect(shipping_method).to eq 'White Glove'
       end
 
+      it 'Entryway but not white glove makes no sense, so entryway must be ignored' do
+        source.shipping.entryway = true
+        source.shipping.white_glove = false
+        expect(shipping_method).to eq 'Standard'
+      end
+
       it 'non-entryway, non-White Glove is Standard' do
         source.shipping.entryway = false
         source.shipping.white_glove = false
         expect(shipping_method).to eq 'Standard'
+      end
+    end
+
+    describe '#threshold_eligible' do
+      let(:threshold_eligible) { values['threshold_eligible'] }
+
+      context 'when set normally - entryway yes' do
+        before do
+          source.shipping.entryway = true
+          source.shipping.white_glove = true
+        end
+        it 'threshold_eligible = true' do
+          expect(threshold_eligible).to eq true
+        end
+      end
+      context 'when set normally - entryway no' do
+        before do
+          source.shipping.entryway = false
+          source.shipping.white_glove = true
+        end
+        it 'threshold_eligible = false' do
+          expect(threshold_eligible).to eq false
+        end
+      end
+      context 'with bad data - wg no, entryway yes' do
+        before do
+          source.shipping.entryway = true
+          source.shipping.white_glove = false
+        end
+        it 'threshold_eligible = false' do
+          expect(threshold_eligible).to eq false
+        end
       end
     end
 
