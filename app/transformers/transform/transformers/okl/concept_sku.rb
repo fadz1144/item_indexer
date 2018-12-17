@@ -19,7 +19,6 @@ module Transform
         attribute :aad_min_offset_days, association: :shipping, source_name: :min_aad_offset_days
         attribute :aad_max_offset_days, association: :shipping, source_name: :max_aad_offset_days
         attribute :ltl_eligible, association: :shipping, source_name: :white_glove
-        attribute :threshold_eligible, association: :shipping, source_name: :entryway
         attribute :total_avail_qty, association: :inventory
         attribute :warehouse_avail_qty, association: :inventory
         attribute :stores_avail_qty, association: :inventory
@@ -59,13 +58,18 @@ module Transform
           end
 
           def shipping_method
-            if shipping.entryway?
+            if threshold_eligible
               'Threshold, White Glove'
             elsif shipping.white_glove?
               'White Glove'
             else
               'Standard'
             end
+          end
+
+          # Being not white glove means it ships parcel, which renders the entryway/threshold flag moot.
+          def threshold_eligible
+            shipping.white_glove? && shipping.entryway?
           end
 
           def limited_qty
