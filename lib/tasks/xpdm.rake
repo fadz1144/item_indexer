@@ -182,4 +182,16 @@ namespace :xpdm do # rubocop:disable all
   task backfill_sku_web_status: %i[verify_token environment] do
     External::DirectLoadService.new(External::XPDM::SkuWebStatusBackfill.new).full
   end
+
+  desc 'Reload items with spurious vendor rows'
+  task reload_items_with_spurious_vendor_rows: %i[verify_token environment build_concept_cache] do
+    Rails.logger.info 'xpdm:reload_items_with_spurious_vendor_rows'
+    sub_query = 'pdm_object_id in (select pdm_object_id from pdm_item_prmry_vdr_info where pmry_vdr_num = 0)'
+    External::DirectLoadService.new(External::XPDM::ProductLoader.new)
+                               .partial(External::XPDM::Product.web_product.where(sub_query))
+    External::DirectLoadService.new(External::XPDM::CollectionLoader.new)
+                               .partial(External::XPDM::Collection.web_collection.where(sub_query))
+    External::DirectLoadService.new(External::XPDM::SkuLoader.new)
+                               .partial(External::XPDM::Sku.beyond_sku.where(sub_query))
+  end
 end
