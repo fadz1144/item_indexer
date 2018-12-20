@@ -10,13 +10,10 @@ module External
       default_scope { select(INCLUDED_COLUMNS) }
 
       belongs_to :item, foreign_key: :pdm_object_id, primary_key: :pdm_object_id, inverse_of: :compliance
-
-      def transferable_to_canada?
-        transfrbl_to_ca_ind == 'Y'
-      end
+      attribute :transfrbl_to_ca_ind, :xpdm_boolean_ind
 
       def sellable_in_canada?
-        transferable_to_canada? ||
+        transfrbl_to_ca_ind? ||
           avail_for_dstrbn_ca_cd.present? ||
           %w[E R].include?(ec_fulfil_rule_ca_cd)
       end

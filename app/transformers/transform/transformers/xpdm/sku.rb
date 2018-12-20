@@ -19,7 +19,8 @@ module Transform
         attribute :rollup_type_name, source_name: :rlup_type_name
         attribute :color_family, source_name: :color_grp_name
         attribute :available_in_ca_dist_cd, association: :compliance, source_name: :avail_for_dstrbn_ca_cd
-        attribute :transferable_to_canada, association: :compliance, source_name: :transferable_to_canada?
+        attribute :transferable_to_canada, association: :compliance, source_name: :transfrbl_to_ca_ind,
+                                           default_value: false
         attribute :ca_fulfillment_cd, association: :compliance, source_name: :ec_fulfil_rule_ca_cd
         attribute :ca_fulfillment_name, association: :compliance, source_name: :ec_fulfil_rule_ca_name
         attribute :tbs_blocked_reason_cd, association: :web_info, source_name: :blck_rsn_cd
@@ -27,6 +28,7 @@ module Transform
         attribute :restock_notifiable, association: :web_info, source_name: :email_cust_for_oos_ind
         attribute :vdc_min_days_to_ship, association: :logistics, source_name: :vdc_min_day_to_shp
         attribute :vdc_max_days_to_ship, association: :logistics, source_name: :vdc_max_day_to_shp
+        attribute :vdc_sku, association: :logistics, source_name: :vdc_ind, default_value: false
 
         # TODO: unit of measure
         # TODO: non-taxable
@@ -83,11 +85,6 @@ module Transform
           # testing with subsets sometimes brings in only one of a sku's products, so this just excludes the others
           def product_memberships
             super.reject { |pm| pm.concept_product.nil? }
-          end
-
-          # if the logistics entry is missing, return false instead of nil (it's a required field)
-          def vdc_sku
-            logistics&.vdc_ind || false
           end
         end
       end

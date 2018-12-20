@@ -230,7 +230,7 @@ module SOLR
         true
       when 2 # canada
         # TODO: this should be in a decorator
-        concept_sku.sku&.available_in_canada? || concept_sku.sku&.transferable_to_canada?
+        concept_sku.sku&.available_in_canada? || concept_sku.sku&.transfrbl_to_ca_ind?
       when 4 # baby
         # tree_node = concept_sku.baby_site_nav
         # tree_node&.map(:baby_site_nav_id).present?
