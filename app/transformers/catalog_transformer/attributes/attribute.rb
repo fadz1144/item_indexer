@@ -13,6 +13,7 @@ module CatalogTransformer
     # following is true:
     # - the attribute names are not the same on the source and target models
     # - the value comes from an association on the source
+    # - a default value should be specified
     #
     # == Examples
     #
@@ -24,11 +25,17 @@ module CatalogTransformer
     #
     # The target attribute description comes from the source association details and is named long_descr
     #   attribute :description, association: :details, source_name: :long_descr
+
+    # The target attribute in_stock comes from the source association inventory and has a default of false
+    #   attribute :in_stock, association: :inventory, default_value: false
     class Attribute
+      attr_reader :default_value
+
       def initialize(name, options = {})
         @name = name
         @association = options[:association]
         @source_name = options[:source_name]
+        @default_value = options[:default_value]
       end
 
       # used as the key in assign_attributes, must be a string

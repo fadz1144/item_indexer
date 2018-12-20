@@ -43,7 +43,7 @@ module CatalogTransformer
     def attribute_values
       attributes.each_with_object({}) do |attribute, memo|
         record = @source.public_send(attribute.source_record_name)
-        memo[attribute.name] = record.nil? ? nil : attribute_value(record, attribute.source_name)
+        memo[attribute.name] = attribute_value(record, attribute)
       end
     end
 
@@ -53,11 +53,12 @@ module CatalogTransformer
 
     private
 
-    def attribute_value(record, attribute_name)
-      record.public_send(attribute_name)
+    def attribute_value(record, attribute)
+      value = record&.public_send(attribute.source_name)
+      value.nil? ? attribute.default_value : value
     rescue => e
-      raise CatalogTransformer::Errors::CouldNotReadAttribute.new(self.class.name, record.class.name, attribute_name,
-                                                                  e.message)
+      raise CatalogTransformer::Errors::CouldNotReadAttribute.new(self.class.name, record.class.name,
+                                                                  attribute.source_name, e.message)
     end
 
     def apply_association_transformations(target)
