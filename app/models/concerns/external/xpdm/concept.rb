@@ -1,6 +1,10 @@
 module External
   module XPDM
     module Concept
+      CONCEPT_ID_BEDBATHANDBEYOND = 1
+      CONCEPT_ID_BEDBATHANDBEYOND_CANADA = 2
+      CONCEPT_ID_BUY_BUY_BABY = 4
+
       def concept
         Transform::ConceptCache.fetch(concept_id)
       end

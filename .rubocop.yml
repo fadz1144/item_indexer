@@ -22,6 +22,7 @@ Metrics/BlockLength:
   Exclude:
     - spec/serializers/es/sku_serializer_spec.rb
     - spec/services/serializers/decorated_skus_serializer_service_spec.rb
+    - spec/support/shared_examples*
 Rails:
   Enabled: true
 

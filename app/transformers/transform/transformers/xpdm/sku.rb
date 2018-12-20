@@ -11,6 +11,7 @@ module Transform
         has_many :concept_skus, source_name: :concept_skus, match_keys: [:concept], partial: true
         has_many :product_memberships, source_name: :product_memberships, match_keys: [:product_id], partial: true
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
+        has_many :promo_attributes, source_name: :promo_attribute_attachments, match_keys: [:promo_cd]
 
         attribute :sku_id, source_name: :pdm_object_id
         attribute :gtin, source_name: :prmry_upc_num
@@ -46,6 +47,7 @@ module Transform
                                               { ca_site_navigation: { site_nav_tree_node: :tree } },
                                               { baby_site_navigation: { site_nav_tree_node: :tree } }] } },
            :states, :descriptions, :image_relation, :web_prices, :web_costs, :assembly_dimensions, :package_dimensions,
+           { promo_attribute_attachments: :all_concept_flags },
            :item_picture, :web_info, :web_info_sites, :logistics, :compliance, :cm_tags]
         end
 

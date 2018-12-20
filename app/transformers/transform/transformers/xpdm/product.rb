@@ -10,6 +10,7 @@ module Transform
 
         has_many :concept_products, source_name: :concept_products, match_keys: [:concept]
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
+        has_many :promo_attributes, source_name: :promo_attribute_attachments, match_keys: [:promo_cd]
 
         attribute :restock_notifiable, association: :web_info, source_name: :email_cust_for_oos_ind
         attribute :vdc_min_days_to_ship, association: :logistics, source_name: :vdc_min_day_to_shp
@@ -25,6 +26,7 @@ module Transform
            { bbby_site_navigation: { site_nav_tree_node: :tree } },
            { ca_site_navigation: { site_nav_tree_node: :tree } },
            { baby_site_navigation: { site_nav_tree_node: :tree } },
+           { promo_attribute_attachments: :all_concept_flags },
            :cm_tags]
         end
 
