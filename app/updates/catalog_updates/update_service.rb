@@ -51,10 +51,10 @@ module CatalogUpdates
 
     def updates
       check_point_start = @start_updates_timestamp
-      @update.arel.in_batches.each_with_index do |batch, index|
+      @update.arel.in_batches(of: 10_000).each_with_index do |batch, index|
         update_batch(batch)
 
-        if index.modulo(100) == 99 # rubocop:disable Style/Next
+        if index.modulo(10) == 9 # rubocop:disable Style/Next
           log_pace(index, check_point_start)
           check_point_start = Time.zone.now
           vacuum
@@ -63,20 +63,28 @@ module CatalogUpdates
     end
 
     def update_batch(batch)
-      ids = batch.where_values_hash[model.primary_key]
-      model
-        .where(model.primary_key => ids)
-        .update_all(@update.update_statement) # rubocop:disable Rails/SkipsModelValidations
+      batch.where_values_hash[model.primary_key].in_groups_of(1_000) do |ids|
+        if @update.respond_to? :execute_update
+          @update.execute_update(ids)
+        else
+          execute_update(ids)
+        end
+      end
+    end
+
+    def execute_update(ids)
+      model.where(model.primary_key => ids)
+           .update_all(@update.update_statement) # rubocop:disable Rails/SkipsModelValidations
     end
 
     def log_pace(index, start)
       Rails.logger.info "100k updates in #{(Time.zone.now - start).round(1)} seconds;" \
-                        " estimated minutes remaining: #{estimated_time_remaining(index).round(1)}"
+                        " estimated minutes remaining: #{estimated_time_remaining(index * 10_000).round(1)}"
     end
 
-    def estimated_time_remaining(index)
-      updates_per_second = ((1_000 * index)) / (Time.zone.now - @start_updates_timestamp)
-      remaining = @count - (index * 1_000)
+    def estimated_time_remaining(completed)
+      updates_per_second = completed / (Time.zone.now - @start_updates_timestamp)
+      remaining = @count - completed
       (remaining / updates_per_second) / 60
     end
 
