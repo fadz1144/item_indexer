@@ -87,7 +87,7 @@ jobs:
           path: /tmp/test-results
           destination: test-results
 
-  deploy:
+  build_image:
     docker:
       - image: google/cloud-sdk
     working_directory: ~/repo
@@ -128,17 +128,75 @@ jobs:
             docker build -t ${DOCKERURL}.${SAFEBRANCH} -t ${DOCKERURL}:${NUMERIC_TAG} .
             docker push ${DOCKERURL}.${SAFEBRANCH}:latest && echo "Pushed successfully 1/2" || echo "Failed to push ${TAG}"
             docker push ${DOCKERURL}:${NUMERIC_TAG} && echo "Pushed successfully 2/2" || echo "Failed to push ${NUMERIC_TAG}"
-            if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
-              echo "Should-deploy was set to true - @TODO to deploy CI/CD env..."
+#            if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
+#              echo "Should-deploy was set to true - @TODO to deploy CI/CD env..."
+#            fi
+  build_oracle:
+    docker:
+      - image: google/cloud-sdk
+    working_directory: ~/repo
+    steps:
+      - run:
+          name: Store Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run:
+          name: Init Gcloud
+          command: |
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud auth configure-docker
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+#           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+#           gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Add version and commit sha to build
+          # Note the first command uses a single > to overwrite version.rb completely. Important.
+          command: |
+            echo "ENV['BBB_CI_VERSION'] = '$CIRCLE_BRANCH:$CIRCLE_BUILD_NUM'" > config/initializers/ci_version.rb
+            echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/initializers/ci_version.rb
+            echo "ENV['CIRCLE_COMPARE_URL'] = '$CIRCLE_COMPARE_URL'" >> config/initializers/ci_version.rb
+      - run:
+          name: Push container to GCR
+          command: |
+            if [[ "master" = "$CIRCLE_BRANCH" ]] ; then
+              SHOULD_DEPLOY="true"
+            else
+              SHOULD_DEPLOY="false"
             fi
+            NUMERIC_TAG="build-${CIRCLE_BUILD_NUM}"
+            GCR_HOST=us.gcr.io
+            DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
+            SAFEBRANCH=$(echo -n ${CIRCLE_BRANCH} | sed -E -e 's/_/-/g' -e 's/([a-z0-9])([A-Z])/\1-\2/g' -e 's/[^A-Za-z0-9\-]//g' | tr '[:upper:]' '[:lower:]' )
+            DOCKERURL="${GCR_HOST}/${GOOGLE_PROJECT_ID}/appengine/${DOCKER_IMAGE_NAME}"
+
+            if [[ "${CIRCLE_BRANCH}" = "master" ]] || [[ "${CIRCLE_BRANCH}" = "oracle-dgp-circle" ]] ; then
+              FULL_IMAGE_NAME="${GCR_HOST}/${GOOGLE_PROJECT_ID}/${CIRCLE_PROJECT_REPONAME}_oracle"
+            else
+              FULL_IMAGE_NAME="${DOCKERURL}.${SAFEBRANCH}-oracle"
+            fi
+
+            docker build -f Dockerfile.oracle -t "${FULL_IMAGE_NAME}" .
+            docker push "${FULL_IMAGE_NAME} && echo "Pushed successfully" || echo "Failed to push ${FULL_IMAGE_NAME}"
+
+
+
 workflows:
   version: 2
   ci_workflow:
     jobs:
       - build
-      - deploy:
+      - build_image:
           requires:
             - build
+      - build_oracle:
+          requires:
+            - build
+          branches:
+            only:
+              - master
+              - /oracle-.*/
+
 
 #
 #==============
