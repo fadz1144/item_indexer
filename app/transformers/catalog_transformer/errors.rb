@@ -8,6 +8,10 @@ module CatalogTransformer
         super "[#{transformer_name}] Transformer failed while trying to read attribute '#{attribute_name}' from " \
           "#{model_name}.\n#{message}"
       end
+
+      def backtrace
+        cause&.backtrace || super
+      end
     end
 
     class AssociationNotDefined < TransformError
