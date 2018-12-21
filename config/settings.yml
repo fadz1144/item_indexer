@@ -1,11 +1,13 @@
+redis_defaults: &redis_defaults
+  host: <%= ENV.fetch('REDIS_HOST') %>
+  port: <%= ENV.fetch('REDIS_PORT', 6379) %>
+
 default_settings: &defaults
-  enable_pdm_connection: <%= 'true' == ENV.fetch('ENABLE_PDM_CONNECTION', 'false') %>
+  enable_pdm_connection: <%= 'false' != ENV.fetch('ENABLE_PDM_CONNECTION', 'false') %>
   solr:
     enabled: <%= ENV.fetch('SOLR_ENABLED', 'true') == 'true' %>
     endpoint: <%= ENV.fetch('SOLR_ENDPOINT') %>
-  redis: &redis_defaults
-    host: <%= ENV.fetch('REDIS_HOST') %>
-    port: <%= ENV.fetch('REDIS_PORT', 6379) %>
+  redis:
     mutex:
       <<: *redis_defaults
       db: <%= ENV.fetch('REDIS_MUTEX_DB', 1) %>

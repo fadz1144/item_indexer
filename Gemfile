@@ -51,7 +51,7 @@ gem 'bridge-cloud', github_ssh: 'okl/bridge-cloud', branch: 'master', require: '
 # gem 'bridge-cloud', path: '../bridge-cloud', require: 'bridge/cloud'
 
 # oracle gems allow connection to staged PDM data; not required in most cases
-if ENV.fetch('ENABLE_PDM_CONNECTION', 'false') != 'false'
+group :oracledb do
   gem 'activerecord-oracle_enhanced-adapter'
   gem 'ruby-oci8'
 
