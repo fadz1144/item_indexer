@@ -15,7 +15,9 @@ module External
         actual_promo_cd = promo_cd.split(/[^0-9_]/, 2).first
         @cache ||= all.select(INCLUDED_COLUMNS).index_by(&:promo_cd)
         @cache.fetch(actual_promo_cd) do
-          External::XPDM::PromoAttributeDefinition.new(promo_cd: actual_promo_cd, name: promo_cd)
+          External::XPDM::PromoAttributeDefinition.new(promo_cd: actual_promo_cd,
+                                                       promo_atrib_val_name: promo_cd,
+                                                       promo_atrib_html_val_name: promo_cd)
         end
       end
     end
