@@ -18,6 +18,7 @@ module Transform
         module Decorations
           # These methods ensure that totally fake dates are interpreted correctly.
           def begin_date
+            return nil if promo_start_dt.nil?
             reference_date = [update_ts, create_ts, Time.zone.today].find(&:present?)
             twenty_years_before_year = reference_date.year - 20
             if promo_start_dt.year < twenty_years_before_year
@@ -28,6 +29,7 @@ module Transform
           end
 
           def end_date
+            return nil if promo_end_dt.nil?
             reference_date = [update_ts, create_ts, Time.zone.today].find(&:present?)
             ten_years_into_the_future_year = reference_date.year + 10
             if promo_end_dt.year > ten_years_into_the_future_year
