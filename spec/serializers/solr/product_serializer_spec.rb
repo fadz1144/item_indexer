@@ -8,16 +8,28 @@ describe SOLR::ProductSerializer do
     )
   end
 
+  let(:sku) do
+    build(:sku).tap do |s|
+      [1, 2, 3, 4].each do |concept_id|
+        s.concept_skus.build(concept_id: concept_id, concept_vendor: CatModels::ConceptVendor.new)
+      end
+    end
+  end
+
   let(:live_sku) do
     build(:sku).tap do |s|
-      s.concept_skus.build(live: true, concept_vendor: CatModels::ConceptVendor.new)
+      [1, 2, 3, 4].each do |concept_id|
+        s.concept_skus.build(concept_id: concept_id, live: true, concept_vendor: CatModels::ConceptVendor.new)
+      end
       s.brand = brand_model
     end
   end
 
   let(:not_live_sku) do
     build(:sku).tap do |s|
-      s.concept_skus.build(concept_vendor: CatModels::ConceptVendor.new)
+      [1, 2, 3, 4].each do |concept_id|
+        s.concept_skus.build(concept_id: concept_id, concept_vendor: CatModels::ConceptVendor.new)
+      end
       s.brand = brand_model
     end
   end

@@ -229,19 +229,12 @@ module SOLR
       when 1, 3 # bed bath and okl
         true
       when 2 # canada
-        # TODO: this should be in a decorator
-        concept_sku.sku&.available_in_canada? || concept_sku.sku&.transfrbl_to_ca_ind?
+        concept_sku.considered_for_canada?
       when 4 # baby
-        # tree_node = concept_sku.baby_site_nav
-        # tree_node&.map(:baby_site_nav_id).present?
-        offered?(concept_sku)
+        concept_sku.offered?
       else
         false
       end
-    end
-
-    def offered?(concept_sku)
-      concept_sku.web_offered || concept_sku.web_enable_date.present? || concept_sku.web_offer_date.present?
     end
 
     def service
