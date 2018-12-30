@@ -25,7 +25,7 @@ module Transform
                 :ca_fulfillment_cd, :ca_fulfillment_name, :vdc_sku, :jda_description, :pos_description,
                 :units_sold_last_1_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks, :units_sold_last_52_weeks,
                 :merch_dept_tree_node_id, :merch_sub_dept_tree_node_id, :merch_class_tree_node_id, :restock_notifiable,
-                :vdc_min_days_to_ship, :vdc_max_days_to_ship,
+                :vdc_min_days_to_ship, :vdc_max_days_to_ship, :buyer_cd, :buyer_name,
                 allow_primary_key: true
 
         module Decorations
