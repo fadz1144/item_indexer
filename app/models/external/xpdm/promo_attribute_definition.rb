@@ -6,6 +6,8 @@ module External
       INCLUDED_COLUMNS = %i[promo_cd promo_atrib_val_name promo_atrib_html_val_name
                             image_url actn_url create_ts update_ts].freeze
 
+      attribute :promo_atrib_html_val_name, :xpdm_string
+
       # This strips tags
       def site_description
         HTML_SANITIZER.sanitize(promo_atrib_html_val_name)
