@@ -10,7 +10,10 @@ module Transform
         attribute :details, source_name: :mstr_web_desc
         attribute :source_collection_id, association: :collection, source_name: :pdm_object_id
 
-        exclude :collection_id
+        has_many :site_navigations, source_name: :site_navigations,
+                                    match_keys: %i[root_tree_node branch_tree_node leaf_tree_node]
+
+        exclude :collection_id, :site_nav_tree_node_id
 
         module Decorations
           def concept

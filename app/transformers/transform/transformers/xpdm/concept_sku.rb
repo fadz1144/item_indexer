@@ -29,7 +29,7 @@ module Transform
                 :total_avail_qty, :warehouse_avail_qty, :stores_avail_qty, :vdc_avail_qty, :on_order_qty, :limited_qty,
                 :allow_exposure, :returnable, :made_to_order, :assembly_required,
                 :exclusivity_tier, :suspended_reason,
-                :finish
+                :finish, :site_nav_tree_node_id
 
         after_transform :conditionally_load_inventory
 

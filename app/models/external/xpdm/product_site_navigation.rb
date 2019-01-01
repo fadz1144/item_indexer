@@ -9,12 +9,15 @@ module External
     # With that in place, the tree nodes can be eager loaded.
     class ProductSiteNavigation < External::XPDM::Base
       self.table_name = 'pdm_item_web_info_nav_pry'
-      default_scope { where.not(top_nav_node_info_cd: 0) }
 
-      SITE_NAV_OPTIONS = {
-        class_name: 'CatModels::TreeNode', optional: true,
-        primary_key: :source_code, foreign_key: :trd_nav_node_info_cd
-      }.freeze
+      SITE_NAV_OPTIONS = { class_name: 'CatModels::TreeNode', optional: true, primary_key: :source_code }.freeze
+
+      # blank (aka zero) is okay, but if there is a code it must exist as a node
+      def tree_nodes_valid?
+        (root_tree_node.present? || top_nav_node_info_cd.zero?) &&
+          (branch_tree_node.present? || sub_nav_node_info_cd.zero?) &&
+          (leaf_tree_node.present? || trd_nav_node_info_cd.zero?)
+      end
     end
   end
 end

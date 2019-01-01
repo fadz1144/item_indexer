@@ -90,25 +90,18 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
   end
 
   context 'with two products' do
-    let(:site_navigation_node) { CatModels::TreeNode.new }
     before do
-      bbby_site_navigation = External::XPDM::BBBYSiteNavigation.new(site_nav_tree_node: site_navigation_node)
       source.product_memberships
             .build(product: External::XPDM::Product.new,
                    concept_product: CatModels::ConceptProduct.new(product: CatModels::Product.new(product_id: 123)))
       source.product_memberships
-            .build(product: External::XPDM::Product.new(bbby_site_navigation: bbby_site_navigation),
+            .build(product: External::XPDM::Product.new,
                    concept_product: CatModels::ConceptProduct.new(product: CatModels::Product.new(product_id: 456)))
       transformer.apply_transformation(target)
     end
 
     it 'builds two product memberships' do
       expect(target.product_memberships.map(&:product_id)).to contain_exactly(123, 456)
-    end
-
-    it 'populates the bbby site navigation' do
-      bbby = target.concept_skus.find { |cs| cs.concept_id == 1 }
-      expect(bbby.site_nav_tree_node).to be site_navigation_node
     end
   end
 

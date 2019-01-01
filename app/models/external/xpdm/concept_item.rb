@@ -43,16 +43,12 @@ module External
         PDM::SystemStatusMapper.value(web_status_flg)
       end
 
-      def site_navigation
-        parent.public_send("#{web_site_cd.downcase}_site_navigation")
-      end
-
-      def site_nav_tree_node
-        site_navigation&.site_nav_tree_node
+      def site_navigations
+        parent.public_send("#{web_site_cd.downcase}_site_navigations").select(&:tree_nodes_valid?)
       end
 
       def source_updated_at
-        [@state, @description, site_navigation].compact.map(&:source_updated_at).compact.max
+        [@state, @description].compact.map(&:source_updated_at).compact.max
       end
     end
   end

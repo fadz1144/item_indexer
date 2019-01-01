@@ -3,9 +3,9 @@ module External
     class Collection < External::XPDM::Item
       with_options foreign_key: :pdm_object_id, primary_key: :pdm_object_id, dependent: :destroy,
                    inverse_of: :collection do
-        has_one :bbby_site_navigation
-        has_one :ca_site_navigation
-        has_one :baby_site_navigation
+        has_many :bbby_site_navigations
+        has_many :ca_site_navigations
+        has_many :baby_site_navigations
       end
 
       # this is not a default scope, because it's not needed when in_batches fetches by id

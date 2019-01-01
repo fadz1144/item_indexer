@@ -43,9 +43,7 @@ module Transform
            { concept_brand: :brand },
            { eph_tree_node: :tree },
            { merch_dept_tree_node: :tree }, { merch_sub_dept_tree_node: :tree }, { merch_class_tree_node: :tree },
-           { product_memberships: { product: [{ bbby_site_navigation: { site_nav_tree_node: :tree } },
-                                              { ca_site_navigation: { site_nav_tree_node: :tree } },
-                                              { baby_site_navigation: { site_nav_tree_node: :tree } }] } },
+           { product_memberships: :product },
            :states, :descriptions, :image_relation, :web_prices, :web_costs, :assembly_dimensions, :package_dimensions,
            { promo_attribute_attachments: :all_concept_flags },
            :item_picture, :web_info, :web_info_sites, :logistics, :compliance, :cm_tags]

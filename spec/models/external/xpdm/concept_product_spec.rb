@@ -55,10 +55,4 @@ RSpec.describe External::XPDM::ConceptProduct, skip: !Rails.configuration.settin
       expect(concept_product.pdp_url).to eq 'https://www.bedbathandbeyond.com/store/product/pc/123456'
     end
   end
-
-  it '#site_nav_tree_node' do
-    state.web_site_cd = 'BBBY'
-    expect(product).to receive(:bbby_site_navigation)
-    concept_product.site_nav_tree_node
-  end
 end

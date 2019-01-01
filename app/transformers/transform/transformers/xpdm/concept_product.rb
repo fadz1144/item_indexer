@@ -9,7 +9,10 @@ module Transform
         attribute :details, source_name: :mstr_web_desc
         attribute :source_product_id, association: :product, source_name: :pdm_object_id
 
-        exclude :product_id, :concept_category_id
+        has_many :site_navigations, source_name: :site_navigations,
+                                    match_keys: %i[root_tree_node branch_tree_node leaf_tree_node]
+
+        exclude :product_id, :concept_category_id, :site_nav_tree_node_id
 
         module Decorations
           def concept

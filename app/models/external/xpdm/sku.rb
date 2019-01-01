@@ -41,24 +41,6 @@ module External
       def image_count
         image_relation.nil? ? 0 : alt_image_suffixes.size + 1
       end
-
-      def bbby_site_navigation
-        product_site_navigation(:bbby_site_navigation)
-      end
-
-      def ca_site_navigation
-        product_site_navigation(:ca_site_navigation)
-      end
-
-      def baby_site_navigation
-        product_site_navigation(:baby_site_navigation)
-      end
-
-      private
-
-      def product_site_navigation(association_name)
-        product_memberships.map(&:product).map(&association_name).compact.first
-      end
     end
   end
 end

@@ -8,7 +8,6 @@ module Transform
           references :concept
           references :concept_vendor
           references :concept_brand
-          references :site_nav_tree_node
         end
       end
     end
