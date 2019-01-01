@@ -27,7 +27,7 @@ module Transform
            { ca_site_navigation: { site_nav_tree_node: :tree } },
            { baby_site_navigation: { site_nav_tree_node: :tree } },
            { promo_attribute_attachments: :all_concept_flags },
-           :cm_tags]
+           :cm_tags, :web_info, :web_info_sites, :logistics]
         end
 
         def assign_web_flags_summary(target)
@@ -44,7 +44,7 @@ module Transform
           ids = CatModels::ConceptProduct.where(source_product_id: source_ids)
                                          .distinct.pluck(:product_id, :source_product_id).to_h
           # index the products by the source product Id
-          CatModels::Product.includes(:concept_products).where(product_id: ids.keys).index_by { |p| ids[p.product_id] }
+          target_relation.where(product_id: ids.keys).index_by { |p| ids[p.product_id] }
         end
       end
     end

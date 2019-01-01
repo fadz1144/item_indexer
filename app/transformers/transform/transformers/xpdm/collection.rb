@@ -42,8 +42,7 @@ module Transform
           ids = CatModels::ConceptCollection.where(source_collection_id: source_ids)
                                             .distinct.pluck(:collection_id, :source_collection_id).to_h
           # index the collections by the source collection Id
-          CatModels::Collection.includes(:concept_collections).where(collection_id: ids.keys)
-                               .index_by { |p| ids[p.collection_id] }
+          target_relation.where(collection_id: ids.keys).index_by { |p| ids[p.collection_id] }
         end
       end
     end
