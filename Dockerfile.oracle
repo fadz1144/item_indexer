@@ -17,7 +17,7 @@ ENV PATH=$PATH:/usr/lib/oracle/12.2/client64/bin
 ENV ENABLE_PDM_CONNECTION=true
 
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler && bundle install --without test development --jobs 20 --retry 5
+RUN gem install bundler --force && bundle install --without test development --jobs 20 --retry 5
 
 # works best as least likely to change to most likely to change, but all are small so not that important
 COPY Rakefile .

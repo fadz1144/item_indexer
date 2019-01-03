@@ -6,7 +6,7 @@ FROM us.gcr.io/upc-dev/ruby-base-gcr:2.5.1
 MAINTAINER dpritchard@onekingslane.com
 
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler && bundle install --without test development oracledb --jobs 20 --retry 5
+RUN gem install bundler --force && bundle install --without test development oracledb --jobs 20 --retry 5
 
 COPY . ./
 
