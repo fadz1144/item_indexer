@@ -16,8 +16,9 @@ module CatalogTransformer
       source_key = @transformer_class.source_match_key
       indexed_targets = @transformer_class.load_indexed_targets(source_records)
       source_records.each do |source|
-        transform_item(source,
-                       indexed_targets.fetch(source.public_send(source_key), @transformer_class.target_class.new))
+        target = indexed_targets.fetch(source.public_send(source_key), @transformer_class.target_class.new)
+        next if target.new_record? && !@transformer_class.suppress_record_creation
+        transform_item(source, target)
       end
     end
 
