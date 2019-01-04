@@ -62,6 +62,14 @@ module CatalogTransformer
     #   Both can be supplied:
     #
     #     exclude :source_sku_id, :another_field, allow_primary_key: true
+    #
+    # == Specified Attributes Only
+    #
+    # If the transformer should only populate a subset of attributes, then this option can be used to prevent the
+    # loading of all of the models attributes. This short circuits both the matching of attributes as well as the
+    # matching of belongs_to associations.
+    #
+    # There would be no reason to use the exclude option with this option, as it wouldn't apply.
     module ClassMethods
       attr_reader :target_match_key, :source_match_key
 
@@ -92,6 +100,10 @@ module CatalogTransformer
         @allow_primary_key = allow_primary_key
       end
 
+      def specified_attributes_only
+        @specified_attributes_only = true
+      end
+
       def target_class
         (@target_name || "CatModels::#{name.demodulize}").constantize
       end
@@ -115,6 +127,8 @@ module CatalogTransformer
       end
 
       def merge_overrides_and_model
+        return attribute_overrides.values if @specified_attributes_only
+
         overrides = references_from_model.merge(attribute_overrides)
         attributes_from_model.reject { |name| exclusions.include? name }
                              .map do |name|
