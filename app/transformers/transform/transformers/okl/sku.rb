@@ -26,6 +26,8 @@ module Transform
                 :units_sold_last_1_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks, :units_sold_last_52_weeks,
                 :merch_dept_tree_node_id, :merch_sub_dept_tree_node_id, :merch_class_tree_node_id, :restock_notifiable,
                 :vdc_min_days_to_ship, :vdc_max_days_to_ship, :buyer_cd, :buyer_name,
+                :vendor_discontinued_at, :vendor_available_qty, :vendor_availability_status, :vendor_next_available_qty,
+                :vendor_next_available_at, :vendor_inventory_last_updated_at,
                 allow_primary_key: true
 
         module Decorations
