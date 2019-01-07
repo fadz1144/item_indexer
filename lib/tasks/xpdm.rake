@@ -69,6 +69,15 @@ namespace :xpdm do
       .incremental
   end
 
+  desc 'Load Commerce Hub changes'
+  task :incremental_commerce_hub, %i[updates_since] => %i[verify_token environment build_concept_cache] do |_task, args|
+    updates_since = args.updates_since&.to_datetime
+    Rails.logger.info "xpdm::incremental_commerce_hub #{updates_since}"
+    External::DirectLoadService
+      .new(External::ECOM::CommerceHubLoader.new)
+      .incremental(updates_since)
+  end
+
   desc 'Load missing images'
   task load_missing_images: %i[verify_token environment] do
     External::DirectLoadService
