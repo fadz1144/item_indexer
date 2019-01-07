@@ -1,11 +1,11 @@
 module CatalogTransformer
   module Associations
     class Base
-      attr_reader :name, :match_keys
+      attr_reader :name, :match_keys, :source_name
 
       def initialize(name, source_name, transformer_name, match_keys)
         @name = name
-        @source_name = source_name
+        @source_name = source_name || default_source_name
         @transformer_name = transformer_name
         @match_keys = build_match_keys(match_keys)
       end
@@ -14,14 +14,10 @@ module CatalogTransformer
         handler_class.new(source, target)
       end
 
-      def source_name
-        @source_name || :itself
-      end
-
       def source_includes
         nested = transformer_class.source_includes.flatten
 
-        if @source_name.present?
+        if nest_source_includes?
           nested.present? ? { @source_name => nested } : @source_name
         else
           nested.presence
@@ -41,6 +37,12 @@ module CatalogTransformer
       # instead, and this could convert any arrays or strings to a hash
       def build_match_keys(match_keys)
         [match_keys].flatten.map(&:to_s) if match_keys.present?
+      end
+
+      private
+
+      def nest_source_includes?
+        @source_name != :itself
       end
     end
   end
