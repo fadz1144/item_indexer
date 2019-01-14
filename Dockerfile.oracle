@@ -19,6 +19,8 @@ ENV ENABLE_PDM_CONNECTION=true
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler --force && bundle install --without test development --jobs 20 --retry 5
 
+COPY --from=us.gcr.io/upc-dev/deployment-scripts:V1 /builder/bin ./bin
+
 # works best as least likely to change to most likely to change, but all are small so not that important
 COPY Rakefile .
 COPY bin ./bin
@@ -30,5 +32,5 @@ COPY lib ./lib
 ## Move config files into place
 RUN mv config/database.oracle.yml config/database.yml
 
-ENTRYPOINT ["bin/secrets-entrypoint.sh"]
+ENTRYPOINT ["bin/entrypoint.sh"]
 CMD ["/bin/bash"]

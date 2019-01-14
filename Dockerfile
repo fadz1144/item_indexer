@@ -8,14 +8,15 @@ MAINTAINER dpritchard@onekingslane.com
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler --force && bundle install --without test development oracledb --jobs 20 --retry 5
 
+RUN mkdir -p /bbb/app/log && \
+    mkdir -p /bbb/app/tmp && \
+    chmod u+rwx log tmp
+
+COPY --from=us.gcr.io/upc-dev/deployment-scripts:V1 /builder/bin ./bin
 COPY . ./
 
 ## Move config files into place
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
-# compile assets
-# we don't have any
-# RUN ./bin/compile.sh
-
-ENTRYPOINT ["bin/secrets-entrypoint.sh"]
-CMD ["bin/server.sh"]
+ENTRYPOINT ["bin/entrypoint.sh"]
+CMD ["bin/start_service.sh"]
