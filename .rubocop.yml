@@ -18,7 +18,7 @@ Style/FormatString:
 Style/RescueStandardError:
   EnforcedStyle: implicit
 Metrics/BlockLength:
-  ExcludedMethods: ['describe', 'context']
+  ExcludedMethods: ['describe', 'context', 'namespace']
   Exclude:
     - spec/serializers/es/sku_serializer_spec.rb
     - spec/services/serializers/decorated_skus_serializer_service_spec.rb

@@ -1,4 +1,4 @@
-namespace :xpdm do # rubocop:disable all
+namespace :xpdm do
   desc 'Verify token ENABLE_PDM_CONNECTION is present'
   task :verify_token do
     if ENV.fetch('ENABLE_PDM_CONNECTION', 'false') == 'false'
