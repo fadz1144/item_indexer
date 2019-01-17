@@ -26,5 +26,10 @@ namespace :bridge do
       CatalogUpdates::UpdateService.new(CatalogUpdates::OKL::ConceptSkuWebStatus.new).execute
       CatalogUpdates::UpdateService.new(CatalogUpdates::OKL::SkuWebStatus.new).execute
     end
+
+    desc 'Update false positive vdc_sku from 12-11 update'
+    task xpdm_sku_vdc_sku: %i[environment to_stdout] do
+      CatalogUpdates::UpdateService.new(CatalogUpdates::XPDM::SkuVDC.new).execute
+    end
   end
 end
