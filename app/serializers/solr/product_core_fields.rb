@@ -75,7 +75,7 @@ module SOLR
     shared 'inventory_vdc_total', type: 'int'
     shared 'jda_status', type: 'string', multiValued: true
     shared 'line_of_business', type: 'string', multiValued: true
-    shared 'ltl_flag', type: 'boolean'
+    shared 'ltl_eligible', type: 'boolean'
     shared 'personalized', type: 'boolean'
     shared 'product_type', type: 'string', multiValued: true
     shared 'size', type: 'string', multiValued: true

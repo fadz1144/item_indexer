@@ -21,6 +21,7 @@ module SOLR
     stub_attributes :brand_code
 
     decorate_any 'live', field: 'live'
+    decorate_any 'ltl_eligible', field: 'ltl_eligible'
 
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
@@ -117,7 +118,7 @@ module SOLR
     #   { name: 'inventory_vdc_total', type: 'int' indexed: true, stored: true },
     #   { name: 'jda_status', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'line_of_business', type: 'string' indexed: true, stored: true, multiValued: true },
-    #   { name: 'ltl_flag', type: 'boolean' indexed: true, stored: true },
+    #   { name: 'ltl_eligible', type: 'boolean' indexed: true, stored: true },
     #   { name: 'personalized', type: 'boolean' indexed: true, stored: true },
     #   { name: 'product_type', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'size', type: 'string', indexed: true, stored: true, multiValued: true },

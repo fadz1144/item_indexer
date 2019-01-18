@@ -25,6 +25,7 @@ module SOLR
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
+    decorate_any 'ltl_eligible', field: 'ltl_eligible'
 
     # can't use the groupings because these are defined by the serializer (below)
     decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week'
@@ -110,7 +111,7 @@ module SOLR
     #   { name: 'inventory_vdc_total', type: 'int' indexed: true, stored: true },
     #   { name: 'jda_status', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'line_of_business', type: 'string' indexed: true, stored: true, multiValued: true },
-    #   { name: 'ltl_flag', type: 'boolean' indexed: true, stored: true },
+    #   { name: 'ltl_eligible', type: 'boolean' indexed: true, stored: true },
     #   { name: 'personalized', type: 'boolean' indexed: true, stored: true },
     #   { name: 'product_type', type: 'string', indexed: true, stored: true, multiValued: true },
     #   { name: 'size', type: 'string', indexed: true, stored: true, multiValued: true },
