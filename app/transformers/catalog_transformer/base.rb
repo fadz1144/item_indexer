@@ -8,7 +8,7 @@ module CatalogTransformer
     include CatalogTransformer::SourceDecorations
     include CatalogTransformer::SourceClassAccessors
     include CatalogTransformer::Callbacks
-    attr_reader :source, :suppress_record_creation
+    attr_reader :source
 
     def self.source_relation
       source_class.includes(source_includes)
@@ -30,6 +30,10 @@ module CatalogTransformer
     # call this if the transformer should not create records
     def self.suppress_record_creation
       @suppress_record_creation = true
+    end
+
+    def self.suppress_record_creation?
+      @suppress_record_creation
     end
 
     def initialize(source)
