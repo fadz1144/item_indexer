@@ -4,14 +4,9 @@ module Transform
       class CommerceHub < CatalogTransformer::Base
         source_name 'External::ECOM::CommerceHub'
         target_name 'CatModels::Sku'
-        match_keys :upc
+        match_keys :gtin
         specified_attributes_only
         suppress_record_creation
-
-        # number in CatModels, string in ECOM; override to index by string
-        def self.load_indexed_targets(source_records)
-          target_relation.where(gtin: source_records.map(&:upc)).index_by { |s| s.gtin.to_s }
-        end
 
         # the sku save validates these, so eager load them
         def self.target_includes
