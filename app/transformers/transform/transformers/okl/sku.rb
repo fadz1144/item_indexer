@@ -27,7 +27,7 @@ module Transform
                 :merch_dept_tree_node_id, :merch_sub_dept_tree_node_id, :merch_class_tree_node_id, :restock_notifiable,
                 :vdc_min_days_to_ship, :vdc_max_days_to_ship, :buyer_cd, :buyer_name,
                 :vendor_discontinued_at, :vendor_available_qty, :vendor_availability_status, :vendor_next_available_qty,
-                :vendor_next_available_at, :vendor_inventory_last_updated_at,
+                :vendor_next_available_at, :vendor_inventory_last_updated_at, :prop_65_compliant, :prop_65_chemicals,
                 allow_primary_key: true
 
         module Decorations

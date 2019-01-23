@@ -62,6 +62,15 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
       it('ca_fulfillment_name') { expect(values['ca_fulfillment_name']).to eq 'Standard ECOM Processing' }
     end
 
+    context 'Prop 65' do
+      before do
+        source.build_compliance(props65_wrn_apply_txt: 'yes or no', list_prop65_chem_txt: 'list of chemicals')
+      end
+
+      it('prop_65_compliant') { expect(values['prop_65_compliant']).to eq 'yes or no' }
+      it('prop_65_chemicals') { expect(values['prop_65_chemicals']).to eq 'list of chemicals' }
+    end
+
     it 'restock_notifiable' do
       source.build_web_info(email_cust_for_oos_ind: true)
       expect(values['restock_notifiable']).to be true

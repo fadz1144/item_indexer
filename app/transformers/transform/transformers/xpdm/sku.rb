@@ -30,6 +30,8 @@ module Transform
         attribute :vdc_min_days_to_ship, association: :logistics, source_name: :vdc_min_day_to_shp
         attribute :vdc_max_days_to_ship, association: :logistics, source_name: :vdc_max_day_to_shp
         attribute :vdc_sku, association: :logistics, source_name: :vdc_ind, default_value: false
+        attribute :prop_65_compliant, association: :compliance, source_name: :props65_wrn_apply_txt
+        attribute :prop_65_chemicals, association: :compliance, source_name: :list_prop65_chem_txt
 
         # TODO: unit of measure
         # TODO: non-taxable
