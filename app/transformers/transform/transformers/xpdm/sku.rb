@@ -90,6 +90,14 @@ module Transform
           def product_memberships
             super.reject { |pm| pm.concept_product.nil? }
           end
+
+          def personalization_cd
+            logistics&.cstmzn_type_cd if personalizable?
+          end
+
+          def personalization_name
+            logistics&.cstmzn_type_name if personalizable?
+          end
         end
       end
     end

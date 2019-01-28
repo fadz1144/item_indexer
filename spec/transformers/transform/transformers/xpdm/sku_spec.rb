@@ -71,6 +71,21 @@ RSpec.describe Transform::Transformers::XPDM::Sku, skip: !Rails.configuration.se
       it('prop_65_chemicals') { expect(values['prop_65_chemicals']).to eq 'list of chemicals' }
     end
 
+    context 'Personalization' do
+      before { source.build_logistics(cstmzn_type_cd: 'mascot', cstmzn_type_name: 'oski') }
+      it('personalization_cd') { expect(values['personalization_cd']).to eq 'mascot' }
+      it('personalization_name') { expect(values['personalization_name']).to eq 'oski' }
+
+      context 'ignores uninteresting values' do
+        %w[N U].each do |boring_value|
+          it boring_value do
+            source.build_logistics(cstmzn_type_cd: boring_value)
+            expect(values['personalization_cd']).to be_nil
+          end
+        end
+      end
+    end
+
     it 'restock_notifiable' do
       source.build_web_info(email_cust_for_oos_ind: true)
       expect(values['restock_notifiable']).to be true
