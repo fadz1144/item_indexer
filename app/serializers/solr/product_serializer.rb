@@ -6,6 +6,7 @@ module SOLR
     include SOLR::Decorators::AnyDecoratedAttribute
     include SOLR::Decorators::ConceptSkuDetectDecoratedAttribute
     include SOLR::Decorators::ConceptSkuUniqDecoratedAttribute
+    include SOLR::Decorators::ConceptSkuUniqDecoratedBooleanAttribute
     include SOLR::Decorators::FieldUniqDecoratedAttribute
     include SOLR::Decorators::PricingDecoratedAttribute
     include SOLR::Decorators::SkuUniqDecoratedAttribute
@@ -26,6 +27,8 @@ module SOLR
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
     decorate_any 'ltl_eligible', field: 'ltl_eligible'
+
+    decorate_concepts_for_true_concept_sku_boolean 'tbs_blocked', field: 'tbs_blocked'
 
     # can't use the groupings because these are defined by the serializer (below)
     decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week'

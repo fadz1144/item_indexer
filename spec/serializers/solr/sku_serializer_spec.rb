@@ -54,6 +54,7 @@ RSpec.describe SOLR::SkuSerializer do
 
   let(:concept_sku_model) do # rubocop:disable BlockLength
     cs = CatModels::ConceptSku.new(
+      concept_id: 1976,
       vendor_sku: 'ABC12345',
       active: true,
       status: 'ACTIVE',
@@ -77,7 +78,8 @@ RSpec.describe SOLR::SkuSerializer do
       limited_qty: false,
       live: true,
       allow_exposure: true,
-      exclusivity_tier: 'Not Exclusive'
+      exclusivity_tier: 'Not Exclusive',
+      tbs_blocked: true
     )
     cs.concept_sku_images = [concept_sku_image_model]
     cs.concept_sku_dimensions = concept_sku_dimensions_model
@@ -151,6 +153,12 @@ RSpec.describe SOLR::SkuSerializer do
         arr = [concept_sku_model.send(field.to_sym)]
         expect(result[field]).to eql(arr)
       end
+    end
+
+    # concept id array fields
+    it 'should have tbs_blocked that matches ' do
+      arr = [concept_sku_model.concept_id]
+      expect(result[:tbs_blocked]).to eql(arr)
     end
   end
 

@@ -6,6 +6,7 @@ module SOLR
     include SOLR::Decorators::AnyDecoratedAttribute
     include SOLR::Decorators::ConceptSkuDetectDecoratedAttribute
     include SOLR::Decorators::ConceptSkuUniqDecoratedAttribute
+    include SOLR::Decorators::ConceptSkuUniqDecoratedBooleanAttribute
     include SOLR::Decorators::FieldUniqDecoratedAttribute
     include SOLR::Decorators::PricingDecoratedAttribute
     include SOLR::Decorators::SkuUniqDecoratedAttribute
@@ -29,6 +30,8 @@ module SOLR
 
     decorate_concept_sku_detect 'name', field: 'name'
     decorate_concept_sku_detect 'external_image_url', field: 'primary_image'
+
+    decorate_concepts_for_true_concept_sku_boolean 'tbs_blocked', field: 'tbs_blocked'
 
     decorate_field_uniq 'concept_id', field: 'concept_id'
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
