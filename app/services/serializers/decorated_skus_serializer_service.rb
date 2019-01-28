@@ -87,8 +87,7 @@ module Serializers
     def concept_skus_node_values(tree_node_sym, field_sym, concept_id)
       concept_skus_iterator do |cs|
         if cs.concept_id == concept_id
-          tree_node = cs.public_send(tree_node_sym)
-          hierarchy = hierarchy_for(tree_node)
+          hierarchy = hierarchy_for(cs, tree_node_sym)
           hierarchy&.map { |h| h[field_sym] }
         end
       end.flatten.compact.uniq
@@ -96,16 +95,16 @@ module Serializers
 
     def sku_level_tree_node_values(tree_node_sym, field_sym)
       decorated_skus.map do |s|
-        tree_node = s.public_send(tree_node_sym)
-        hierarchy = hierarchy_for(tree_node)
+        hierarchy = hierarchy_for(s, tree_node_sym)
         hierarchy&.map { |h| h[field_sym] }
       end.flatten.compact.uniq
     end
 
-    def hierarchy_for(tree_node)
-      return [] if tree_node.nil?
+    def hierarchy_for(record, tree_node_sym)
+      tree_node_id = record.public_send("#{tree_node_sym}_id")
+      return [] if tree_node_id.nil?
 
-      Indexer::TreeCache.fetch(tree_node.tree_node_id)
+      Indexer::TreeCache.fetch(tree_node_id)
     end
   end
 end
