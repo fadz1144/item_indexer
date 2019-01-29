@@ -1,0 +1,10 @@
+default_settings: &defaults
+  col_sep: '|'
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

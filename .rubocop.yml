@@ -23,9 +23,15 @@ Metrics/BlockLength:
     - spec/serializers/es/sku_serializer_spec.rb
     - spec/services/serializers/decorated_skus_serializer_service_spec.rb
     - spec/support/shared_examples*
+    - lib/tasks/sftp_jobs.rake
+    # THE ABOVE LINE IS TEMPORARY! I mean it. Just need to figure out what to name the class and extract it
+    #    and it will be easy to split into 2-3 methods then.
 Rails:
   Enabled: true
-
+Security/YAMLLoad:
+  Enabled: false
+Style/RedundantBegin:
+  Enabled: false
 Rails/InverseOf:
   Exclude:
   # do not clutter up main models with associations to inbound or external tables
@@ -38,6 +44,7 @@ Naming/MemoizedInstanceVariableName:
   Exclude:
     - app/serializers/product_serializer.rb
     - app/services/serializers/decorated_skus_serializer_service.rb
+
 #@TODO END of new rubocops
 AllCops:
   Exclude:

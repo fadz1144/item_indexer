@@ -10,7 +10,7 @@ git_source(:github_ssh) do |repo_name|
   "git@github.com:#{repo_name}.git"
 end
 
-gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'master', require: true
+gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'CAT-1084', require: true
 # gem 'cat_models', path: "../cat_models", require: true
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -55,6 +55,12 @@ gem 'bridge-cloud', github_ssh: 'okl/bridge-cloud', branch: 'master', require: '
 group :oracledb do
   gem 'activerecord-oracle_enhanced-adapter'
   gem 'ruby-oci8'
+end
+
+group :sftp do
+# Used for the "DW import" flavor of I.I.
+  gem 'net-ssh'
+  gem 'fun_sftp'
 end
 
 group :development, :test do

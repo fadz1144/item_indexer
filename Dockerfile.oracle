@@ -17,7 +17,7 @@ ENV PATH=$PATH:/usr/lib/oracle/12.2/client64/bin
 ENV ENABLE_PDM_CONNECTION=true
 
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler --force && bundle install --without test development --jobs 20 --retry 5
+RUN gem install bundler --force && bundle install --without test development sftp --jobs 20 --retry 5
 
 COPY --from=us.gcr.io/upc-dev/deployment-scripts:V1 /builder/bin ./bin
 

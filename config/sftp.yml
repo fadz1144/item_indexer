@@ -1,0 +1,15 @@
+default_settings: &defaults
+  host: <%= ENV.fetch('MFT_SFTP_HOST') %>
+  username: <%= ENV.fetch('MFT_SFTP_USER') %>
+  ssh_private_key: <%= ENV.fetch('MFT_SFTP_PRIV_KEY') %>
+  local_directory: <%= File.join(Rails.root, 'tmp', 'files from mft') %>
+  directories:
+    contribution_margin: <%= ENV.fetch('MFT_SFTP_DIRPATH_CONMAR') %>
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

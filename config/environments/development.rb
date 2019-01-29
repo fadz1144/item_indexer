@@ -58,4 +58,11 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.active_job.queue_adapter = :resque
+
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  end
+
 end
