@@ -70,5 +70,19 @@ RSpec.describe Transform::Transformers::XPDM::ConceptSku,
       sku.build_logistics(ltl_item_ind: true)
       expect(values['ltl_eligible']).to be true
     end
+
+    context 'shipping_method' do
+      it 'lists methods when LTL' do
+        sku.build_logistics(ltl_item_ind: true)
+        sku.truck_shipping_methods.build(ltl_elg_shp_meth_name: 'Threshold')
+        sku.truck_shipping_methods.build(ltl_elg_shp_meth_name: 'Room Of Choice')
+        expect(values['shipping_method']).to eq 'Threshold, Room of Choice'
+      end
+
+      it 'Standard when not LTL' do
+        sku.build_logistics(ltl_item_ind: false)
+        expect(values['shipping_method']).to eq 'Standard'
+      end
+    end
   end
 end

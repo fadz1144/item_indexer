@@ -11,6 +11,7 @@ module External
         has_many :package_dimensions, class_name: 'External::XPDM::PackageDimensions'
         has_many :web_prices, class_name: 'External::XPDM::WebPrice'
         has_many :web_costs, class_name: 'External::XPDM::WebCost'
+        has_many :truck_shipping_methods, class_name: 'TruckShippingMethod'
       end
 
       has_many :product_memberships, class_name: 'External::XPDM::ProductMembershipLocal', primary_key: :pdm_object_id,
@@ -40,6 +41,10 @@ module External
 
       def image_count
         image_relation.nil? ? 0 : alt_image_suffixes.size + 1
+      end
+
+      def truck_shipping_methods_string
+        External::XPDM::TruckShippingMethod.shipping_methods(truck_shipping_methods)
       end
     end
   end

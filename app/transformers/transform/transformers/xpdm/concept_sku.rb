@@ -25,7 +25,7 @@ module Transform
 
         exclude :concept_category_id, :status_reason_cd, :era, :style, :materials, :care_instructions,
                 :care_instructions_other, :lead_time, :lead_time_bucket, :aad_min_offset_days, :aad_max_offset_days,
-                :threshold_eligible, :shipping_method,
+                :threshold_eligible,
                 :total_avail_qty, :warehouse_avail_qty, :stores_avail_qty, :vdc_avail_qty, :on_order_qty, :limited_qty,
                 :allow_exposure, :returnable, :made_to_order, :assembly_required,
                 :exclusivity_tier, :suspended_reason,
@@ -89,6 +89,14 @@ module Transform
 
           def canadian_sku_not_sellable_there?
             concept_id == 2 && !sku&.compliance&.sellable_in_canada?
+          end
+
+          def shipping_method
+            if sku.ltl_item_ind
+              sku.truck_shipping_methods_string
+            else
+              'Standard'
+            end
           end
         end
       end
