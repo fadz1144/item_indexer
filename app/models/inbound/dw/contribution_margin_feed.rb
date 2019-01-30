@@ -5,7 +5,9 @@ module Inbound
         'inbound_dw_'
       end
 
-      def self.table_name ; 'inbound_dw_contribution_margin_feed' ; end
+      def self.table_name
+        'inbound_dw_contribution_margin_feed'
+      end
 
       SITE_ID_TO_CONCEPT = {
         'BedBathUS' => 1,
