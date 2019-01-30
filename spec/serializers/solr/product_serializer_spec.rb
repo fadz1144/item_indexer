@@ -40,6 +40,12 @@ describe SOLR::ProductSerializer do
     end
   end
 
+  let(:vdc_sku) do
+    build(:sku).tap do |s|
+      s.vdc_sku = true
+    end
+  end
+
   let(:product_single_sku_not_live) do
     build(:product).tap do |p|
       p.product_memberships.build(sku: not_live_sku)
@@ -63,6 +69,19 @@ describe SOLR::ProductSerializer do
       it 'should be live if any sku is live' do
         expect { result.as_json }.not_to raise_exception
       end
+    end
+  end
+
+  context 'vdc_flag' do
+    let(:product_model) { product_multi_sku }
+
+    it 'false when no underlying skus are vdc_sku' do
+      expect(result.as_json[:vdc_flag]).to be_falsey
+    end
+
+    it 'true when one underlying sku is vdc_sku' do
+      product_multi_sku.product_memberships.build(sku: vdc_sku)
+      expect(result.as_json[:vdc_flag]).to be_truthy
     end
   end
 end

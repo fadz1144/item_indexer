@@ -17,6 +17,10 @@ module Serializers
       decorated_skus_iterator(&block).uniq
     end
 
+    def decorated_skus_iterator_any(&block)
+      decorated_skus_iterator(&block).any?
+    end
+
     def concept_skus_iterator
       decorated_skus.map do |s|
         s.concept_skus.map do |cs|
