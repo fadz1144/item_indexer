@@ -26,4 +26,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'CA'
   inflect.acronym 'ECOM'
   inflect.acronym 'CM'
+  inflect.acronym 'DW'
 end

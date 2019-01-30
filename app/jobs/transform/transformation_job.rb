@@ -3,6 +3,7 @@ module Transform
     queue_as :transform
 
     def perform(source)
+      Rails.logger = Logger.new(STDOUT)
       lock_name = "#{self.class.name}:#{source}"
       with_lock(lock_name) { run_service(source) }
     end
