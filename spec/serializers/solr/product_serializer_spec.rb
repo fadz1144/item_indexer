@@ -84,4 +84,21 @@ describe SOLR::ProductSerializer do
       expect(result.as_json[:vdc_flag]).to be_truthy
     end
   end
+
+  context 'shipping method' do
+    let(:product_model) do
+      CatModels::Product.new.tap do |p|
+        [build(:sku, brand: brand_model).tap do |s|
+          s.concept_skus << build(:full_concept_sku, shipping_method: 'White Glove')
+          s.concept_skus << build(:full_concept_sku, shipping_method: 'White Glove')
+        end,
+         build(:sku, brand: brand_model).tap do |s|
+           s.concept_skus << build(:full_concept_sku, shipping_method: 'Threshold, White Glove')
+           s.concept_skus << build(:full_concept_sku, shipping_method: 'Room of Choice, Threshold')
+         end].each { |s| p.product_memberships.build(sku: s) }
+      end
+    end
+
+    it { expect(result.as_json[:shipping_method]).to contain_exactly('Threshold', 'Room of Choice', 'White Glove') }
+  end
 end

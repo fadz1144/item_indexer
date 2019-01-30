@@ -228,4 +228,12 @@ RSpec.describe SOLR::SkuSerializer do
       expect(result[:web_flags_summary_suspended]).to contain_exactly(4)
     end
   end
+
+  context 'shipping_method' do
+    let(:concept_sku_models) do
+      [build(:full_concept_sku, shipping_method: 'Threshold'),
+       build(:full_concept_sku, shipping_method: 'Threshold, Room of Choice')]
+    end
+    it { expect(result[:shipping_method]).to contain_exactly('Threshold', 'Room of Choice') }
+  end
 end

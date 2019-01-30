@@ -45,7 +45,7 @@ module SOLR
     decorate_field_uniq 'max_aad_offset_days', field: 'aad_max_offset_days', group: 'max'
     decorate_field_uniq 'min_lead_time', field: 'lead_time', group: 'min'
     decorate_field_uniq 'max_lead_time', field: 'lead_time', group: 'max'
-    decorate_field_uniq 'shipping_method', field: 'shipping_method'
+    decorate_field_uniq 'shipping_method', field: 'shipping_methods'
     decorate_field_uniq 'web_status', field: 'web_status'
 
     decorate_pricing 'min_margin_amount', field: 'margin_amount', group: 'min'

@@ -39,7 +39,7 @@ module SOLR
     decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
     decorate_field_uniq 'max_aad_offset_days', field: 'aad_max_offset_days', group: 'max'
     decorate_field_uniq 'on_order_qty', field: 'on_order_qty', group: 'max'
-    decorate_field_uniq 'shipping_method', field: 'shipping_method'
+    decorate_field_uniq 'shipping_method', field: 'shipping_methods'
     decorate_field_uniq 'store_avail_qty', field: 'stores_avail_qty', group: 'max'
     decorate_field_uniq 'total_avail_qty', field: 'total_avail_qty', group: 'max'
     decorate_field_uniq 'vdc_avail_qty', field: 'vdc_avail_qty', group: 'max'
