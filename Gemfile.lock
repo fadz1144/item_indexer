@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 94eff549003a1a5ace8284b8d8a8c8e5bf938562
+  revision: bd95c48014f5359e90de8ac1af8f3a4e6bc9fec0
   branch: master
   specs:
     cat_models (0.1.0)
@@ -393,4 +393,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.4
+   1.17.3
