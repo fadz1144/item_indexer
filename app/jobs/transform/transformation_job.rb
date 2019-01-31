@@ -1,35 +1,21 @@
+# this is poorly named, it is the Inbound Transformation Job
 module Transform
   class TransformationJob < ApplicationJob
     queue_as :transform
 
     def perform(source)
       Rails.logger = Logger.new(STDOUT)
-      lock_name = "#{self.class.name}:#{source}"
-      with_lock(lock_name) { run_service(source) }
+      JobLock.new("inbound_transformation_job__#{source}").with_lock do |lock|
+        run_service(source, lock)
+      end
     end
 
     private
 
-    # rubocop:disable Metrics/MethodLength
-    def with_lock(lock_name)
-      mutex = RedisSimpleMutex.new(lock_name)
-      lock_acquired = false
-
-      if mutex.lock
-        lock_acquired = true
-        Rails.logger.info "Got the '%s' lock, ready to go!" % lock_name
-        yield
-      else
-        Rails.logger.info "Failed to acquire lock for '#{lock_name}'"
-      end
-    ensure
-      mutex.unlock if lock_acquired
-    end
-    # rubocop:enable Metrics/MethodLength
-
-    def run_service(source)
+    def run_service(source, lock)
       Rails.logger.info 'Looking for batches in need of transformation...'
       each_inbound_batch_id(source) do |inbound_batch_id|
+        lock.extend
         Rails.logger.info "Transforming inbound batch ID: #{inbound_batch_id}"
         Transform::TransformationService.new.transform(inbound_batch_id)
       end

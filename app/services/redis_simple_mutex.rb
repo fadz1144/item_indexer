@@ -8,7 +8,7 @@ class RedisSimpleMutex
                                     redis: RedisInitializer.redis(Rails.configuration.settings, 'mutex'))
   end
 
-  def initialize(key, ttl = 120)
+  def initialize(key, ttl = 3600)
     @key = key
     @ttl = ttl
   end
@@ -19,9 +19,11 @@ class RedisSimpleMutex
 
   def lock
     if redis.setnx(@key, signature)
+      Rails.logger.debug "Lock acquired for '#{@key}'"
       expire
       true
     else
+      Rails.logger.info "Unable to acquire lock for '#{@key}'"
       false
     end
   end
@@ -32,7 +34,7 @@ class RedisSimpleMutex
   end
 
   def unlock
-    owned? ? redis.del(@key) : raise("Cannot unlock, lock not owned: #{@key}")
+    owned? ? redis.del(@key) : Rails.logger.warn("Cannot unlock, lock not owned: #{@key}")
   end
 
   def owned?
