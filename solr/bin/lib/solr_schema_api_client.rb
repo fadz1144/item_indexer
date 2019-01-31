@@ -11,21 +11,40 @@ class SolrSchemaApiClient
     @schema_endpoint = "#{solr_base_uri}#{core}/schema"
   end
 
-  # eg
-  # fields_to_add => {"name":"name", "type":"text_general", "multiValued":false, "stored":true}}
-  # can also be:
-  # fields_to_add => [{"name":"name", "type":"text_general", "multiValued":false, "stored":true}, ...]
-  def add_fields(fields_to_add)
-    data = { 'add-field' => fields_to_add }.to_json
+  # Example Field Definition:
+  # https://lucene.apache.org/solr/guide/7_6/defining-fields.html#example-field-definition
+  def add_field(field)
+    data = { 'add-field' => field }.to_json
 
     url = URI.parse(@schema_endpoint)
     http = Net::HTTP.new(url.host, url.port)
-    response, body = http.post(url.path, data, 'Content-type' => 'application/json')
+    Response.new(http.post(url.path, data, 'Content-type' => 'application/json'))
+  end
 
-    unless response.is_a? Net::HTTPSuccess
-      puts response.inspect
-      raise 'Bad Response'
+  class Response
+    def initialize(response)
+      @response = response
+      @json = JSON.parse(response.body)
     end
-    JSON.parse(body, symbolize_names: true) if body
+
+    def success?
+      @response.is_a? Net::HTTPSuccess
+    end
+
+    def error?
+      !success? && !field_exists?
+    end
+
+    def status
+      @json.dig('responseHeader', 'status')
+    end
+
+    def error_messages
+      @json.dig('error', 'details').flat_map { |detail| detail['errorMessages'] }
+    end
+
+    def field_exists?
+      error_messages.any? { |s| /Field '\w+' already exists/.match? s }
+    end
   end
 end

@@ -13,18 +13,6 @@ RSpec.describe SOLR::FieldDefinition do
       f = described_class.new('oski', options)
       expect(f.solr_field_definition.keys).not_to include(:blue)
     end
-
-    it 'provides default for indexed' do
-      options = { type: 'bears' }
-      f = described_class.new('oski', options)
-      expect(f.solr_field_definition).to include(indexed: true)
-    end
-
-    it 'provides default for stored' do
-      options = { type: 'bears' }
-      f = described_class.new('oski', options)
-      expect(f.solr_field_definition).to include(stored: true)
-    end
   end
 
   it '#name' do
