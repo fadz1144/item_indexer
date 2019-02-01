@@ -10,7 +10,7 @@ git_source(:github_ssh) do |repo_name|
   "git@github.com:#{repo_name}.git"
 end
 
-gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'CAT-1084', require: true
+gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'master', require: true
 # gem 'cat_models', path: "../cat_models", require: true
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
