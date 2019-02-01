@@ -9,6 +9,7 @@
 .circleci
 .git
 .idea
+.bundle
 .DS_Store
 *.job.yml
 coverage

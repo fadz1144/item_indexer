@@ -13,7 +13,7 @@ module Sftp
 
     def run
       files = @sftp_client.files
-      Rails.logger.info 'Directory listing: \n%s\n--------=-=-=-=-=-=-=-=-=-=----------' % files.join(' ')
+      Rails.logger.info 'Directory listing: %s' % files.join(' ')
       system 'mkdir -p \'%s\'' % @local_directory
       download_files(files)
       @sftp_client.close_connection
@@ -28,8 +28,8 @@ module Sftp
     # hashtag: lessons learned dealing with Kibo
     def remove_from_server(files)
       files.each do |filename|
-        Rails.logger.info "let's flag this as processed-> %s" % filename
-        @sftp_client.rename(nil, filename, '%s%s' % [PREFIX_TO_ADD_AFTER_SUCCESS, filename])
+        Rails.logger.info 'Deleting: %s' % filename
+        @sftp_client.delete(nil, filename)
       end
     end
 
@@ -38,7 +38,8 @@ module Sftp
     def download_files(files)
       files.each do |file|
         next if file.start_with? PREFIX_TO_ADD_AFTER_SUCCESS
-        Rails.logger.info 'Downloading %s...' % file
+        mtime = @sftp_client.modified_time(nil, file)
+        Rails.logger.info 'Downloading %s (mtime %s)...' % [file, mtime]
         @sftp_client.download(file: file, to: @local_directory)
         @files_fetched << file
       end

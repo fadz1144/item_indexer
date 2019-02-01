@@ -41,12 +41,20 @@ module Sftp
       @connection.download!("#{default_directory}/#{file}", "#{to}/#{target_filename}")
     end
 
+    def delete(directory_location, name)
+      directory_location ||= default_directory
+      Rails.logger.info "Deleting '#{directory_location}/#{name}'"
+      @connection.rm("#{directory_location}/#{name}")
+    end
+
     def rename(directory_location, name, new_name)
       directory_location ||= default_directory
+      Rails.logger.info "Moving '#{directory_location}/#{name}' to '#{directory_location}/#{new_name}'..."
       @connection.rename("#{directory_location}/#{name}", "#{directory_location}/#{new_name}")
     end
 
     def modified_time(directory_location, name)
+      directory_location ||= default_directory
       @connection.mtime("#{directory_location}/#{name}")
     end
 

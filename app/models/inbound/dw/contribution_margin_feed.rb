@@ -31,7 +31,7 @@ module Inbound
       private
 
       def site_id_error_msg(site_id)
-        'Unrecognized value in SITE_ID field from mft: %d. We only expect values in (%s)' % [
+        'Unrecognized value in SITE_ID field from mft: %s. We only expect values in (%s)' % [
           site_id,
           SITE_ID_TO_CONCEPT.keys.join('|')
         ]

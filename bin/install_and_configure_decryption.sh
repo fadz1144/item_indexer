@@ -7,15 +7,9 @@ if [[ ! -d /secrets/mft ]] ; then
 fi
 
 if [[ ! -r /secrets/mft/private-encryption-key.asc ]] ; then
-    echo 'ERROR! Can't read /secrets/mft/private-encryption-key.asc ! Check your permissions! '
+    echo 'ERROR! Cannot read /secrets/mft/private-encryption-key.asc ! Check your permissions! '
     exit 3
 fi
-
-echo "------------------------------------------------------------------------------"
-echo "------------------------------ Installing GPG --------------------------------"
-echo "------------------------------------------------------------------------------"
-
-apt-get install --no-upgrade -q -y gpgv2 expect
 
 echo "------------------------------------------------------------------------------"
 echo "------------ Importing encryption key from secrets volume mount --------------"

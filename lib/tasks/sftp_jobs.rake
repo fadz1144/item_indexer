@@ -1,6 +1,5 @@
 namespace :sftp do
   desc 'Get contribution margin data from SFTP source and copy to inbound tables'
-  # purposely not bringin in "environment" because I don't think we'll need it
   task 'get_contribution_margin_from_sftp' => :environment do
     Rails.logger = Logger.new(STDOUT)
     fetcher = Sftp::ContributionMarginSftpFetcher.new
@@ -24,7 +23,7 @@ namespace :sftp do
       end
     end
     # TODO: Here is where i will return if there are no files, once this is turned into a method on a real class
-    Rails.logger.debug "Files present after decryption: #{files.map { |f| File.join(dir, f) }.join(', ')}"
+    Rails.logger.debug "Files present after decryption: #{files.join(', ')}"
     files.each do |file|
       begin
         Deserializers::ParserMatchmaker.init_parser(file)&.parse

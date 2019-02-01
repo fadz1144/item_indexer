@@ -18,6 +18,7 @@ module Deserializers
       init_batch
       CSV.foreach(@filename, headers: true, col_sep: @col_sep, liberal_parsing: true) do |row|
         make_record(row)
+        break if ENV['MFT_TEST_ONLY_MAKE_ONE_RECORD'] == 'true'
       end
       complete_batch
     rescue => e
@@ -28,7 +29,7 @@ module Deserializers
 
     def make_record(row)
       inbound_record_class = INBOUND_RECORD_CLASS.constantize
-      fields = row.to_h.tap { |r| r.transform_keys!(&:downcase) }
+      fields = row.to_h.tap { |r| r.transform_keys! { |k| k.to_s.downcase } }
       data = fields.slice(*FIELDS_I_NEED)
       data['sku_id'] = data.delete 'skuid'
       record = inbound_record_class.new(data)
@@ -42,6 +43,7 @@ module Deserializers
       inbound_detail = { status: Inbound::Batch::STATUS_IN_PROGRESS,
                          file_name: File.basename(@filename) }
       @batch = Inbound::Batch.new(inbound_record_class.inbound_batch_fields.merge(inbound_detail)).tap(&:save!)
+      Rails.logger.info "Created Inbound Batch #{@batch.inbound_batch_id}"
     end
 
     def complete_batch
