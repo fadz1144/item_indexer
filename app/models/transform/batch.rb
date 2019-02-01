@@ -12,6 +12,7 @@ module Transform
 
     include StringEnums
     string_enum status: %w[in\ progress complete error]
+    include ExecutableBatch
 
     def mark_error(status_reason)
       self.status = STATUS_ERROR
@@ -20,18 +21,6 @@ module Transform
 
     def status_reason=(value)
       super(value.truncate(255))
-    end
-
-    def execute_and_record_status!
-      self.start_datetime = Time.current
-      yield
-      mark_complete
-    rescue => e
-      Rails.logger.error(([e.message] + e.backtrace).join("\n\t"))
-      mark_error(e.message)
-    ensure
-      self.stop_datetime = Time.current
-      save!
     end
 
     private

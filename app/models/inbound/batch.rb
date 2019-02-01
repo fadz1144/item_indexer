@@ -6,6 +6,7 @@ module Inbound
 
     include StringEnums
     string_enum status: %w[in\ progress complete error]
+    include ExecutableBatch
 
     scope :ready_for_transformation, -> { where(status: STATUS_COMPLETE, transform_batch_id: nil) }
 

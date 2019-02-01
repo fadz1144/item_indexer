@@ -36,6 +36,10 @@ RSpec.describe Transform::Batch do
       it 'includes error in status reason' do
         expect(batch.status_reason).to eq 'sad story'
       end
+
+      it 'stores the error' do
+        expect(batch.rescued_error.inspect).to eq '#<StandardError: sad story>'
+      end
     end
   end
 end
