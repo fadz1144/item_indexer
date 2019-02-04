@@ -31,5 +31,10 @@ namespace :bridge do
     task xpdm_sku_vdc_sku: %i[environment to_stdout] do
       CatalogUpdates::UpdateService.new(CatalogUpdates::XPDM::SkuVDC.new).execute
     end
+
+    desc 'Update null sku chain status to Unknown (OKL Skus)'
+    task null_chain_status: %i[environment to_stdout] do
+      CatalogUpdates::UpdateService.new(CatalogUpdates::NullChainStatus.new).execute
+    end
   end
 end
