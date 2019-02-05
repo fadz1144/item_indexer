@@ -36,5 +36,10 @@ namespace :bridge do
     task null_chain_status: %i[environment to_stdout] do
       CatalogUpdates::UpdateService.new(CatalogUpdates::NullChainStatus.new).execute
     end
+
+    desc 'Update null web_flags_summary from web_status'
+    task null_web_flags_summary: %i[environment to_stdout] do
+      CatalogUpdates::NullWebFlagsSummary.each { |model| CatalogUpdates::UpdateService.new(model).execute }
+    end
   end
 end
