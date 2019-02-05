@@ -89,21 +89,15 @@ module SOLR
     shared 'web_enabled_date', type: 'pdate'
 
     # hierarchies
-    shared 'eph_tree_node_id', type: 'plong', multiValued: true
-    shared 'eph_tree_source_code', type: 'string', multiValued: true
-    shared 'eph_tree_node_name', type: 'text_general', multiValued: true
-    shared 'merch_tree_node_id', type: 'plong', multiValued: true
-    shared 'merch_tree_source_code', type: 'string', multiValued: true
-    shared 'merch_tree_node_name', type: 'text_general', multiValued: true
-    shared 'bbby_site_nav_tree_node_id', type: 'plong', multiValued: true
-    shared 'bbby_site_nav_tree_source_code', type: 'string', multiValued: true
-    shared 'bbby_site_nav_tree_node_name', type: 'text_general', multiValued: true
-    shared 'ca_site_nav_tree_node_id', type: 'plong', multiValued: true
-    shared 'ca_site_nav_tree_source_code', type: 'string', multiValued: true
-    shared 'ca_site_nav_tree_node_name', type: 'text_general', multiValued: true
-    shared 'baby_site_nav_tree_node_id', type: 'plong', multiValued: true
-    shared 'baby_site_nav_tree_source_code', type: 'string', multiValued: true
-    shared 'baby_site_nav_tree_node_name', type: 'text_general', multiValued: true
+    %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].each do |tree|
+      {
+        'node_id': 'plong',
+        'source_code': 'string',
+        'node_name': 'text_general'
+      }.each do |field, type|
+        shared "#{tree}_tree_#{field}", type: type, multiValued: true
+      end
+    end
 
     # contribution margin
     shared 'min_contribution_margin_amount_cents', type: 'pint'

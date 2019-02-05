@@ -78,25 +78,12 @@ module SOLR
     decorate_sku_uniq 'web_status_active', field: 'web_status_active'
     decorate_sku_uniq 'web_status_suspended', field: 'web_status_suspended'
 
-    decorate_tree_node 'eph_tree_node_id', tree: 'eph', field: 'id'
-    decorate_tree_node 'eph_tree_source_code', tree: 'eph', field: 'source_code'
-    decorate_tree_node 'eph_tree_node_name', tree: 'eph', field: 'name'
-
-    decorate_tree_node 'merch_tree_node_id', tree: 'merch', field: 'id'
-    decorate_tree_node 'merch_tree_source_code', tree: 'merch', field: 'source_code'
-    decorate_tree_node 'merch_tree_node_name', tree: 'merch', field: 'name'
-
-    decorate_tree_node 'bbby_site_nav_tree_node_id', tree: 'bbby_site_nav', field: 'id'
-    decorate_tree_node 'bbby_site_nav_tree_source_code', tree: 'bbby_site_nav', field: 'source_code'
-    decorate_tree_node 'bbby_site_nav_tree_node_name', tree: 'bbby_site_nav', field: 'name'
-
-    decorate_tree_node 'ca_site_nav_tree_node_id', tree: 'ca_site_nav', field: 'id'
-    decorate_tree_node 'ca_site_nav_tree_source_code', tree: 'ca_site_nav', field: 'source_code'
-    decorate_tree_node 'ca_site_nav_tree_node_name', tree: 'ca_site_nav', field: 'name'
-
-    decorate_tree_node 'baby_site_nav_tree_node_id', tree: 'baby_site_nav', field: 'id'
-    decorate_tree_node 'baby_site_nav_tree_source_code', tree: 'baby_site_nav', field: 'source_code'
-    decorate_tree_node 'baby_site_nav_tree_node_name', tree: 'baby_site_nav', field: 'name'
+    # hierarchies
+    %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].map(&:to_s).each do |tree|
+      %w[node_id source_code node_name].each do |field|
+        decorate_tree_node "#{tree}_tree_#{field}", tree: tree, field: field.delete_prefix('node_')
+      end
+    end
 
     bucket 'web_flags_summary', CatModels::Constants::WebFlagsSummary
 
