@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: f1061f32ffed2aac16201d54d345258adf2930d5
+  revision: e1dabb532d6dbe5e43958f27d196102d74fd2765
   branch: master
   specs:
     cat_models (0.1.0)
@@ -136,7 +136,7 @@ GEM
     fuubar (2.3.2)
       rspec-core (~> 3.0)
       ruby-progressbar (~> 1.4)
-    globalid (0.4.1)
+    globalid (0.4.2)
       activesupport (>= 4.2.0)
     guard (2.15.0)
       formatador (>= 0.2.4)
@@ -158,7 +158,7 @@ GEM
     hashie (3.6.0)
     honeybadger (3.3.1)
     htmlentities (4.3.4)
-    i18n (1.3.0)
+    i18n (1.5.3)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.1)
     jbuilder (2.8.0)
@@ -193,7 +193,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.1.0)
     nio4r (2.3.1)
-    nokogiri (1.9.1)
+    nokogiri (1.10.1)
       mini_portile2 (~> 2.4.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
