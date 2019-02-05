@@ -3,9 +3,6 @@ namespace :sftp do
   task 'get_contribution_margin_from_sftp' => :environment do
     Rails.logger = Logger.new(STDOUT)
     fetcher = Sftp::ContributionMarginSftpFetcher.new
-    if Dir.exist?('/Users/dpritchard')
-      system "rm -rf '#{fetcher.local_directory}'/*.gpg '#{fetcher.local_directory}'/*.txt" # TODO: REMOVE ME
-    end
     encrypted_files = fetcher.run
     dir = fetcher.local_directory
     files = []
