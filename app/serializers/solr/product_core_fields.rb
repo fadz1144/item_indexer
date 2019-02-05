@@ -23,6 +23,7 @@ module SOLR
     shared 'sku_id', type: 'plong', multiValued: true
     shared 'category_id', type: 'plong', multiValued: true
     shared 'category_name', type: 'text_general', multiValued: true
+    shared 'category_source_code', type: 'text_general', multiValued: true
     shared 'concept_id', type: 'pint', multiValued: true
     shared 'eph_category_id', type: 'plong', multiValued: true
     shared 'eph_category_name', type: 'text_general', multiValued: true

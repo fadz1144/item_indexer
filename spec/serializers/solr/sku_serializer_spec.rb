@@ -16,6 +16,15 @@ RSpec.describe SOLR::SkuSerializer do
       level: 1
     )
   end
+  let(:category_cache_entry) do
+    CatModels::CategoryCache.new(
+      category_model.category_id,
+      category_model.name,
+      category_model.parent_id,
+      category_model.level,
+      410_000
+    )
+  end
 
   let(:product_model) do
     p = CatModels::Product.new(
@@ -118,7 +127,7 @@ RSpec.describe SOLR::SkuSerializer do
   let(:result) { described_class.new(sku_model).as_json }
 
   before(:each) do
-    allow(CatModels::CategoryCache).to receive(:hierarchy_for).and_return([category_model])
+    allow(CatModels::CategoryCache).to receive(:hierarchy_for).and_return([category_cache_entry])
   end
 
   context 'test dynamic serializer' do

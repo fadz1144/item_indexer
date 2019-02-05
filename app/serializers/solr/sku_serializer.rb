@@ -175,6 +175,10 @@ module SOLR
       CatModels::CategoryCache.hierarchy_for(object.category&.category_id).map(&:name).uniq
     end
 
+    def category_source_code
+      CatModels::CategoryCache.hierarchy_for(object.category&.category_id).map(&:source_code).map(&:to_s).uniq
+    end
+
     # TODO: implement me
     def eph_category_id
       []
