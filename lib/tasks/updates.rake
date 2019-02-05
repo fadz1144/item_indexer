@@ -41,5 +41,12 @@ namespace :bridge do
     task null_web_flags_summary: %i[environment to_stdout] do
       CatalogUpdates::NullWebFlagsSummary.each { |model| CatalogUpdates::UpdateService.new(model).execute }
     end
+
+    desc 'Update null vendor Ids on skus'
+    task null_vendors: :environment do
+      CatalogUpdates::UpdateService.new(CatalogUpdates::NullSkuVendors.new).execute
+      CatalogUpdates::UpdateService.new(CatalogUpdates::NullProductVendors.new).execute
+      CatalogUpdates::UpdateService.new(CatalogUpdates::NullConceptProductVendors.new).execute
+    end
   end
 end
