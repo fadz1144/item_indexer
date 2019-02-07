@@ -179,6 +179,17 @@ module SOLR
       CatModels::CategoryCache.hierarchy_for(object.category&.category_id).map(&:source_code).map(&:to_s).uniq
     end
 
+    def source_collection_id
+      products = object.products || []
+      memberships = products.flat_map(&:collection_memberships) || []
+      concept_collections = memberships.map(&:collection_id).flat_map do |collection_id|
+        concept_id.map do |concept_id|
+          Indexer::ConceptCollectionCache.fetch(concept_id, collection_id)
+        end
+      end || []
+      concept_collections.compact.map { |concept_collection| concept_collection[:source_collection_id] }.uniq
+    end
+
     # TODO: implement me
     def eph_category_id
       []

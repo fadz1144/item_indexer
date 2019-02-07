@@ -4,7 +4,7 @@ class ProductsController < ApplicationController
   # rubocop:disable Metrics/AbcSize
   def show
     # for preview, we always want a fresh collection cache lookup, whether during adhoc fetch or after precaching
-    clear_cache
+    Indexer::ConceptCollectionCache.clear
     write_timing('initializing publisher', &method(:publisher))
     serialized = write_timing("serializing product #{product_id}") { publisher.preview(product_id) }
     writeln(json_html(serialized))
@@ -62,11 +62,5 @@ class ProductsController < ApplicationController
 
   def now
     Process.clock_gettime(Process::CLOCK_MONOTONIC)
-  end
-
-  def clear_cache
-    # clear concept collection cache, which functions the same whether or not it's optionally precached
-    config = Rails.configuration
-    config.indexer_concept_collection_cache.clear if config.respond_to? :indexer_concept_collection_cache
   end
 end

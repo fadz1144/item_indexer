@@ -133,6 +133,15 @@ module SOLR
       concept_ids.uniq
     end
 
+    def source_collection_id
+      concept_collections = object.collection_memberships.map(&:collection_id).flat_map do |collection_id|
+        concept_id.map do |concept_id|
+          Indexer::ConceptCollectionCache.fetch(concept_id, collection_id)
+        end
+      end
+      concept_collections.compact.map { |concept_collection| concept_collection[:source_collection_id] }.uniq
+    end
+
     def skus
       result = []
 

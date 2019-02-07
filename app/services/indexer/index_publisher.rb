@@ -19,9 +19,10 @@ module Indexer
 
       # tree cache must be precached
       Indexer::TreeCache.build
-      return unless precache
 
-      logger.info('TODO optional precaching will go here')
+      return unless precache
+      # concept collection cache works with or without optional precaching
+      Indexer::ConceptCollectionCache.build
     end
 
     def publish_to_search_by_ids(ids, chunk_size = 1_000)
