@@ -57,6 +57,12 @@ group :oracledb do
   gem 'ruby-oci8'
 end
 
+group :sftp do
+# Used for the "DW import" flavor of I.I.
+  gem 'net-ssh'
+  gem 'fun_sftp'
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
