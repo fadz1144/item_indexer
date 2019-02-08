@@ -1,9 +1,9 @@
 module Indexer
   class IndexPublisherFactory
-    def self.publisher_for(type:, platform:)
+    def self.publisher_for(type:, platform:, precache: true)
       indexer = IndexerFactory.build_indexer(factory_type: type, platform: platform)
       client = client(platform: platform)
-      Indexer::IndexPublisher.new(indexer: indexer, client: client)
+      Indexer::IndexPublisher.new(indexer: indexer, client: client, precache: precache)
     end
 
     class << self

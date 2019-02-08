@@ -24,6 +24,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :products, only: [:show]
+
   root to: 'health_check#version'
   get 'version' => 'health_check#version'
 

@@ -8,7 +8,7 @@ module Indexer
 
     attr_accessor :logger, :client
 
-    def initialize(logger: Rails.logger, indexer:, client: ES::ESClient.new)
+    def initialize(logger: Rails.logger, indexer:, client: ES::ESClient.new, precache: true)
       @logger              = logger
       @total_num_processed = 0
       @start_time          = Time.current
@@ -17,8 +17,11 @@ module Indexer
       @benchmark = BenchmarkHelper.new(logger: logger)
       @client = client
 
-      # init the tree cache
+      # tree cache must be precached
       Indexer::TreeCache.build
+      return unless precache
+
+      logger.info('TODO optional precaching will go here')
     end
 
     def publish_to_search_by_ids(ids, chunk_size = 1_000)
@@ -31,6 +34,11 @@ module Indexer
       end
       # TODO: check for errors??
       results
+    end
+
+    def preview(id)
+      items = @indexer.fetch_items([id])
+      client.items_to_documents(@indexer, items)
     end
 
     # set_size = DB Fetch. chunk_size = size of batch to load to ES

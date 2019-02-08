@@ -14,9 +14,12 @@ module SOLR
     end
 
     def publish_items(indexer, items)
-      documents = items.map { |item| index_hash_for_item(indexer, item) }.compact
-      @client.add documents
+      @client.add items_to_documents(indexer, items)
       @client.commit
+    end
+
+    def items_to_documents(indexer, items)
+      items.map { |item| index_hash_for_item(indexer, item) }.compact
     end
 
     private
