@@ -1,5 +1,5 @@
 module Sftp
-  class ContributionMarginSftpFetcher
+  class DataWarehouseSftpFetcher
     attr_reader :local_directory
     REMOTE_DIR_ENTRY = :contribution_margin
     PREFIX_TO_ADD_AFTER_SUCCESS = 'PROCESSED-'.freeze
