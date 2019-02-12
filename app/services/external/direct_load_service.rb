@@ -48,9 +48,8 @@ module External
       process(@loader.base_arel.where(@loader.base_arel.primary_key => ids), direct_batch(:individual, ids))
     end
 
-    # adding a four-hour look back until we get clarity on the last updated timestamps
     def incremental(timestamp = nil)
-      timestamp ||= most_recent_run_of_incremental - 4.hours
+      timestamp ||= most_recent_run_of_incremental - look_back_window
       process(@loader.base_arel.updates_since(timestamp), direct_batch(:incremental, timestamp))
     end
 
@@ -67,6 +66,11 @@ module External
     # loaders can optionally implement method restart_id to support restarting full loads
     def restart_id
       @loader.restart_id if @loader.respond_to?(:restart_id)
+    end
+
+    # loaders can optionally implement method look_back_window to override the default of four hours
+    def look_back_window
+      @loader.respond_to?(:look_back_window) ? @loader.look_back_window : 4.hours
     end
 
     def most_recent_run_of_incremental
