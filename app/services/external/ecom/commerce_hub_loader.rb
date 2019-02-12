@@ -1,6 +1,12 @@
 module External
   module ECOM
     class CommerceHubLoader
+      attr_reader :look_back_window
+
+      def initialize(look_back_window = 3.days)
+        @look_back_window = look_back_window
+      end
+
       def base_arel
         External::ECOM::CommerceHub
       end
