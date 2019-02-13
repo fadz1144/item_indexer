@@ -203,4 +203,19 @@ namespace :xpdm do
     External::DirectLoadService.new(External::XPDM::SkuLoader.new)
                                .partial(External::XPDM::Sku.beyond_sku.where(sub_query))
   end
+
+  desc 'Backfill site navigations'
+  task backfill_site_navigations: %i[verify_token environment] do
+    External::DirectLoadService.new(
+      External::XPDM::SiteNavigationsBackfill.new(
+        External::XPDM::Collection.web_collection, CatModels::ConceptCollection
+      )
+    ).partial(External::XPDM::Collection.web_collection.no_updates_since('2019-01-02'.to_datetime))
+
+    External::DirectLoadService.new(
+      External::XPDM::SiteNavigationsBackfill.new(
+        External::XPDM::Product.web_product, CatModels::ConceptProduct
+      )
+    ).partial(External::XPDM::Product.web_product.no_updates_since('2019-01-02'.to_datetime))
+  end
 end
