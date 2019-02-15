@@ -42,6 +42,8 @@ module SOLR
     shared 'live', type: 'boolean'
     shared 'min_aad_offset_days', type: 'pint'
     shared 'max_aad_offset_days', type: 'pint'
+    shared 'price_cents', type: 'pint', multiValued: true
+    shared 'margin_amount_cents', type: 'pint', multiValued: true
     shared 'min_price_cents', type: 'pint'
     shared 'max_price_cents', type: 'pint'
     shared 'min_margin_amount_cents', type: 'pint'
@@ -64,7 +66,6 @@ module SOLR
     shared 'available_in_ca', type: 'boolean'
     shared 'clearance_status', type: 'string', multiValued: true
     shared 'concept_eligibility', type: 'pint', multiValued: true
-    shared 'contribution_margin_percent', type: 'pfloat'
     shared 'dynamic_price_eligible', type: 'boolean'
     shared 'inactive_reason', type: 'string', multiValued: true
     shared 'inventory_ecom_us', type: 'pint'
@@ -102,6 +103,8 @@ module SOLR
     end
 
     # contribution margin
+    shared 'contribution_margin_amount_cents', type: 'pint', multiValued: true
+    shared 'contribution_margin_percent', type: 'pfloat', multiValued: true
     shared 'min_contribution_margin_amount_cents', type: 'pint'
     shared 'max_contribution_margin_amount_cents', type: 'pint'
     shared 'min_contribution_margin_percent', type: 'pfloat'
@@ -140,6 +143,7 @@ module SOLR
     product 'avg_margin_percent', type: 'pfloat'
     product 'min_lead_time', type: 'pint'
     product 'max_lead_time', type: 'pint'
+    product 'lead_time', type: 'pint', multiValued: true
 
     def self.product_fields
       @shared_fields + @product_fields

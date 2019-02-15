@@ -77,7 +77,11 @@ module SOLR
     def as_currency_cents(value)
       return 0 unless value
 
-      (value * 100.0).to_i
+      if value.respond_to? :map
+        value.map { |v| (v * 100.0).to_i }
+      else
+        (value * 100.0).to_i
+      end
     end
 
     # as percent is the same implementation as currency to cents conversion
