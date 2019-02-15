@@ -16,6 +16,9 @@ RUN mkdir -p /bbb/app/log && \
 COPY --from=us.gcr.io/upc-dev/deployment-scripts:V1 /builder/bin ./bin
 COPY . ./
 
+# Put sftp stuff where it'll be automatically picked up
+RUN mv lib/sftp app/services/sftp
+
 ## Move config files into place
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
