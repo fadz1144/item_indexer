@@ -184,4 +184,24 @@ describe Serializers::DecoratedSkusSerializerService do
   it 'supports field_unique_values' do
     expect(service.field_unique_values(:aad_min_offset_days)).to eq([6])
   end
+
+  context 'CA cost and price double BBBY' do
+    let(:service) do
+      sku = CatModels::Sku.new.tap do |s|
+        s.concept_skus.build(concept_id: 1).tap { |cs| cs.build_concept_sku_pricing(retail_price: 10, cost: 5) }
+        s.concept_skus.build(concept_id: 2).tap { |cs| cs.build_concept_sku_pricing(retail_price: 20, cost: 10) }
+        s.concept_skus.build(concept_id: 3).tap { |cs| cs.build_concept_sku_pricing(retail_price: 12, cost: 6) }
+      end
+
+      described_class.new(instance_double(Serializers::SkuDecoratorWrapper, decorated_skus: [sku]))
+    end
+
+    it 'sku pricing field values for retail price do not include CA' do
+      expect(service.sku_pricing_field_values(:retail_price)).to contain_exactly(10, 12)
+    end
+
+    it 'sku pricing field values for cost do not include CA' do
+      expect(service.sku_pricing_field_values(:cost)).to contain_exactly(5, 6)
+    end
+  end
 end
