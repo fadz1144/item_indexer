@@ -4,6 +4,7 @@ module Transform
       # I exist just to make sure you'll notice if you attempt to call this and expect to get back a symbol.
       class NoTargetKeyErrorObject; end
       class ConceptSkuPricing < CatalogTransformer::Base
+        include Transform::Transformers::MarginCalculator
         match_keys NoTargetKeyErrorObject.new, source_key: :compound_source_key
         source_name 'Inbound::JDA::PricingChange'
         attribute :retail_price, source_name: :AUREGU
@@ -20,6 +21,8 @@ module Transform
                 :cm_shrink_sum_l4w, :cm_net_damages_sum_l4w, :cm_marked_out_of_stock_sum_l4w,
                 :cm_markdown_reimbursement_sum_l4w, :cm_vendor_funded_allowances_sum_l4w, :cm_net_sales_retail_sum_l4w,
                 :cm_cost_sum_l4w
+
+        after_transform :calculate_margin
 
         def self.source_relation
           super.order(:DPCRTDT)

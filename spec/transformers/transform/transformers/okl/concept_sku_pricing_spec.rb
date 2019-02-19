@@ -9,11 +9,13 @@ RSpec.describe Transform::Transformers::OKL::ConceptSkuPricing do
 
   it_behaves_like 'valid transformer'
 
-  context '#attribute_values' do
-    let(:values) { transformer.attribute_values }
-
+  context '#calculate_margin' do
     context '#margin_amount' do
-      let(:margin_amount) { values['margin_amount'] }
+      let(:margin_amount) do
+        transformer.apply_transformation(target)
+        target.margin_amount
+      end
+
       it 'without price returns nil' do
         source.cost = 11
         expect(margin_amount).to be_nil
@@ -44,7 +46,11 @@ RSpec.describe Transform::Transformers::OKL::ConceptSkuPricing do
     end
 
     context '#margin_percent' do
-      let(:margin_percent) { values['margin_percent'] }
+      let(:margin_percent) do
+        transformer.apply_transformation(target)
+        target.margin_percent
+      end
+
       it 'returns nil when margin_amount nil' do
         expect(margin_percent).to be_nil
       end
