@@ -242,36 +242,31 @@ RSpec.describe Transform::Transformers::OKL::ConceptSku do
     end
 
     context '#made_to_order' do
-      let(:please_note) { source.sku_attributes.build(code: 'please_note') }
+      let(:attr_value) { source.sku_attributes.build(code: 'made_to_order') }
       let(:made_to_order) { values['made_to_order'] }
 
-      it 'false when no please note value' do
+      it 'false when no attribute value present' do
         expect(made_to_order).to be false
       end
 
-      it 'false when please note does not match' do
-        please_note.value = 'Roll on you bears'
+      it 'true when value is a one' do
+        attr_value.value = '1'
+        expect(made_to_order).to be true
+      end
+
+      it 'true when value is a zero' do
+        attr_value.value = '0'
         expect(made_to_order).to be false
       end
 
-      it "true when please note includes 'made to order'" do
-        please_note.value = 'This product is made to order'
-        expect(made_to_order).to be true
+      it 'false when value is weird' do
+        attr_value.value = 'Gators Win!'
+        expect(made_to_order).to be false
       end
 
-      it "true when please note includes 'MaDe to OrdeR'" do
-        please_note.value = 'This product is MaDe to OrdeR'
-        expect(made_to_order).to be true
-      end
-
-      it "true when please note includes 'cut to order'" do
-        please_note.value = 'This product is cut to order'
-        expect(made_to_order).to be true
-      end
-
-      it "true when please note includes 'finished to order'" do
-        please_note.value = 'This product is finished to order'
-        expect(made_to_order).to be true
+      it 'true when value is the empty string' do
+        attr_value.value = ''
+        expect(made_to_order).to be false
       end
     end
 

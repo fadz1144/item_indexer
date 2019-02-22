@@ -82,7 +82,7 @@ module Transform
           end
 
           def made_to_order
-            REGEX_MADE_TO_ORDER.match(please_note).present?
+            made_to_order_attribute == '1'
           end
 
           def assembly_required
@@ -93,6 +93,10 @@ module Transform
 
           def please_note
             @please_note ||= sku_attributes.find { |a| a.code = 'please_note' }&.value || ''
+          end
+
+          def made_to_order_attribute
+            @made_to_order_attribute ||= sku_attributes.find { |a| a.code = 'made_to_order' }&.value
           end
         end
 
