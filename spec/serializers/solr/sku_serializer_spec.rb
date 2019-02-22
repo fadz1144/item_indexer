@@ -148,7 +148,7 @@ RSpec.describe SOLR::SkuSerializer do
 
   context 'concept_sku_model fields' do
     # primitive fields
-    %i[name ltl_eligible].each do |field|
+    %i[name].each do |field|
       it "should have #{field} that matches" do
         expect(result[field]).to eql(concept_sku_model.send(field.to_sym))
       end

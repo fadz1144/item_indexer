@@ -22,7 +22,6 @@ module SOLR
     stub_attributes :brand_code
 
     decorate_any 'live', field: 'live'
-    decorate_any 'ltl_eligible', field: 'ltl_eligible'
 
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'

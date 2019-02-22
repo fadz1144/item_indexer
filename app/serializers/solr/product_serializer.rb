@@ -27,7 +27,6 @@ module SOLR
     decorate_concept_sku_uniq 'brand_id', field: 'concept_brand_id'
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
-    decorate_any 'ltl_eligible', field: 'ltl_eligible'
 
     # return true if one or more skus for the product evaluate to true
     decorate_sku_any 'vdc_sku', field: 'vdc_sku'
@@ -91,39 +90,6 @@ module SOLR
     end
 
     bucket 'web_flags_summary', CatModels::Constants::WebFlagsSummary
-
-    # TODO: define rollups for these:
-    #   { name: 'allow_exposure', type: 'boolean' indexed: true, stored: true },
-    #   { name: 'available_in_ca', type: 'boolean' indexed: true, stored: true },
-    #   { name: 'clearance_status', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'concept_eligibility', type: 'int' indexed: true, stored: true, multiValued: true },
-    #   { name: 'dynamic_price_eligible', type: 'boolean' indexed: true, stored: true },
-    #   { name: 'inactive_reason', type: 'string' indexed: true, stored: true, multiValued: true },
-    #   { name: 'inventory_ecom_us', type: 'int' indexed: true, stored: true },
-    #   { name: 'inventory_ecom_ca', type: 'int' indexed: true, stored: true },
-    #   { name: 'inventory_okl_branded', type: 'int' indexed: true, stored: true },
-    #   { name: 'inventory_okl_vintage', type: 'int' indexed: true, stored: true },
-    #   { name: 'inventory_ropis', type: 'int' indexed: true, stored: true },
-    #   { name: 'inventory_total', type: 'int' indexed: true, stored: true },
-    #   { name: 'inventory_store_total', type: 'int' indexed: true, stored: true },
-    #   { name: 'inventory_vdc_total', type: 'int' indexed: true, stored: true },
-    #   { name: 'jda_status', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'line_of_business', type: 'string' indexed: true, stored: true, multiValued: true },
-    #   { name: 'ltl_eligible', type: 'boolean' indexed: true, stored: true },
-    #   { name: 'personalized', type: 'boolean' indexed: true, stored: true },
-    #   { name: 'product_type', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'size', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'tbs_blocked', type: 'int', indexed: true, stored: true, multiValued: true },
-    #   { name: 'units_sold_last_week', type: 'int', indexed: true, stored: true },
-    #   { name: 'units_sold_last_8_weeks', type: 'int', indexed: true, stored: true },
-    #   { name: 'units_sold_last_year', type: 'int', indexed: true, stored: true },
-    #   { name: 'vdc_flag', type: 'boolean', indexed: true, stored: true },
-    #   { name: 'vintage', type: 'boolean', indexed: true, stored: true },
-    #   { name: 'web_enabled_date', type: 'date', indexed: true, stored: true },
-
-    #   { name: 'baby_site_nav_tree_node_id', type: 'long', indexed: true, stored: true, multiValued: true },
-    #   { name: 'baby_site_nav_tree_source_code', type: 'string', indexed: true, stored: true, multiValued: true },
-    #   { name: 'baby_site_nav_tree_node_name', type: 'text_general', indexed: true, stored: true, multiValued: true },
 
     def id
       "P#{object.product_id}"
