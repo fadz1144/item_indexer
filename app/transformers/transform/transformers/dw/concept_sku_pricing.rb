@@ -29,6 +29,14 @@ module Transform
                 :source_updated_at, :created_at, :updated_at, :contribution_margin_amount, :contribution_margin_percent,
                 :cm_net_sales_retail_sum_l4w, :cm_cost_sum_l4w
 
+        # if these are added to the feed, then remove all this in favor of mapping
+        CALCULATED_LAST_FOUR_WEEK =
+          %i[cm_amount_l4w cm_retail_sales_l4w cm_coupon_l4w cm_sales_cost_l4w cm_freight_in_l4w cm_freight_out_l4w
+             cm_shipping_paid_by_customer_l4w cm_shrink_l4w cm_net_damages_l4w cm_marked_out_of_stock_l4w
+             cm_markdown_reimbursement_l4w cm_vendor_funded_allowances_l4w cm_net_sales_retail_l4w cm_cost_l4w].freeze
+        exclude(*CALCULATED_LAST_FOUR_WEEK)
+        after_transform :calculate_last_four_weeks
+
         def self.source_relation
           super.order(:id)
         end
@@ -55,8 +63,19 @@ module Transform
           '%d:%d' % [object.concept_id, object.sku_id]
         end
 
-        # module Decorations
-        # end
+        def calculate_last_four_weeks(target)
+          no_sales = target.cm_sales_units_sum_l4w.nil? || target.cm_sales_units_sum_l4w <= 0
+
+          CALCULATED_LAST_FOUR_WEEK.each do |attribute_name|
+            if no_sales
+              value = nil
+            else
+              sum = target.public_send(attribute_name.to_s.sub('_l4w', '_sum_l4w'))
+              value = sum.present? ? (sum / target.cm_sales_units_sum_l4w) : nil
+            end
+            target.public_send("#{attribute_name}=", value)
+          end
+        end
       end
     end
   end
