@@ -46,10 +46,6 @@ module SOLR
     shared 'margin_amount_cents', type: 'pint', multiValued: true
     shared 'min_price_cents', type: 'pint'
     shared 'max_price_cents', type: 'pint'
-    shared 'min_margin_amount_cents', type: 'pint'
-    shared 'max_margin_amount_cents', type: 'pint'
-    shared 'min_margin', type: 'pint'
-    shared 'max_margin', type: 'pint'
     shared 'name', type: 'text_general'
     shared 'shipping_method', type: 'string', multiValued: true
     shared 'web_status', type: 'string', multiValued: true
@@ -104,10 +100,6 @@ module SOLR
     # contribution margin
     shared 'contribution_margin_amount_cents', type: 'pint', multiValued: true
     shared 'contribution_margin_percent', type: 'pfloat', multiValued: true
-    shared 'min_contribution_margin_amount_cents', type: 'pint'
-    shared 'max_contribution_margin_amount_cents', type: 'pint'
-    shared 'min_contribution_margin_percent', type: 'pfloat'
-    shared 'max_contribution_margin_percent', type: 'pfloat'
 
     # PDP url
     shared 'pdp_url', type: 'string', multiValued: true
