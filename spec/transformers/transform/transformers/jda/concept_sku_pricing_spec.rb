@@ -29,9 +29,16 @@ RSpec.describe Transform::Transformers::JDA::ConceptSkuPricing do
       before do
         target.cost = 12.34
         source.AUREGU = 12.34
+        transformer.apply_transformation(target)
       end
 
-      it_behaves_like 'no margin calculated'
+      it 'calculates margin_amount' do
+        expect(target.margin_amount).to be_zero
+      end
+
+      it 'calculates margin_percent' do
+        expect(target.margin_percent).to be_zero
+      end
     end
 
     context 'with price greater than cost' do
