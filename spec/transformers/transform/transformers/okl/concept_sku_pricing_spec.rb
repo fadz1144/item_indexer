@@ -26,16 +26,16 @@ RSpec.describe Transform::Transformers::OKL::ConceptSkuPricing do
         expect(margin_amount).to be_nil
       end
 
-      it 'with cost < price returns nil' do
+      it 'with cost < price returns negative margin' do
         source.cost = 22
         source.price = 11
-        expect(margin_amount).to be_nil
+        expect(margin_amount).to eq(-11)
       end
 
-      it 'with cost == price returns nil' do
+      it 'with cost == price returns zero' do
         source.cost = 22
         source.price = 22
-        expect(margin_amount).to be_nil
+        expect(margin_amount).to be_zero
       end
 
       it 'returns diff when price > cost' do
@@ -52,12 +52,6 @@ RSpec.describe Transform::Transformers::OKL::ConceptSkuPricing do
       end
 
       it 'returns nil when margin_amount nil' do
-        expect(margin_percent).to be_nil
-      end
-
-      it 'returns nil when price zero' do
-        source.price = 0
-        source.cost = -1
         expect(margin_percent).to be_nil
       end
 
