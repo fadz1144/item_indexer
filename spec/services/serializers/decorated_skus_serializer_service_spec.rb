@@ -37,6 +37,12 @@ describe Serializers::DecoratedSkusSerializerService do
     p
   end
 
+  let(:site_navigation_model) do
+    CatModels::SiteNavigation.new(
+      leaf_tree_node_id: 333
+    )
+  end
+
   let(:concept_product_model) do
     CatModels::ConceptProduct.new(
       product_id: 1_234_567,
@@ -44,7 +50,9 @@ describe Serializers::DecoratedSkusSerializerService do
       status: 'ACTIVE',
       name: 'Some Product Name',
       description: 'Some Product Description',
-      pdp_url: 'https://some.pdp.url/'
+      pdp_url: 'https://some.pdp.url/',
+      site_navigations: [site_navigation_model],
+      concept_id: 1
     )
   end
 
@@ -173,12 +181,28 @@ describe Serializers::DecoratedSkusSerializerService do
     sku
   end
 
-  it 'should raise if nill passed to constructor' do
+  it 'should raise if nil passed to constructor' do
     expect { described_class.new(nil) }.to raise_error(ArgumentError)
   end
 
-  it 'supports field_values' do
-    expect(service.field_values(:aad_min_offset_days)).to eq([6, 6])
+  context '#tree_node_values' do
+    before do
+      tree_cache = class_double('Indexer::TreeCache').as_stubbed_const(transfer_nested_constants: true)
+      tree_cache_entry = [
+        { id: 111, source_code: 'AAA' },
+        { id: 222, source_code: 'BBB' },
+        { id: 333, source_code: 'CCC' }
+      ]
+      allow(tree_cache).to receive(:fetch).with(333).and_return(tree_cache_entry)
+    end
+
+    it 'supports concept product level node ids' do
+      expect(service.tree_node_values(:bbby_site_nav, :id)).to eq([111, 222, 333])
+    end
+
+    it 'supports concept product level node source codes' do
+      expect(service.tree_node_values(:bbby_site_nav, :source_code)).to eq(%w[AAA BBB CCC])
+    end
   end
 
   it 'supports field_unique_values' do
