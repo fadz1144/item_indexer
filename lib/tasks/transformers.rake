@@ -7,4 +7,10 @@ namespace :bridge do
     job = Transform::TransformationJob.new
     job.perform(source)
   end
+
+  desc 'Transform JDA pricing and clear suspicious CA margin'
+  task transform_jda: :environment do
+    Transform::TransformationJob.new.perform('JDA')
+    DataMaintenance::CanadianMarginRemover.new.perform
+  end
 end
