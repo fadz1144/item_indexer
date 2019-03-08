@@ -12,6 +12,7 @@ module SOLR
     include SOLR::Decorators::SkuUniqDecoratedAttribute
     include SOLR::Decorators::TreeNodeDecoratedAttribute
     include SOLR::Decorators::ConstantAttributeBuckets
+    include SOLR::Decorators::DenormalizedConceptSkuDecoratedAttribute
 
     attribute :id
     ProductCoreFields.sku_fields.map do |field|
@@ -69,6 +70,9 @@ module SOLR
     decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks', group: 'sum'
     decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks', group: 'sum'
     decorate_sku_uniq 'color', field: 'color_family'
+
+    # fetch from the concept sku via the decorated sku
+    decorate_denormalized_concept_sku 'web_enable_date'
 
     # hierarchies
     %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].map(&:to_s).each do |tree|

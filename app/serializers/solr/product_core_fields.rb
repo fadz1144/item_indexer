@@ -13,6 +13,13 @@ module SOLR
       @sku_fields << SOLR::FieldDefinition.new(name, options)
     end
 
+    def self.concept_sku(name, options)
+      CatModels::Concept::CODES.keys.each do |concept_code|
+        concept_specific_field_name = CatModels::ConceptSpecificAttributes.field_name(concept_code, name)
+        @sku_fields << SOLR::FieldDefinition.new(concept_specific_field_name, options)
+      end
+    end
+
     @shared_fields = []
     @product_fields = []
     @sku_fields = []
@@ -84,7 +91,6 @@ module SOLR
     shared 'units_sold_last_year', type: 'pint', source_name: 'units_sold_last_52_weeks'
     shared 'vdc_flag', type: 'boolean', source_name: 'vdc_sku'
     shared 'vintage', type: 'boolean'
-    shared 'web_enabled_date', type: 'pdate'
 
     # hierarchies
     %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].each do |tree|
@@ -127,6 +133,9 @@ module SOLR
     sku 'vendor_sku', type: 'text_general'
     sku 'vmf', type: 'boolean'
     sku 'warehouse_avail_qty', type: 'pint'
+
+    # sku-only concept-level field
+    concept_sku 'web_enable_date', type: 'pdate'
 
     #
     # product-only fields
