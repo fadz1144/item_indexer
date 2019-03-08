@@ -13,6 +13,12 @@ namespace :bridge do
     publisher.perform(db_fetch_size, es_batch_size, num_processes)
   end
 
+  desc 'Apply index schema, adding any/all fields that are missing'
+  task 'apply_solr_schema' => :environment do
+    solr_base_url = ENV.fetch('SOLR_INTERNAL_ENDPOINT')
+    SOLR::SolrSchemaService.new.apply_solr_schema(solr_base_url: solr_base_url)
+  end
+
   desc 'Builds the product index for SOLR'
   task 'build_solr_product_search_index' => :environment do
     # fetch all the products
