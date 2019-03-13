@@ -29,14 +29,14 @@ module SOLR
       items_to_errors
     end
 
-    def items_to_documents(indexer, items)
+    def items_to_documents(indexer, items, include_errors = true)
       items_to_errors = {}
       documents = items.map do |item|
         json = index_hash_for_item(indexer, item)
         items_to_errors[item] = json if error?(json)
         error?(json) ? nil : json
       end.compact
-      [documents, items_to_errors]
+      include_errors ? [documents, items_to_errors] : documents
     end
 
     private

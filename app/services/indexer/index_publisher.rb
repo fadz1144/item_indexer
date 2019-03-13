@@ -8,14 +8,14 @@ module Indexer
 
     attr_accessor :logger, :client
 
-    def initialize(logger: Rails.logger, indexer:, precache: true)
+    def initialize(core: 'product', logger: Rails.logger, indexer:, precache: true)
       @logger              = logger
       @total_num_processed = 0
       @start_time          = Time.current
 
       @indexer   = indexer
       @benchmark = BenchmarkHelper.new(logger: logger)
-      @client = SOLR::SOLRClient.new
+      @client = SOLR::SOLRClient.new(core)
       @batch = nil
       @workers = []
 
@@ -40,7 +40,7 @@ module Indexer
     def preview(id)
       items = @indexer.fetch_items([id])
       begin
-        client.items_to_documents(@indexer, items)
+        client.items_to_documents(@indexer, items, false)
       rescue => e
         e
       end

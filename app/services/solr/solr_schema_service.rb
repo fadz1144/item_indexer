@@ -12,10 +12,8 @@ module SOLR
     def apply_solr_schema(solr_base_url: 'http://localhost:8983/solr/', core: 'product')
       solr_client = SOLR::SolrSchemaApiClient.new(solr_base_url, core)
 
-      all_fields = SOLR::ProductCoreFields.all_fields
-
       existing = []
-      all_fields.each do |f|
+      fields(core).each do |f|
         response = solr_client.add_field(f.solr_field_definition)
 
         if response.success?
@@ -30,5 +28,15 @@ module SOLR
       puts "The following fields already existed: #{existing.join(', ')}" unless existing.empty?
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Rails/Output
+
+    def fields(core)
+      if core == 'product'
+        SOLR::ProductCoreFields.all_fields
+      elsif core == 'sales'
+        SOLR::SalesCoreFields.all_fields
+      else
+        raise "unrecognized core: '#{core}'"
+      end
+    end
   end
 end

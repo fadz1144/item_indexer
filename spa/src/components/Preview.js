@@ -31,7 +31,8 @@ export default class extends Component {
       productId: "",
       canSubmit: false,
       preview: "",
-      isLoading: false
+      isLoading: false,
+      type: "product"
     };
   }
 
@@ -40,9 +41,21 @@ export default class extends Component {
     this.setState({ productId, canSubmit: isInteger(productId) });
   };
 
+  onTypeChange = e => {
+    const type = e.target.value;
+    this.setState({ type });
+  };
+
+  getUrl = () => {
+    const base = this.state.type === "product" ? "products" : "sku_sales_summary";
+    return `${base}/${this.state.productId}.json?stream=false`;
+  };
+
+  getPlaceholder = () => this.state.type === "product" ? "product id" : "sku sales summary sales id";
+
   preview = e => {
     this.setState({ isLoading: true });
-    fetch(api(`products/${this.state.productId}.json?stream=false`))
+    fetch(api(this.getUrl()))
       .then(response => response.json())
       .then(data => this.setState({ preview: data }))
       .catch(exception => alert(`Unable to preview: ${exception}`))
@@ -67,11 +80,31 @@ export default class extends Component {
     const { productId, canSubmit } = this.state;
     return (
       <form onSubmit={this.preview}>
+        <label>
+          <input
+            type="radio"
+            name="type"
+            value="product"
+            checked={this.state.type === "product"}
+            onChange={this.onTypeChange}
+          />
+          Product
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="type"
+            value="skuDailySales"
+            checked={this.state.type === "skuDailySales"}
+            onChange={this.onTypeChange}
+          />
+          SKU Sales
+        </label>
         <input
           value={productId}
           onChange={this.onChange}
           autoFocus
-          placeholder="product id"
+          placeholder={this.getPlaceholder()}
           className="preview-text-input"
         />
         <span>{canSubmit}</span>

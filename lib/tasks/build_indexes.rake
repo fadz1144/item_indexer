@@ -23,6 +23,23 @@ namespace :bridge do
     publisher.perform(db_fetch_size, index_batch_size, num_processes)
   end
 
+  desc 'Apply sales core index schema, adding any/all fields that are missing'
+  task 'apply_solr_sales_schema' => :environment do
+    solr_base_url = ENV.fetch('SOLR_INTERNAL_ENDPOINT')
+    SOLR::SolrSchemaService.new.apply_solr_schema(solr_base_url: solr_base_url, core: 'sales')
+  end
+
+  desc 'Builds the sales index for SOLR'
+  task 'build_solr_sales_search_index' => :environment do
+    # fetch all the sales data
+    db_fetch_size = ENV.fetch('DB_FETCH_SIZE', Indexer::IndexPublisher::DEFAULT_DB_FETCH_SIZE).to_i
+    es_batch_size = ENV.fetch('INDEX_BATCH_SIZE', Indexer::IndexPublisher::DEFAULT_INDEX_BATCH_SIZE).to_i
+    num_processes = ENV.fetch('NUM_PROCESSES', Indexer::IndexPublisher::DEFAULT_NUM_PROCESSES).to_i
+
+    publisher = Indexer::IndexPublisherFactory.publisher_for(type: :sales)
+    publisher.perform(db_fetch_size, es_batch_size, num_processes)
+  end
+
   desc 'Builds a partial product re-index for Universal Product Catalog'
   task :partial_product_solr_reindex, [:product_count] => :environment do |_t, args|
     product_count = args[:product_count]

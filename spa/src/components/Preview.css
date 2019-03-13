@@ -9,6 +9,7 @@
     text-transform: uppercase;
     border: 0 none;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .preview-text-input {
