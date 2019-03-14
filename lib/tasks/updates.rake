@@ -48,5 +48,10 @@ namespace :bridge do
       CatalogUpdates::UpdateService.new(CatalogUpdates::NullProductVendors.new).execute
       CatalogUpdates::UpdateService.new(CatalogUpdates::NullConceptProductVendors.new).execute
     end
+
+    desc 'Clear inventory from CA skus not sellable there'
+    task clear_ca_inventory: %i[environment to_stdout] do
+      CatalogUpdates::UpdateService.new(CatalogUpdates::XPDM::NotSellableInCanada.new).execute
+    end
   end
 end
