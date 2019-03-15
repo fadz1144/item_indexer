@@ -33,7 +33,7 @@ class ProductsController < ApplicationController
   end
 
   def publisher
-    @publisher ||= Indexer::IndexPublisherFactory.publisher_for(type: :product, platform: :solr, precache: precache?)
+    @publisher ||= Indexer::IndexPublisherFactory.publisher_for(type: :product, precache: precache?)
   end
 
   def writeln(msg)

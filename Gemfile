@@ -38,9 +38,6 @@ gem 'rack-cors'
 
 gem 'string_enums'
 
-gem 'elasticsearch-model'
-gem 'elasticsearch-rails'
-gem 'faraday_middleware-aws-signers-v4'
 gem 'active_model_serializers'
 gem 'htmlentities' # some of the PDM data carries tags such as &reg;
 

@@ -2,8 +2,8 @@ module Indexer
   class ProductIndexer
     attr_accessor :logger
 
-    def initialize(serializer_class: ES::ProductSerializer)
-      @serializer_class = serializer_class
+    def initialize
+      @serializer_class = SOLR::ProductSerializer
     end
 
     def determine_count
@@ -24,7 +24,6 @@ module Indexer
     end
 
     def fetch_items(ids)
-      # BARF
       CatModels::Product.includes(:brand, :category, :concept_products, :collection_memberships,
                                   skus: [:vendor, :brand, :category,
                                          products: %i[concept_products],

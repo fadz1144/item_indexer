@@ -2,7 +2,6 @@
 # when running the tests. For example, URL to a service which is mocked when running the tests.
 # The point is to let us use .fetch() in settings.yml but to not have that blow up in CI due to missing env vars.
 # Values in here will overwrite your current env vars anytime Rails.env is 'test' - see EnvVarBootstrap.
-ELASTICSEARCH_HOST=https://nothing
 REDIS_HOST=nothing
 REDIS_PORT=6379
 SECRET_TOKEN=12345

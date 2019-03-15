@@ -1,7 +1,7 @@
 module Indexer
   class SkuIndexer
-    def initialize(serializer_class: ES::SkuSerializer)
-      @serializer_class = serializer_class
+    def initialize
+      @serializer_class = SOLR::SkuSerializer
     end
 
     def determine_count

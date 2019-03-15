@@ -3,19 +3,19 @@ require 'benchmark_helper'
 module Indexer
   class IndexPublisher
     DEFAULT_DB_FETCH_SIZE = 10_000
-    DEFAULT_ES_BATCH_SIZE = 1_000
+    DEFAULT_INDEX_BATCH_SIZE = 1_000
     DEFAULT_NUM_PROCESSES = 4
 
     attr_accessor :logger, :client
 
-    def initialize(logger: Rails.logger, indexer:, client: ES::ESClient.new, precache: true)
+    def initialize(logger: Rails.logger, indexer:, precache: true)
       @logger              = logger
       @total_num_processed = 0
       @start_time          = Time.current
 
       @indexer   = indexer
       @benchmark = BenchmarkHelper.new(logger: logger)
-      @client = client
+      @client = SOLR::SOLRClient.new
 
       # tree cache must be precached
       Indexer::TreeCache.build
@@ -42,9 +42,9 @@ module Indexer
       client.items_to_documents(@indexer, items)
     end
 
-    # set_size = DB Fetch. chunk_size = size of batch to load to ES
+    # set_size = DB Fetch. chunk_size = size of batch to load to search index
     def perform(set_size = DEFAULT_DB_FETCH_SIZE,
-                chunk_size = DEFAULT_ES_BATCH_SIZE,
+                chunk_size = DEFAULT_INDEX_BATCH_SIZE,
                 num_threads = DEFAULT_NUM_PROCESSES)
       logger.info "Client init: #{client} set_size: #{set_size}, chunk_size: #{chunk_size}, num_threads: #{num_threads}"
 

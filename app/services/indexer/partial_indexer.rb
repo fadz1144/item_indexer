@@ -1,17 +1,9 @@
 module Indexer
   class PartialIndexer
-    def self.reindex(type, platform, product_count)
+    def self.reindex(type, product_count)
       ids = ids(type: type, product_count: product_count)
-      publisher = Indexer::IndexPublisherFactory.publisher_for(type: type, platform: platform)
+      publisher = Indexer::IndexPublisherFactory.publisher_for(type: type)
       publisher.publish_to_search_by_ids(ids)
-    end
-
-    def self.reindex_products(product_count)
-      reindex(:product, :es, product_count)
-    end
-
-    def self.reindex_skus(product_count)
-      reindex(:sku, :es, product_count)
     end
 
     def self.product_ids(product_count)
