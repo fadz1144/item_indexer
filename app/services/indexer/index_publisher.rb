@@ -39,7 +39,11 @@ module Indexer
 
     def preview(id)
       items = @indexer.fetch_items([id])
-      client.items_to_documents(@indexer, items)
+      begin
+        client.items_to_documents(@indexer, items, true)
+      rescue => e
+        e
+      end
     end
 
     # set_size = DB Fetch. chunk_size = size of batch to load to search index

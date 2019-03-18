@@ -27,18 +27,18 @@ module SOLR
       @client.commit
     end
 
-    def items_to_documents(indexer, items)
-      items.map { |item| index_hash_for_item(indexer, item) }.compact
+    def items_to_documents(indexer, items, serialize_errors = false)
+      items.map { |item| index_hash_for_item(indexer, item, serialize_errors) }.compact
     end
 
     private
 
-    def index_hash_for_item(indexer, item)
+    def index_hash_for_item(indexer, item, serialize_errors = false)
       indexer.raw_json(item)
     rescue => e
       Rails.logger.error("Unable to generate index hash for #{item.id}.  Reason: #{e.message}")
       Rails.logger.error e.backtrace.join("\n")
-      nil
+      serialize_errors ? { error: e.class.name, message: e, backtrace: e.backtrace } : nil
     end
 
     def build_client(endpoint)
