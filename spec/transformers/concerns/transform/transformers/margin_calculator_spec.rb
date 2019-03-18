@@ -10,18 +10,37 @@ RSpec.describe Transform::Transformers::MarginCalculator do
 
   context 'when margin determinable' do
     let(:margin_determinable) { true }
-    before do
-      pricing.retail_price = 22
-      pricing.cost = 11
-      transformer.calculate_margin(pricing)
+
+    context 'non-zero price' do
+      before do
+        pricing.retail_price = 22
+        pricing.cost = 11
+        transformer.calculate_margin(pricing)
+      end
+
+      it 'calculates amount' do
+        expect(pricing.margin_amount).to eq 11
+      end
+
+      it 'calculates percent' do
+        expect(pricing.margin_percent).to eq 0.5
+      end
     end
 
-    it 'calculates amount' do
-      expect(pricing.margin_amount).to eq 11
-    end
+    context 'price is zero' do
+      before do
+        pricing.retail_price = 0
+        pricing.cost = 5
+        transformer.calculate_margin(pricing)
+      end
 
-    it 'calculates percent' do
-      expect(pricing.margin_percent).to eq 0.5
+      it 'calculates amount' do
+        expect(pricing.margin_amount).to eq(-5)
+      end
+
+      it 'removes percent' do
+        expect(pricing.margin_percent).to be_nil
+      end
     end
   end
 
