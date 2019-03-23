@@ -14,10 +14,21 @@ module ExecutableBatch
     mark_complete
   rescue => e
     @rescued_error = e
-    Rails.logger.error(([e.message] + e.backtrace).join("\n\t"))
     mark_error(e.message)
+    notify(e)
   ensure
     self.stop_datetime = Time.current
     save!
+  end
+
+  private
+
+  def notify(exception)
+    batch_type = self.class.name
+    description = "#{batch_type} did not complete successfully"
+    context = { description: description, batch: attributes }
+    Rails.logger.error(description)
+    Rails.logger.error(([exception.class.name, exception.message] + exception.backtrace).join("\n\t"))
+    Honeybadger.notify(exception, tags: "#{batch_type}, batch, fail", context: context)
   end
 end

@@ -1,0 +1,30 @@
+.App {
+  text-align: center;
+}
+
+.App-link, .App a {
+  color: #3176fb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.App-navigation {
+  list-style: none;
+    margin-right: 30px;
+}
+
+.App-navigation li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.clickable {
+  cursor: pointer;
+}

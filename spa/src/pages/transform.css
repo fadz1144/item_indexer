@@ -1,0 +1,38 @@
+.List,
+.Header {
+  border: 1px solid #d9dddd;
+  margin: auto;
+}
+
+.List div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ListItemEven {
+}
+
+.even {
+  background-color: #f8f8f0;
+}
+
+div.statusReason {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  text-align: left;
+  justify-content: left;
+}
+
+div.fileName{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  /*text-align: left;*/
+  /*justify-content: left;*/
+}
+
+.errors-grid {
+  margin: 30px 0;
+}

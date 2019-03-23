@@ -1,0 +1,33 @@
+{
+  "name": "spa",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "2.1.8",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "react-window": "^1.7.1"
+  },
+  "homepage": "/item_indexer/spa",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && rm -rf ../public/spa && mv build ../public/spa",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "prettier": "1.16.4"
+  },
+  "proxy": "http://localhost:3009"
+}

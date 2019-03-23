@@ -22,12 +22,17 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    resources :transform_batches, only: [:index, :show], defaults: { format: 'json' }
+    resources :inbound_batches, only: [:index], defaults: { format: 'json' }
   end
 
   resources :products, only: [:show]
 
-  root to: 'health_check#version'
+  root to: 'spa#index'
   get 'version' => 'health_check#version'
 
   resources :health_check, only: [:index]
+
+  get 'spa/*xyz' => 'spa#index'
 end
