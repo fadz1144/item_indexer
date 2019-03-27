@@ -20,6 +20,7 @@ module Transform
         attribute :cm_marked_out_of_stock_sum_l4w, source_name: :rtv_mos_l4w
         attribute :cm_markdown_reimbursement_sum_l4w, source_name: :md_reimb_l4w
         attribute :cm_vendor_funded_allowances_sum_l4w, source_name: :vend_supp_l4w
+        attribute :cm_l4w_updated_at, source_name: :file_mod_time
         # For the future - and when adding these in, remember to remove them from end of the exclude below
         # attribute :cm_net_sales_retail_sum_l4w, source_name: tbd
         # attribute :cm_cost_sum_l4w, source_name: tbd
@@ -27,7 +28,7 @@ module Transform
         exclude :concept_sku_id, :concept_id, :source_sku_id, :retail_price, :cost, :pre_markdown_price,
                 :margin_amount, :margin_percent, :map_price, :source_created_by, :source_created_at, :source_updated_by,
                 :source_updated_at, :created_at, :updated_at, :contribution_margin_amount, :contribution_margin_percent,
-                :cm_net_sales_retail_sum_l4w, :cm_cost_sum_l4w
+                :cm_net_sales_retail_sum_l4w, :cm_cost_sum_l4w, :cm_l52w_updated_at
 
         # if these are added to the feed, then remove all this in favor of mapping
         CALCULATED_LAST_FOUR_WEEK =

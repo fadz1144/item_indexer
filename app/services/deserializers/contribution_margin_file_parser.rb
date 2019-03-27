@@ -1,9 +1,12 @@
 module Deserializers
   class ContributionMarginFileParser
+    attr_writer :mod_time
+
     FIELDS_I_NEED = %w[cm_l4w cm_rate_l4w coupon_l4w freight_in_l4w freight_out_l4w md_reimb_l4w rtv_da_l4w rtv_mos_l4w
                        ship_fee_coll_l4w shrink_l4w site_id skuid sls_cost_l4w sls_ret_l4w
                        sls_unit_l4w vend_supp_l4w].to_set.freeze
     INBOUND_RECORD_CLASS = 'Inbound::DW::ContributionMarginFeed'.freeze
+
     def initialize(filename, col_sep:)
       @filename = filename
       @col_sep = col_sep
@@ -33,6 +36,7 @@ module Deserializers
       data = fields.slice(*FIELDS_I_NEED)
       data['sku_id'] = data.delete 'skuid'
       record = inbound_record_class.new(data)
+      record.file_mod_time = mod_time
       record.inbound_batch = @batch
       # Rails.logger.debug record.inspect
       record.save!
@@ -61,6 +65,10 @@ module Deserializers
       # Now this should get caught higher up in the stack so that the source file won't get marked as processed.
       # It'll also raise to Honeybadger there.
       raise(error)
+    end
+
+    def mod_time
+      @mod_time || Time.zone.now
     end
   end
 end
