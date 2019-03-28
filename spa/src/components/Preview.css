@@ -1,0 +1,21 @@
+.preview {
+    margin-left: 20px;
+}
+
+.preview-button {
+    background: #3176fb;
+    color: white;
+    padding: 10px;
+    text-transform: uppercase;
+    border: 0 none;
+    border-radius: 5px;
+}
+
+.preview-text-input {
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.preview-instructions {
+    margin-top: 10px;
+}

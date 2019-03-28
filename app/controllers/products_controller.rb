@@ -25,7 +25,7 @@ class ProductsController < ApplicationController
   end
 
   def stream?
-    Rails.env.development? || params[:stream] == 'true'
+    Rails.env.development? && params[:stream] != 'false'
   end
 
   def precache?

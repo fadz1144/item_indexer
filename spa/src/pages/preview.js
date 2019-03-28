@@ -1,13 +1,11 @@
 import React from "react";
 import Preview from "../components/Preview";
 
-function Home() {
+export default function () {
   return (
     <div>
-      <h2>Welcome to Item Indexer</h2>
+      <h2>Product Preview</h2>
       <Preview />
     </div>
   );
 }
-
-export default Home;

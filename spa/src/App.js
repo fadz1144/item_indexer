@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Home from './pages/home';
+import Preview from './pages/preview';
 import Transform from './pages/transform';
 import Inbound from './pages/inbound';
 import Indexing from './pages/indexing';
@@ -13,7 +14,7 @@ function App() {
       <div className="App">
         <ul className="App-navigation">
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/preview">Preview</Link>
           </li>
           <li>
             <Link to="/inbound">Inbound</Link>
@@ -29,6 +30,7 @@ function App() {
         <hr />
 
         <Route exact path="/" component={Home} />
+        <Route path="/preview" component={Preview} />
         <Route path="/inbound" component={Inbound} />
         <Route path="/transform" component={Transform} />
         <Route path="/indexing" component={Indexing} />
