@@ -11,6 +11,15 @@ module SOLR
       Rails.logger.info "SOLR endpoint is set to: #{endpoint}"
 
       @client = build_client(endpoint)
+    rescue => exception
+      SOLR.notify_and_exit(exception, "cannot instantiate Solr client for endpoint '#{endpoint}'")
+    end
+
+    def ping
+      status = @client.head('admin/ping').response[:status]
+      raise "status #{status}" if status != 200
+    rescue => exception
+      SOLR.notify_and_exit(exception, 'failed ping of Solr client')
     end
 
     def publish_items(indexer, items)

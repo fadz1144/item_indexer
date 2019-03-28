@@ -7,6 +7,11 @@ namespace :bridge do
     SOLR::SolrSchemaService.new.apply_solr_schema(solr_base_url: solr_base_url)
   end
 
+  desc 'Pings SOLR index to verify successful connection'
+  task 'ping_solr' => :environment do
+    SOLR::SOLRClient.new.ping
+  end
+
   desc 'Builds the product index for Universal Product Catalog'
   task 'build_solr_product_search_index' => :environment do
     # fetch all the products

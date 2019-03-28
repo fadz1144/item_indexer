@@ -20,6 +20,8 @@ module SOLR
       url = URI.parse(@schema_endpoint)
       http = Net::HTTP.new(url.host, url.port)
       Response.new(http.post(url.path, data, 'Content-type' => 'application/json'))
+    rescue => exception
+      SOLR.notify_and_exit(exception, 'solr_client.add_field error communicating with solr, aborting')
     end
 
     class Response
