@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# set up environment
+export SOLR_ENDPOINT=$SOLR_INTERNAL_ENDPOINT
+env | fgrep SOLR
+
 # ping solr and capture exit status...
 echo "pinging Solr..."
 bundle exec rake bridge:ping_solr
@@ -19,7 +23,5 @@ bundle exec rake bridge:apply_solr_schema
 echo "applying schema...OK"
 
 echo "adding products to index..."
-export SOLR_ENDPOINT=$SOLR_INTERNAL_ENDPOINT
-env | fgrep SOLR
 bundle exec rake bridge:build_solr_product_search_index
 echo "adding products to index...OK"
