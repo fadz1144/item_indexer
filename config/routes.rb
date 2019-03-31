@@ -25,6 +25,7 @@ Rails.application.routes.draw do
 
     resources :transform_batches, only: [:index, :show], defaults: { format: 'json' }
     resources :inbound_batches, only: [:index], defaults: { format: 'json' }
+    resources :index_batches, only: [:index, :show], defaults: { format: 'json' }
     get 'products/:id' => '/products#show', defaults: { stream: 'false' }
   end
 

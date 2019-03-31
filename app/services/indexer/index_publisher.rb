@@ -16,31 +16,31 @@ module Indexer
       @indexer   = indexer
       @benchmark = BenchmarkHelper.new(logger: logger)
       @client = SOLR::SOLRClient.new
+      @batch = nil
+      @workers = []
 
       # tree cache must be precached
       Indexer::TreeCache.build
 
-      return unless precache
       # concept collection cache works with or without optional precaching
-      Indexer::ConceptCollectionCache.build
+      Indexer::ConceptCollectionCache.build if precache
     end
 
     def publish_to_search_by_ids(ids, chunk_size = 1_000)
-      results = []
-      ids     = [ids] unless ids.is_a? Array
+      items_to_errors = {}
+      ids = [ids] unless ids.is_a? Array
       ids.each_slice(chunk_size) do |id_chunk|
-        items  = @indexer.fetch_items(id_chunk)
-        result = client.publish_items(@indexer, items)
-        results << result
+        items = @indexer.fetch_items(id_chunk)
+        chunk_items_to_errors = client.publish_items(@indexer, items)
+        items_to_errors.merge!(chunk_items_to_errors)
       end
-      # TODO: check for errors??
-      results
+      items_to_errors
     end
 
     def preview(id)
       items = @indexer.fetch_items([id])
       begin
-        client.items_to_documents(@indexer, items, true)
+        client.items_to_documents(@indexer, items)
       rescue => e
         e
       end
@@ -50,18 +50,15 @@ module Indexer
     def perform(set_size = DEFAULT_DB_FETCH_SIZE,
                 chunk_size = DEFAULT_INDEX_BATCH_SIZE,
                 num_threads = DEFAULT_NUM_PROCESSES)
-      logger.info "Client init: #{client} set_size: #{set_size}, chunk_size: #{chunk_size}, num_threads: #{num_threads}"
-
-      worker_benchmark = BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS',
-                                             count:  @indexer.determine_count, with_summary: true)
-      worker_benchmark.with_benchmark do
-        num_chunks = calculate_num_chunks(set_size)
-        queue_work(chunk_size, num_chunks, num_threads, set_size)
+      Indexer::BatchLoader.execute_in_batch do |batch|
+        @batch = batch
+        logger.info "Client init: #{client} set_size: #{set_size}, chunk_size: #{chunk_size}, threads: #{num_threads}"
+        perform_benchmarked(set_size, chunk_size, num_threads)
+      rescue SignalException => e
+        cleanup_on_terminate
+        raise "signal exception: #{e.message}"
       end
-    rescue SignalException
-      # when we die, take our children with us
-      cleanup_on_terminate
-      logger.error "\nExited, killing all forked children."
+      logger.info("Indexing finished in #{@batch.elapsed}") if @batch.elapsed.present?
     end
 
     def publish_to_search(limit = 100_000, offset = 0, chunk_size = 1_000)
@@ -72,7 +69,7 @@ module Indexer
       ids = @indexer.fetch_ids_relation.limit(limit).offset(offset).ids
       ids.each_slice(chunk_size).with_index do |id_chunk, i|
         with_publish_benchmark(i, id_chunk, limit, offset) do
-          publish_to_search_by_ids(id_chunk, chunk_size)
+          record_errors(publish_to_search_by_ids(id_chunk, chunk_size))
         end
 
         @total_num_processed += id_chunk.size
@@ -94,8 +91,18 @@ module Indexer
 
     private
 
+    def perform_benchmarked(set_size, chunk_size, num_threads)
+      worker_benchmark = BenchmarkHelper.new(prefix: 'Indexing ALL WORKERS',
+                                             count:  @indexer.determine_count, with_summary: true)
+      worker_benchmark.with_benchmark do
+        num_chunks = calculate_num_chunks(set_size)
+        queue_work(chunk_size, num_chunks, num_threads, set_size)
+      end
+    end
+
     def queue_work(chunk_size, num_chunks, num_threads, set_size)
       worker = Indexer::WorkQueueHandler.new(logger: @logger)
+      @workers << worker
       worker.queue_work(num_chunks, num_threads, set_size) do |limit, offset|
         publish_to_search(limit, offset, chunk_size)
       end
@@ -114,6 +121,16 @@ module Indexer
                                 should_print: iterator % 10 == 9) do
         yield
       end
+    end
+
+    def record_errors(items_to_errors)
+      items_to_errors.each { |item, error| @batch.batch_errors.create(indexed_item: item, message: error[:message]) }
+    end
+
+    def cleanup_on_terminate
+      logger.error "\nExited, killing all forked children."
+      logger.error "#{@workers.count} workers to terminate"
+      @workers.each(&:cleanup)
     end
   end
 end

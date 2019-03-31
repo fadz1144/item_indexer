@@ -24,7 +24,7 @@ class TransformItemRenderer extends PureComponent {
         value => value && new Date(value).toLocaleString(),
         value => value && new Date(value).toLocaleString()
       ],
-      classNames: ['clickable', 'clickable', 'clickable statusReason', 'clickable', 'clickable'],
+      classNames: ['clickable', 'clickable link', 'clickable statusReason', 'clickable', 'clickable'],
       ...this.props
     });
   }

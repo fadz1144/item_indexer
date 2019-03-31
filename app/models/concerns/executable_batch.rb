@@ -8,7 +8,7 @@ module ExecutableBatch
     attr_reader :rescued_error
   end
 
-  def execute_and_record_status!
+  def execute_and_record_status! # rubocop:disable Metrics/MethodLength
     self.start_datetime = Time.current
     yield
     mark_complete
@@ -18,6 +18,7 @@ module ExecutableBatch
     notify(e)
   ensure
     self.stop_datetime = Time.current
+    self.error_count = batch_errors.count if respond_to? :error_count
     save!
   end
 
