@@ -21,7 +21,7 @@ class IndexingItemRenderer extends PureComponent {
         (value, index) => index + 1,
         null,
         null,
-        null,
+        value => value || '?',
         null,
         value => value && new Date(value).toLocaleString(),
         value => value && new Date(value).toLocaleString(),
@@ -79,7 +79,7 @@ export default class Indexing extends Component {
     }
   };
 
-  onSelectErrorItem = item => {
+  onClickErrorItem = item => {
     const { indexed_item_type: type, indexed_item_id: id } = item;
     if (type !== "CatModels::Product" || !id) {
       alert(`Sorry, not sure how to preview ${type} with id ${id}`);
@@ -108,7 +108,8 @@ export default class Indexing extends Component {
             "stop",
             "duration"
           ]}
-          itemName="indexing"
+          itemName="indexing batch"
+          pluralItemName="indexing batches"
           itemRenderer={IndexingItemRenderer}
           url={api("index_batches")}
           onSelectItem={this.onSelectItem}
@@ -132,8 +133,7 @@ export default class Indexing extends Component {
               itemRenderer={IndexingErrorItemRenderer}
               url={api(`index_batches/${this.state.selected}`)}
               setData={response => response.batch_errors}
-              showFooter={true}
-              onSelectItem={this.onSelectErrorItem}
+              onClickItem={this.onClickErrorItem}
             />
           </div>
         )}
