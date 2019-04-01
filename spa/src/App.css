@@ -6,15 +6,6 @@
   color: #3176fb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .App-navigation {
   list-style: none;
     margin-right: 30px;
@@ -26,6 +17,12 @@
 }
 
 .clickable {
+  cursor: pointer;
+}
+
+.link {
+  text-decoration: underline;
+  color: #3176fb;
   cursor: pointer;
 }
 

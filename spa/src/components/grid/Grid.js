@@ -2,6 +2,7 @@ import { VariableSizeGrid } from "react-window";
 import React, { forwardRef, Component } from "react";
 import Header from "../../components/grid/Header";
 import Footer from "./Footer";
+import "./Grid.css";
 
 export default class Grid extends Component {
   constructor(props) {
@@ -28,46 +29,53 @@ export default class Grid extends Component {
 
   onClick({ target }) {
     const { onSelectItem, onClickItem } = this.props;
-    const dataId = target.getAttribute("data-id");
-    const item = this.state.data && this.state.data[dataId];
+
+    const item = () => {
+      const dataId = target.getAttribute("data-id");
+      return this.state.data && this.state.data[dataId];
+    };
 
     if (onClickItem) {
-      onClickItem(item);
+      onClickItem(item());
     }
 
     if (onSelectItem) {
+      const selectedItem = item();
       if (this.state.selected) {
         // clear already selected item
-        this.setState(prevState => {
-          return {
-            data: prevState.unfilteredData,
-            unfilteredData: null,
-            selected: null
-          };
-        });
-      }
-
-      if (item) {
-        if (!this.state.selected) {
-          // set selected state
-          this.gridRef.current.scrollToItem({
-            align: "start",
-            rowIndex: 0
-          });
-          this.setState(prevState => {
-            return {
-              data: [item],
-              unfilteredData: prevState.unfilteredData || prevState.data,
-              selected: item
-            };
-          });
-        } else {
+        this.onDeselect();
+      } else {
+        if (selectedItem) {
+          if (!this.state.selected) {
+            // set selected state
+            this.gridRef.current.scrollToItem({
+              align: "start",
+              rowIndex: 0
+            });
+            this.setState(prevState => {
+              return {
+                data: [selectedItem],
+                unfilteredData: prevState.unfilteredData || prevState.data,
+                selected: selectedItem
+              };
+            });
+          }
         }
       }
 
-      onSelectItem(item);
+      onSelectItem(selectedItem);
     }
   }
+
+  onDeselect = () => {
+    this.setState(prevState => {
+      return {
+        data: prevState.unfilteredData,
+        unfilteredData: null,
+        selected: null
+      };
+    });
+  };
 
   count() {
     let count = "none";
@@ -123,6 +131,8 @@ export default class Grid extends Component {
           count={this.count()}
           itemName={itemName}
           pluralItemName={pluralItemName}
+          isSelected={!!this.state.selected}
+          onDeselect={this.onDeselect}
         />
       </div>
     );

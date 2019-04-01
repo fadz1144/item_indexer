@@ -32,7 +32,7 @@ class IndexingItemRenderer extends PureComponent {
         "clickable",
         "clickable",
         "clickable link",
-        "clickable statusReason",
+        "clickable long",
         "clickable",
         "clickable",
         "clickable"
@@ -56,7 +56,7 @@ class IndexingErrorItemRenderer extends PureComponent {
         "message"
       ],
       formatters: new Array(5),
-      classNames: [null, null, null, "link", "statusReason"],
+      classNames: [null, null, null, "link", "long"],
       ...this.props
     });
   }

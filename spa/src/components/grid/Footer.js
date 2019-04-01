@@ -1,7 +1,18 @@
-import React from 'react';
+import React from "react";
 import Inflected from "../Inflected";
 
-export default ({ count, itemName, pluralItemName }) => {
+export default ({
+  count,
+  itemName,
+  pluralItemName,
+  isSelected,
+  onDeselect
+}) => {
+
+  // selection indicator and UI for clearing same
+  const Selected = ({ onDeselect }) => {
+    return <span> selected <span className="clickable link" onClick={onDeselect}>clear</span></span>
+  };
 
   return (
     <div>
@@ -14,6 +25,7 @@ export default ({ count, itemName, pluralItemName }) => {
             singular={itemName}
             plural={pluralItemName}
           />
+          {isSelected && <Selected onDeselect={onDeselect}/>}
         </span>
       )}
     </div>
