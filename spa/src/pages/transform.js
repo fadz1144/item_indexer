@@ -78,7 +78,8 @@ export default class Transform extends Component {
           rowHeight={35}
           columnWidths={[50, 100, 75, 500, 300, 300]}
           columnNames={["#", "id", "status", "reason", "start", "stop"]}
-          itemName="transform"
+          itemName="transform batch"
+          pluralItemName="transform batches"
           itemRenderer={TransformItemRenderer}
           url={api("transform_batches")}
           onSelectItem={this.onSelectItem}
@@ -96,7 +97,6 @@ export default class Transform extends Component {
               itemRenderer={TransformErrorItemRenderer}
               url={api(`transform_batches/${this.state.selected}`)}
               setData={response => response.batch_errors}
-              showFooter={true}
             />
           </div>
         )}

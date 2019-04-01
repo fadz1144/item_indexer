@@ -75,7 +75,8 @@ export default class Inbound extends Component {
             "stop",
             "transform batch id"
           ]}
-          itemName="inbound"
+          itemName="inbound batch"
+          pluralItemName="inbound batches"
           itemRenderer={InboundItemRenderer}
           url={api("inbound_batches")}
           onSelectItem={this.onSelectItem}

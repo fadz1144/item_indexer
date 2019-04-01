@@ -1,6 +1,7 @@
-import Header from "../../components/grid/Header";
 import { VariableSizeGrid } from "react-window";
 import React, { forwardRef, Component } from "react";
+import Header from "../../components/grid/Header";
+import Footer from "./Footer";
 
 export default class Grid extends Component {
   constructor(props) {
@@ -26,13 +27,17 @@ export default class Grid extends Component {
   }
 
   onClick({ target }) {
-    const { onSelectItem } = this.props;
+    const { onSelectItem, onClickItem } = this.props;
+    const dataId = target.getAttribute("data-id");
+    const item = this.state.data && this.state.data[dataId];
+
+    if (onClickItem) {
+      onClickItem(item);
+    }
 
     if (onSelectItem) {
-      const dataId = target.getAttribute("data-id");
-
-      let item;
       if (this.state.selected) {
+        // clear already selected item
         this.setState(prevState => {
           return {
             data: prevState.unfilteredData,
@@ -42,9 +47,9 @@ export default class Grid extends Component {
         });
       }
 
-      item = this.state.data && this.state.data[dataId];
       if (item) {
         if (!this.state.selected) {
+          // set selected state
           this.gridRef.current.scrollToItem({
             align: "start",
             rowIndex: 0
@@ -80,8 +85,8 @@ export default class Grid extends Component {
       columnNames,
       columnWidths,
       itemName,
-      itemRenderer,
-      showFooter
+      pluralItemName,
+      itemRenderer
     } = this.props;
 
     const outerElementType = forwardRef((props, ref) => {
@@ -114,13 +119,11 @@ export default class Grid extends Component {
             </VariableSizeGrid>
           </div>
         )}
-        {this.state.data && this.state.data.length === 0 && <div>No results</div>}
-        {showFooter && (
-          <div>
-            {this.count()}
-            {this.count() !== "none" && <span> {itemName}s</span>}
-          </div>
-        )}
+        <Footer
+          count={this.count()}
+          itemName={itemName}
+          pluralItemName={pluralItemName}
+        />
       </div>
     );
   }
