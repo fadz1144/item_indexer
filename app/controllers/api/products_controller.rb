@@ -1,5 +1,5 @@
 module API
-  class ProductsController < ApplicationController
+  class ProductsController < AuthenticatedController
     include ActionController::Live
 
     # rubocop:disable Metrics/AbcSize

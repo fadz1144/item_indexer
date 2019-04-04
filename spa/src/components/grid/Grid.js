@@ -16,8 +16,12 @@ export default class Grid extends Component {
   }
 
   extractData = response => {
-    const method = this.props.setData || (data => data);
-    return method(response);
+    if (response.error) {
+      alert('cannot load data: ' + response.error);
+    } else {
+      const method = this.props.setData || (data => data);
+      return method(response);
+    }
   };
 
   componentDidMount() {

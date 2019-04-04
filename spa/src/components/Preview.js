@@ -42,7 +42,7 @@ export default class extends Component {
 
   preview = e => {
     this.setState({ isLoading: true });
-    fetch(api(`products/${this.state.productId}?stream=false`))
+    fetch(api(`products/${this.state.productId}.json?stream=false`))
       .then(response => response.json())
       .then(data => this.setState({ preview: data }))
       .catch(exception => alert(`Unable to preview: ${exception}`))
