@@ -66,13 +66,30 @@ echo '**** RUNNING! ****'
 cd $BRIDGE_DEPLOY/docker
 pwd
 # This command mimics what docker-compose does when running the webapps locally, configuring it for local use and allowing this one-off container to talk to your DB.
-echo docker run --name=${II_CONTAINER_NAME} -e PDMADMIN_URL --entrypoint '/bbb/app/docker/bin/docker-entrypoint.sh' -v "$PWD/bin:/bbb/app/docker/bin:ro" -v "$PWD/config:/bbb/app/docker/config:ro"  --network=docker_default ${II_TEMP_IMAGE_NAME}:latest $COMMAND
 docker run --name=${II_CONTAINER_NAME} -e PDMADMIN_URL --entrypoint '/bbb/app/docker/bin/docker-entrypoint.sh' -v "$PWD/bin:/bbb/app/docker/bin:ro" -v "$PWD/config:/bbb/app/docker/config:ro"  --network=docker_default ${II_TEMP_IMAGE_NAME}:latest $COMMAND
 
 cd -
 
-#echo 'CLEANING UP!'
-#docker container rm ${II_CONTAINER_NAME} && echo "Successfully removed container"
-#docker image rm ${II_TEMP_IMAGE_NAME} && echo "Successfully removed image ${II_TEMP_IMAGE_NAME}"
+echo 'CLEANING UP!'
+docker container rm ${II_CONTAINER_NAME} && echo "Successfully removed container"
+echo ""
+echo "** IMPORTANT **"
+echo " If you are going to be running this again today you probably want to keep the images around"
+echo " (option 'N') so that the cache will make your build much faster."
+echo " But they will start to take up a lot of room on your disk, so you will need to remove them"
+echo " at some point. If you choose N you will be shown the command you can use later to remove"
+echo " the images we left behind. If you choose Y we will delete the image we just used."
+echo ""
+read -n 1 -p 'Type Y to delete this docker image and N to leave the image. >' NUKEIMAGE
+echo ""
+if [[ "${NUKEIMAGE}" = y ]]  || [[ "${NUKEIMAGE}" = Y ]]; then
+  docker image rm ${II_TEMP_IMAGE_NAME} && echo "Successfully removed image ${II_TEMP_IMAGE_NAME}" && echo "Deleted the image."
+else
+  echo "docker image rm ${II_TEMP_IMAGE_NAME} && echo Successfully removed image ${II_TEMP_IMAGE_NAME}" >> tmp/rm_images.sh
+  echo "Make sure you run this command to clean up ALL the images when you are done:"
+  echo ""
+  echo " source tmp/rm_images.sh ; rm tmp/rm_images.sh"
+  echo ""
+fi
 
 echo "All done!"
