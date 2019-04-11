@@ -4,6 +4,7 @@ import Header from "../../components/grid/Header";
 import Footer from "./Footer";
 import "./Grid.css";
 
+// provide either a url or a data object
 export default class Grid extends Component {
   constructor(props) {
     super(props);
@@ -25,10 +26,14 @@ export default class Grid extends Component {
   };
 
   componentDidMount() {
-    fetch(this.props.url)
-      .then(response => response.json())
-      .then(data => this.extractData(data))
-      .then(data => this.setState({ data }));
+    if (this.props.data) {
+      this.setState({data: this.props.data});
+    } else if (this.props.url) {
+      fetch(this.props.url)
+        .then(response => response.json())
+        .then(data => this.extractData(data))
+        .then(data => this.setState({ data }));
+    }
   }
 
   onClick({ target }) {

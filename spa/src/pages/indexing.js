@@ -21,7 +21,7 @@ class IndexingItemRenderer extends PureComponent {
         (value, index) => index + 1,
         null,
         null,
-        value => value || '?',
+        value => value || "?",
         null,
         value => value && new Date(value).toLocaleString(),
         value => value && new Date(value).toLocaleString(),
@@ -66,7 +66,8 @@ export default class Indexing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: null
+      selected: null,
+      indexBatches: null
     };
   }
 
@@ -89,32 +90,49 @@ export default class Indexing extends Component {
     }
   };
 
+  componentDidMount() {
+    fetch(api("index_batches"))
+      .then(response => response.json())
+      .then(indexBatches => {
+        if (indexBatches.error) {
+          alert("cannot load data: " + indexBatches.error);
+        } else {
+          this.setState({ indexBatches });
+        }
+      });
+  }
+
+
+
   render() {
+    const { indexBatches, selected } = this.state;
     return (
       <div>
         <h2>Indexing Batches</h2>
-        <Grid
-          width={1350}
-          height={400}
-          rowHeight={35}
-          columnWidths={[50, 100, 100, 50, 450, 225, 225, 150]}
-          columnNames={[
-            "#",
-            "id",
-            "status",
-            "errors",
-            "reason",
-            "start",
-            "stop",
-            "duration"
-          ]}
-          itemName="indexing batch"
-          pluralItemName="indexing batches"
-          itemRenderer={IndexingItemRenderer}
-          url={api("index_batches")}
-          onSelectItem={this.onSelectItem}
-        />
-        {this.state.selected && (
+        {indexBatches && (
+          <Grid
+            width={1350}
+            height={400}
+            rowHeight={35}
+            columnWidths={[50, 100, 100, 50, 450, 225, 225, 150]}
+            columnNames={[
+              "#",
+              "id",
+              "status",
+              "errors",
+              "reason",
+              "start",
+              "stop",
+              "duration"
+            ]}
+            itemName="indexing batch"
+            pluralItemName="indexing batches"
+            itemRenderer={IndexingItemRenderer}
+            data={indexBatches}
+            onSelectItem={this.onSelectItem}
+          />
+        )}
+        {selected && (
           <div className="errors-grid">
             Errors
             <Grid
@@ -131,7 +149,7 @@ export default class Indexing extends Component {
               ]}
               itemName="error"
               itemRenderer={IndexingErrorItemRenderer}
-              url={api(`index_batches/${this.state.selected}`)}
+              url={api(`index_batches/${selected}`)}
               setData={response => response.batch_errors}
               onClickItem={this.onClickErrorItem}
             />
