@@ -22,9 +22,17 @@ module Index
       super(value.truncate(255))
     end
 
+    def timing_complete?
+      stop_datetime.present? && start_datetime.present?
+    end
+
+    def elapsed_seconds
+      @elapsed_seconds ||= timing_complete? ? stop_datetime - start_datetime : nil
+    end
+
     def elapsed
       return nil if stop_datetime.blank? || start_datetime.blank?
-      elapsed = stop_datetime - start_datetime
+      elapsed = elapsed_seconds
       elapsed_minutes = elapsed.div 60
       elapsed_seconds = (elapsed % 60).round
       "#{elapsed_minutes} min #{elapsed_seconds} sec"

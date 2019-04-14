@@ -1,4 +1,5 @@
 import React, { Component, PureComponent } from "react";
+import IndexBatchChart from "../components/chart/IndexBatchChart";
 import Grid from "../components/grid/Grid";
 import renderItem from "../utils/grid/render-item";
 import "./transform.css";
@@ -109,6 +110,7 @@ export default class Indexing extends Component {
     return (
       <div>
         <h2>Indexing Batches</h2>
+        {indexBatches && <IndexBatchChart batches={indexBatches} />}
         {indexBatches && (
           <Grid
             width={1350}
