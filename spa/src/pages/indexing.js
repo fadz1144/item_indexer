@@ -1,6 +1,7 @@
 import React, { Component, PureComponent } from "react";
 import IndexBatchChart from "../components/chart/IndexBatchChart";
 import Grid from "../components/grid/Grid";
+import StatefulClicker from "../components/StatefulClicker";
 import renderItem from "../utils/grid/render-item";
 import "./transform.css";
 import api from "../utils/api";
@@ -68,7 +69,8 @@ export default class Indexing extends Component {
     super(props);
     this.state = {
       selected: null,
-      indexBatches: null
+      indexBatches: null,
+      loading: false
     };
   }
 
@@ -92,6 +94,11 @@ export default class Indexing extends Component {
   };
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
+    this.setState({ loading: true, indexBatches: null });
     fetch(api("index_batches"))
       .then(response => response.json())
       .then(indexBatches => {
@@ -100,13 +107,12 @@ export default class Indexing extends Component {
         } else {
           this.setState({ indexBatches });
         }
-      });
-  }
-
-
+      })
+      .finally(() => this.setState({ loading: false }));
+  };
 
   render() {
-    const { indexBatches, selected } = this.state;
+    const { indexBatches, selected, loading } = this.state;
     return (
       <div>
         <h2>Indexing Batches</h2>
@@ -157,6 +163,7 @@ export default class Indexing extends Component {
             />
           </div>
         )}
+        <StatefulClicker isActive={loading} onClick={this.fetchData} />
       </div>
     );
   }
