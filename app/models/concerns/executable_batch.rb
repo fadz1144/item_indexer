@@ -20,6 +20,7 @@ module ExecutableBatch
     self.stop_datetime = Time.current
     self.error_count = batch_errors.count if respond_to? :error_count
     save!
+    postmortem if respond_to? :postmortem
   end
 
   private

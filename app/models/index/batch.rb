@@ -1,5 +1,9 @@
 module Index
   class Batch < ApplicationRecord
+    # honeybadger will be alerted when an indexing exceeds these thresholds
+    ERROR_THRESHOLD = 100
+    ELAPSED_SECONDS_THRESHOLD = 180 * 60
+
     self.primary_key = :index_batch_id
     has_many :batch_errors, class_name: 'Index::BatchError', foreign_key: :index_batch_id, autosave: true,
                             inverse_of: :batch, dependent: :destroy
@@ -36,6 +40,27 @@ module Index
       elapsed_minutes = elapsed.div 60
       elapsed_seconds = (elapsed % 60).round
       "#{elapsed_minutes} min #{elapsed_seconds} sec"
+    end
+
+    def postmortem
+      Rails.logger.info 'starting postmortem...'
+      warn_if_threshold('item errors', ERROR_THRESHOLD, error_count)
+      warn_if_threshold('indexing duration (seconds)', ELAPSED_SECONDS_THRESHOLD, elapsed_seconds.round)
+      Rails.logger.info 'starting postmortem...DONE'
+    end
+
+    private
+
+    def warn_if_threshold(name, threshold, actual)
+      warn "#{name} threshold of #{threshold} surpassed with #{actual}" if actual > threshold
+    end
+
+    def warn(text)
+      batch_type = self.class.name
+      description = "#{batch_type} warning: #{text}"
+      context = { description: description, batch: attributes }
+      Rails.logger.warn(description)
+      Honeybadger.notify(description, tags: "#{batch_type}, batch, fail", context: context)
     end
   end
 end
