@@ -16,12 +16,12 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 020aa754c2d0805dfd84bfceaa77a25965bdca21
+  revision: 98a1321c04fb700331037f47125bce8c38de41dc
   branch: master
   specs:
     cat_models (0.1.0)
       pg
-      rails (~> 5.2, >= 5.2.0)
+      rails (~> 5.2, >= 5.2.2.1)
       string_enums
 
 GEM
