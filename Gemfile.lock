@@ -1,4 +1,12 @@
 GIT
+  remote: git@github.com:okl/auth_plugin.git
+  revision: 616abef36bf2eea6c0d57f2aa17e8b533fe6341b
+  branch: master
+  specs:
+    auth_plugin (0.1.0)
+      jwt
+
+GIT
   remote: git@github.com:okl/bridge-cloud.git
   revision: 0598baaf8e39ad5983d753eece44f1dc097a527d
   branch: master
@@ -8,8 +16,8 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 69dea27f2ed28cc4dd3b574ab8ed4589a35750c5
-  branch: CAT-1176
+  revision: 7e6772d9418820b481f5ba84a3b8efa2a88038ce
+  branch: master
   specs:
     cat_models (0.1.0)
       pg
@@ -143,6 +151,7 @@ GEM
       multi_json (>= 1.2)
     json (2.1.0)
     jsonapi-renderer (0.2.0)
+    jwt (2.1.0)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -331,6 +340,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   activerecord-oracle_enhanced-adapter
+  auth_plugin!
   bridge-cloud!
   byebug
   capybara (~> 2.13)
