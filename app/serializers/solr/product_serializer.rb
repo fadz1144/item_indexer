@@ -38,6 +38,7 @@ module SOLR
     decorate_sku_uniq 'units_sold_last_4_weeks', field: 'units_sold_last_4_weeks'
     decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks'
     decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks'
+    decorate_sku_uniq 'chain_status', field: 'chain_status'
 
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
     decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
