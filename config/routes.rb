@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     end
 
     resources :transform_batches, only: [:index, :show], defaults: { format: 'json' }
+    resources :direct_batches, only: [:index], defaults: { format: 'json' }
     resources :inbound_batches, only: [:index], defaults: { format: 'json' }
     resources :index_batches, only: [:index, :show], defaults: { format: 'json' }
     resources :products, only: [:show], defaults: { stream: 'false' }

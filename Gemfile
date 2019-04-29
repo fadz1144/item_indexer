@@ -56,6 +56,7 @@ group :oracledb do
   gem 'activerecord-oracle_enhanced-adapter'
   gem 'ruby-oci8'
 end
+gem 'composite_primary_keys', '= 11.2.0'
 
 group :sftp do
 # Used for the "DW import" flavor of I.I.

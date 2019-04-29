@@ -24,7 +24,7 @@ class TransformItemRenderer extends PureComponent {
         value => value && new Date(value).toLocaleString(),
         value => value && new Date(value).toLocaleString()
       ],
-      classNames: ['clickable', 'clickable link', 'clickable long', 'clickable', 'clickable'],
+      classNames: ['clickable', 'clickable link', 'clickable', 'clickable long', 'clickable'],
       ...this.props
     });
   }
@@ -76,7 +76,7 @@ export default class Transform extends Component {
           width={1350}
           height={400}
           rowHeight={35}
-          columnWidths={[50, 100, 75, 500, 300, 300]}
+          columnWidths={[50, 100, 100, 500, 300, 300]}
           columnNames={["#", "id", "status", "reason", "start", "stop"]}
           itemName="transform batch"
           pluralItemName="transform batches"
