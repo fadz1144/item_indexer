@@ -33,12 +33,16 @@ module Sftp
       end
     end
 
+    def mod_time_for_file(filename)
+      @sftp_client.modified_time(nil, filename)
+    end
+
     private
 
     def download_files(files)
       files.each do |file|
         next if file.start_with? PREFIX_TO_ADD_AFTER_SUCCESS
-        mtime = @sftp_client.modified_time(nil, file)
+        mtime = mod_time_for_file(file)
         Rails.logger.info 'Downloading %s (mtime %s)...' % [file, mtime]
         @sftp_client.download(file: file, to: @local_directory)
         @files_fetched << file

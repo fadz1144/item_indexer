@@ -24,7 +24,7 @@ class TransformItemRenderer extends PureComponent {
         value => value && new Date(value).toLocaleString(),
         value => value && new Date(value).toLocaleString()
       ],
-      classNames: ['clickable', 'clickable', 'clickable statusReason', 'clickable', 'clickable'],
+      classNames: ['clickable', 'clickable link', 'clickable', 'clickable long', 'clickable'],
       ...this.props
     });
   }
@@ -45,7 +45,7 @@ class TransformErrorItemRenderer extends PureComponent {
         "message"
       ],
       formatters: new Array(5),
-      classNames: [null, null, null, null, "statusReason"],
+      classNames: [null, null, null, null, "long"],
       ...this.props
     });
   }
@@ -76,9 +76,10 @@ export default class Transform extends Component {
           width={1350}
           height={400}
           rowHeight={35}
-          columnWidths={[50, 100, 75, 500, 300, 300]}
+          columnWidths={[50, 100, 100, 500, 300, 300]}
           columnNames={["#", "id", "status", "reason", "start", "stop"]}
-          itemName="transform"
+          itemName="transform batch"
+          pluralItemName="transform batches"
           itemRenderer={TransformItemRenderer}
           url={api("transform_batches")}
           onSelectItem={this.onSelectItem}
@@ -90,13 +91,12 @@ export default class Transform extends Component {
               width={1350}
               height={400}
               rowHeight={35}
-              columnWidths={[100, 100, 500, 300, 300]}
+              columnWidths={[100, 100, 300, 150, 650]}
               columnNames={["id", "batch id", "source item type", "source item id", "message"]}
               itemName="error"
               itemRenderer={TransformErrorItemRenderer}
               url={api(`transform_batches/${this.state.selected}`)}
               setData={response => response.batch_errors}
-              showFooter={true}
             />
           </div>
         )}

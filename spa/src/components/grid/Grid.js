@@ -1,7 +1,10 @@
-import Header from "../../components/grid/Header";
 import { VariableSizeGrid } from "react-window";
 import React, { forwardRef, Component } from "react";
+import Header from "../../components/grid/Header";
+import Footer from "./Footer";
+import "./Grid.css";
 
+// provide either a url or a data object
 export default class Grid extends Component {
   constructor(props) {
     super(props);
@@ -14,55 +17,74 @@ export default class Grid extends Component {
   }
 
   extractData = response => {
-    const method = this.props.setData || (data => data);
-    return method(response);
+    if (response.error) {
+      alert('cannot load data: ' + response.error);
+    } else {
+      const method = this.props.setData || (data => data);
+      return method(response);
+    }
   };
 
   componentDidMount() {
-    fetch(this.props.url)
-      .then(response => response.json())
-      .then(data => this.extractData(data))
-      .then(data => this.setState({ data }));
+    if (this.props.data) {
+      this.setState({data: this.props.data});
+    } else if (this.props.url) {
+      fetch(this.props.url)
+        .then(response => response.json())
+        .then(data => this.extractData(data))
+        .then(data => this.setState({ data }));
+    }
   }
 
   onClick({ target }) {
-    const { onSelectItem } = this.props;
+    const { onSelectItem, onClickItem } = this.props;
+
+    const item = () => {
+      const dataId = target.getAttribute("data-id");
+      return this.state.data && this.state.data[dataId];
+    };
+
+    if (onClickItem) {
+      onClickItem(item());
+    }
 
     if (onSelectItem) {
-      const dataId = target.getAttribute("data-id");
-
-      let item;
+      const selectedItem = item();
       if (this.state.selected) {
-        this.setState(prevState => {
-          return {
-            data: prevState.unfilteredData,
-            unfilteredData: null,
-            selected: null
-          };
-        });
-      }
-
-      item = this.state.data && this.state.data[dataId];
-      if (item) {
-        if (!this.state.selected) {
-          this.gridRef.current.scrollToItem({
-            align: "start",
-            rowIndex: 0
-          });
-          this.setState(prevState => {
-            return {
-              data: [item],
-              unfilteredData: prevState.unfilteredData || prevState.data,
-              selected: item
-            };
-          });
-        } else {
+        // clear already selected item
+        this.onDeselect();
+      } else {
+        if (selectedItem) {
+          if (!this.state.selected) {
+            // set selected state
+            this.gridRef.current.scrollToItem({
+              align: "start",
+              rowIndex: 0
+            });
+            this.setState(prevState => {
+              return {
+                data: [selectedItem],
+                unfilteredData: prevState.unfilteredData || prevState.data,
+                selected: selectedItem
+              };
+            });
+          }
         }
       }
 
-      onSelectItem(item);
+      onSelectItem(selectedItem);
     }
   }
+
+  onDeselect = () => {
+    this.setState(prevState => {
+      return {
+        data: prevState.unfilteredData,
+        unfilteredData: null,
+        selected: null
+      };
+    });
+  };
 
   count() {
     let count = "none";
@@ -80,8 +102,8 @@ export default class Grid extends Component {
       columnNames,
       columnWidths,
       itemName,
-      itemRenderer,
-      showFooter
+      pluralItemName,
+      itemRenderer
     } = this.props;
 
     const outerElementType = forwardRef((props, ref) => {
@@ -114,13 +136,13 @@ export default class Grid extends Component {
             </VariableSizeGrid>
           </div>
         )}
-        {this.state.data && this.state.data.length === 0 && <div>No results</div>}
-        {showFooter && (
-          <div>
-            {this.count()}
-            {this.count() !== "none" && <span> {itemName}s</span>}
-          </div>
-        )}
+        <Footer
+          count={this.count()}
+          itemName={itemName}
+          pluralItemName={pluralItemName}
+          isSelected={!!this.state.selected}
+          onDeselect={this.onDeselect}
+        />
       </div>
     );
   }

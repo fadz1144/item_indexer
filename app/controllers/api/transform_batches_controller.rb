@@ -1,5 +1,5 @@
 module API
-  class TransformBatchesController < ApplicationController
+  class TransformBatchesController < AuthenticatedController
     def index
       render json: Transform::Batch.order(transform_batch_id: :desc).limit(1000), include: ''
     end

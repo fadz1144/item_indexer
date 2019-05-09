@@ -1,4 +1,12 @@
 GIT
+  remote: git@github.com:okl/auth_plugin.git
+  revision: 616abef36bf2eea6c0d57f2aa17e8b533fe6341b
+  branch: master
+  specs:
+    auth_plugin (0.1.0)
+      jwt
+
+GIT
   remote: git@github.com:okl/bridge-cloud.git
   revision: 0598baaf8e39ad5983d753eece44f1dc097a527d
   branch: master
@@ -8,12 +16,12 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 020aa754c2d0805dfd84bfceaa77a25965bdca21
+  revision: 0ac2de844ce2499644daec6db7dc4c818dab8426
   branch: master
   specs:
     cat_models (0.1.0)
       pg
-      rails (~> 5.2, >= 5.2.0)
+      rails (~> 5.2, >= 5.2.2.1)
       string_enums
 
 GEM
@@ -87,6 +95,8 @@ GEM
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.2)
+    composite_primary_keys (11.2.0)
+      activerecord (~> 5.2.1)
     concurrent-ruby (1.1.5)
     crass (1.0.4)
     debase (0.2.2)
@@ -143,6 +153,7 @@ GEM
       multi_json (>= 1.2)
     json (2.1.0)
     jsonapi-renderer (0.2.0)
+    jwt (2.1.0)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -331,10 +342,12 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   activerecord-oracle_enhanced-adapter
+  auth_plugin!
   bridge-cloud!
   byebug
   capybara (~> 2.13)
   cat_models!
+  composite_primary_keys (= 11.2.0)
   debase
   factory_bot_rails
   fun_sftp

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Home from './pages/home';
 import Preview from './pages/preview';
 import Transform from './pages/transform';
+import Direct from './pages/direct';
 import Inbound from './pages/inbound';
 import Indexing from './pages/indexing';
 import Topics from './pages/topics';
@@ -15,6 +16,9 @@ function App() {
         <ul className="App-navigation">
           <li>
             <Link to="/preview">Preview</Link>
+          </li>
+          <li>
+            <Link to="/direct">Direct</Link>
           </li>
           <li>
             <Link to="/inbound">Inbound</Link>
@@ -31,6 +35,7 @@ function App() {
 
         <Route exact path="/" component={Home} />
         <Route path="/preview" component={Preview} />
+        <Route path="/direct" component={Direct} />
         <Route path="/inbound" component={Inbound} />
         <Route path="/transform" component={Transform} />
         <Route path="/indexing" component={Indexing} />

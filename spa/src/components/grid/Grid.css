@@ -1,0 +1,47 @@
+.List,
+.Header {
+  border: 1px solid #d9dddd;
+  margin: auto;
+}
+
+.Header {
+  white-space: nowrap;
+}
+
+.List {
+  background: #ededed;
+}
+
+.List div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.even {
+  background-color: #f8f8f0;
+}
+
+.odd {
+  background-color: #ffffff;
+}
+
+.List div.long {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  text-align: left;
+  justify-content: left;
+}
+
+.List div.medium {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.List div.link {
+  text-decoration: underline;
+  color: #3176fb;
+  cursor: pointer;
+}

@@ -78,6 +78,21 @@ namespace :xpdm do
       .incremental(updates_since)
   end
 
+  desc 'Load Sku Sales'
+  task full_sku_sales: %i[verify_token environment] do
+    Rails.logger.info 'xpdm::full_sku_sales'
+    Rails.logger.info "PDMADMIN_URL: #{ENV.fetch('PDMADMIN_URL', '--not set--')}"
+    External::DirectLoadService.new(External::ECOM::SkuSalesLoader.new).full
+  end
+
+  # TODO: CAT-1295
+  desc 'Load Sku Sales changes'
+  task :incremental_sku_sales, %i[updates_since] => %i[verify_token environment] do |_task, args|
+    updates_since = args.updates_since&.to_datetime
+    Rails.logger.info "xpdm::incremental_sku_sales #{updates_since}"
+    External::DirectLoadService.new(External::ECOM::SkuSalesLoader.new).incremental(updates_since)
+  end
+
   desc 'Load missing images'
   task load_missing_images: %i[verify_token environment] do
     External::DirectLoadService

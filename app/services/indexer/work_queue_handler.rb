@@ -36,5 +36,9 @@ module Indexer
         end
       end
     end
+
+    def cleanup
+      cleanup_on_terminate
+    end
   end
 end

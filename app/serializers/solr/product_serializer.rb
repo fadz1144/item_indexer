@@ -47,7 +47,6 @@ module SOLR
     decorate_field_uniq 'min_lead_time', field: 'lead_time', group: 'min'
     decorate_field_uniq 'max_lead_time', field: 'lead_time', group: 'max'
     decorate_field_uniq 'shipping_method', field: 'shipping_methods'
-    decorate_field_uniq 'web_status', field: 'web_status'
 
     decorate_pricing 'margin_amount_cents', field: 'margin_amount', format: 'currency_cents'
     decorate_pricing 'price_cents', field: 'retail_price', format: 'currency_cents'

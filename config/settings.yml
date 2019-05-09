@@ -3,6 +3,7 @@ redis_defaults: &redis_defaults
   port: <%= ENV.fetch('REDIS_PORT', 6379) %>
 
 default_settings: &defaults
+  product_catalog_url: <%= ENV.fetch('BBB_CATALOG_WEB_FRONTEND', 'https://pc.bbby.io') %>
   enable_pdm_connection: <%= 'false' != ENV.fetch('ENABLE_PDM_CONNECTION', 'false') %>
   solr:
     enabled: <%= ENV.fetch('SOLR_ENABLED', 'true') == 'true' %>

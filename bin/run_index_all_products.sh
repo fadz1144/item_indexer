@@ -20,8 +20,8 @@ fi
 # this will add any fields that need to be added to the index; equivalent of a db:migrate for SOLR
 echo "applying schema..."
 bundle exec rake bridge:apply_solr_schema
-echo "applying schema...OK"
+echo "applying schema...done"
 
 echo "adding products to index..."
 bundle exec rake bridge:build_solr_product_search_index
-echo "adding products to index...OK"
+echo "adding products to index...done"

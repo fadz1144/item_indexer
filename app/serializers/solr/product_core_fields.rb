@@ -55,7 +55,6 @@ module SOLR
     shared 'max_price_cents', type: 'pint'
     shared 'name', type: 'text_general'
     shared 'shipping_method', type: 'string', multiValued: true
-    shared 'web_status', type: 'string', multiValued: true
 
     ## web flags summary fields
     shared 'web_flags_summary', type: 'string'
@@ -137,6 +136,8 @@ module SOLR
 
     # sku-only concept-level field
     concept_sku 'web_enable_date', type: 'pdate'
+    concept_sku 'web_status', type: 'string'
+
     #
     # product-only fields
     #

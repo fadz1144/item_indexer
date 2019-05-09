@@ -13,6 +13,9 @@ end
 gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'master', require: true
 # gem 'cat_models', path: "../cat_models", require: true
 
+# For interpreting JWT auth tokens from auth_svc
+gem 'auth_plugin', git: 'git@github.com:okl/auth_plugin.git', branch: 'master', require: true
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1'
 # Use postgresql as the database for Active Record
@@ -53,6 +56,7 @@ group :oracledb do
   gem 'activerecord-oracle_enhanced-adapter'
   gem 'ruby-oci8'
 end
+gem 'composite_primary_keys', '= 11.2.0'
 
 group :sftp do
 # Used for the "DW import" flavor of I.I.

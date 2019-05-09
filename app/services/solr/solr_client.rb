@@ -23,22 +23,34 @@ module SOLR
     end
 
     def publish_items(indexer, items)
-      @client.add items_to_documents(indexer, items)
+      documents, items_to_errors = items_to_documents(indexer, items)
+      @client.add documents
       @client.commit
+      items_to_errors
     end
 
-    def items_to_documents(indexer, items, serialize_errors = false)
-      items.map { |item| index_hash_for_item(indexer, item, serialize_errors) }.compact
+    def items_to_documents(indexer, items)
+      items_to_errors = {}
+      documents = items.map do |item|
+        json = index_hash_for_item(indexer, item)
+        items_to_errors[item] = json if error?(json)
+        error?(json) ? nil : json
+      end.compact
+      [documents, items_to_errors]
     end
 
     private
 
-    def index_hash_for_item(indexer, item, serialize_errors = false)
+    def index_hash_for_item(indexer, item)
       indexer.raw_json(item)
     rescue => e
       Rails.logger.error("Unable to generate index hash for #{item.id}.  Reason: #{e.message}")
       Rails.logger.error e.backtrace.join("\n")
-      serialize_errors ? { error: e.class.name, message: e, backtrace: e.backtrace } : nil
+      { error: e.class.name, message: e, backtrace: e.backtrace }
+    end
+
+    def error?(index_hash_for_item)
+      index_hash_for_item.include?(:error)
     end
 
     def build_client(endpoint)

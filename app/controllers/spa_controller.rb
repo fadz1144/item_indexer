@@ -1,4 +1,4 @@
-class SpaController < ApplicationController
+class SpaController < AuthenticatedController
   SPA_INDEX = 'index.html'.freeze
 
   def index
