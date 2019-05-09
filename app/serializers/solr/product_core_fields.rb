@@ -90,6 +90,7 @@ module SOLR
     shared 'units_sold_last_year', type: 'pint', source_name: 'units_sold_last_52_weeks'
     shared 'vdc_flag', type: 'boolean', source_name: 'vdc_sku'
     shared 'vintage', type: 'boolean'
+    shared 'chain_status', type: 'string', multiValued: true
 
     # hierarchies
     %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].each do |tree|
