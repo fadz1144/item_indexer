@@ -48,7 +48,6 @@ module SOLR
     decorate_field_uniq 'shipping_method', field: 'shipping_methods'
     decorate_field_uniq 'web_flags_summary', field: 'web_flags_summary'
 
-
     decorate_pricing 'margin_amount_cents', field: 'margin_amount', format: 'currency_cents'
     decorate_pricing 'price_cents', field: 'retail_price', format: 'currency_cents'
     decorate_pricing 'min_price_cents', field: 'retail_price', group: 'min', format: 'currency_cents'

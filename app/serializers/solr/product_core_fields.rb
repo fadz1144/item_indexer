@@ -138,7 +138,6 @@ module SOLR
     concept_sku 'web_status', type: 'string'
     concept_sku 'web_flags_summary', type: 'string'
 
-
     #
     # product-only fields
     #
