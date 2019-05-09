@@ -61,7 +61,7 @@ module SOLR
     decorate_sku_uniq 'pdp_url', field: 'pdp_urls'
     decorate_sku_uniq 'vendor_id', field: 'vendor_id'
     decorate_sku_uniq 'vendor_name', field: 'vendor_name'
-
+    decorate_sku_uniq 'personalization_name', field: 'set_personalization'
     decorate_sku_uniq 'web_status_buyer_reviewed', field: 'web_status_buyer_reviewed'
     decorate_sku_uniq 'web_status_in_progress', field: 'web_status_in_progress'
     decorate_sku_uniq 'web_status_active', field: 'web_status_active'
