@@ -136,6 +136,8 @@ module SOLR
     # sku-only concept-level field
     concept_sku 'web_enable_date', type: 'pdate'
     concept_sku 'web_status', type: 'string'
+    concept_sku 'web_flags_summary', type: 'string'
+
 
     #
     # product-only fields
