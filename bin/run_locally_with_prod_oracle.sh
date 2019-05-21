@@ -62,6 +62,8 @@ echo '**** BUILDING IMAGE! ****'
 echo docker build -f Dockerfile.oracle -t ${II_TEMP_IMAGE_NAME} .
 docker build -f Dockerfile.oracle -t ${II_TEMP_IMAGE_NAME} .
 
+read -n 1 -p 'If you are not connected to VPN now, connect.' ZZ
+
 echo '**** RUNNING! ****'
 cd $BRIDGE_DEPLOY/docker
 pwd

@@ -207,6 +207,13 @@ namespace :xpdm do
     External::DirectLoadService.new(External::XPDM::SkuWebStatusBackfill.new).full
   end
 
+  desc 'Fetch a single SKU'
+  task :fetch_single_sku, %i[sku_id] => %i[verify_token environment build_concept_cache] do |_task, args|
+    sku_id_ints = args.sku_id.split(',').map(&:to_i)
+    Rails.logger.info "xpdm::fetch_single_sku #{sku_id_ints.join(', ')}"
+    External::DirectLoadService.new(External::XPDM::SkuLoader.new).individual(sku_id_ints)
+  end
+
   desc 'Reload items with spurious vendor rows'
   task reload_items_with_spurious_vendor_rows: %i[verify_token environment build_concept_cache] do
     Rails.logger.info 'xpdm:reload_items_with_spurious_vendor_rows'
