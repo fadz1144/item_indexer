@@ -32,6 +32,8 @@ module Transform
         attribute :vdc_sku, association: :logistics, source_name: :vdc_ind, default_value: false
         attribute :prop_65_compliant, association: :compliance, source_name: :props65_wrn_apply_txt
         attribute :prop_65_chemicals, association: :compliance, source_name: :list_prop65_chem_txt
+        attribute :tbs_blocked_start_date, source_name: :blck_start_dt, association: :web_info
+        attribute :tbs_blocked_end_date, source_name: :blck_end_dt, association: :web_info
 
         # TODO: unit of measure
         # TODO: non-taxable
