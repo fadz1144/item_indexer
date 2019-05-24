@@ -1,5 +1,5 @@
 module Deserializers
-  class ContributionMarginFileParser
+  class ContributionMarginFileParser # Current filename of the file this parses is: "OKL_CTM.APP..."
     attr_writer :mod_time
 
     FIELDS_I_NEED = %w[cm_l4w cm_rate_l4w coupon_l4w freight_in_l4w freight_out_l4w md_reimb_l4w rtv_da_l4w rtv_mos_l4w

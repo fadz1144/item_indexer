@@ -12,8 +12,8 @@ module Sftp
     end
 
     def run
-      files = @sftp_client.files
-      Rails.logger.info 'Directory listing: %s' % files.join(' ')
+      files = @sftp_client.files(pattern: '*.gpg')
+      Rails.logger.info 'Directory listing (gpg files only): %s' % files.join(' ')
       system 'mkdir -p \'%s\'' % @local_directory
       download_files(files)
       @sftp_client.close_connection
