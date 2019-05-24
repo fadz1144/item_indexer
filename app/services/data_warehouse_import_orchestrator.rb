@@ -27,7 +27,7 @@ class DataWarehouseImportOrchestrator
     @file_tracker[decrypted_filename] = file
   rescue => e
     Rails.logger.info e.inspect
-    Rails.logger.error 'Unable to decrypt %s - error: %s' % [file, e.message + e.message.backtrace]
+    Rails.logger.error 'Unable to decrypt %s - error: %s' % [file, e.message + e.backtrace]
   end
 
   def process_files
