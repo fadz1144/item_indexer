@@ -39,6 +39,7 @@ class DataWarehouseImportOrchestrator
   end
 
   def process_with_error_handling(file)
+    @fetcher = Sftp::DataWarehouseSftpFetcher.new
     mod_time = @fetcher.mod_time_for_file(@file_tracker[file])
     parser = Deserializers::ParserMatchmaker.init_parser(file)
     raise 'No parser could be found to process %s' % file unless parser
