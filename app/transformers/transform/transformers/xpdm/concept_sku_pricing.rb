@@ -18,7 +18,7 @@ module Transform
                 :cm_freight_out_l4w, :cm_shipping_paid_by_customer_l4w, :cm_shrink_l4w, :cm_net_damages_l4w,
                 :cm_marked_out_of_stock_l4w, :cm_markdown_reimbursement_l4w, :cm_vendor_funded_allowances_l4w,
                 :cm_net_sales_retail_l4w, :cm_cost_l4w, :cm_l4w_updated_at, :cm_l52w_updated_at,
-                :margin_amount, :margin_percent
+                :margin_amount, :margin_percent, :total_sales_units_l1w, :total_sales_units_l8w, :total_sales_units_l52w
       end
     end
   end
