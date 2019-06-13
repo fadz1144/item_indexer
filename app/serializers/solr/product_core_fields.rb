@@ -40,6 +40,8 @@ module SOLR
     shared 'brand_id', type: 'plong', multiValued: true
     shared 'brand_name', type: 'text_general', multiValued: true
     shared 'personalization_name', type: 'string', multiValued: true
+    shared 'buyer_name', type: 'text_general', multiValued: true
+    shared 'buyer_id', type: 'string', multiValued: true
     shared 'color', type: 'string', multiValued: true
     shared 'description', type: 'text_general'
     shared 'long_description', type: 'text_general'
