@@ -158,7 +158,9 @@ module SOLR
     end
 
     def color
-      service.decorated_skus.map(&:color_family).uniq
+      # service.decorated_skus.map(&:color_family).uniq
+      service.decorated_skus.pluck(:color_family, :color_group_name).uniq
+      
     end
 
     # TODO: implement me
