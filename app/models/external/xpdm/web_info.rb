@@ -56,7 +56,8 @@ module External
                             blck_rsn_name
                             email_cust_for_oos_ind
                             blck_start_dt
-                            blck_end_dt].freeze
+                            blck_end_dt
+                            web_copy_cmplt_ind].freeze
 
       default_scope -> { select(INCLUDED_COLUMNS) }
 
