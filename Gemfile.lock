@@ -16,8 +16,9 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 65caa153cf49a501958a08c50b8fbb463a66d1af
-  branch: master
+  revision: abdefa6f238ec007fd4e216b8cc5f64f0f705d49
+  branch: staging-rename-fields-to-run-transformer
+
   specs:
     cat_models (0.1.0)
       pg
