@@ -5,7 +5,9 @@ module Deserializers
 
     FIELDS_I_NEED = %w[cm_l4w cm_rate_l4w coupon_l4w freight_in_l4w freight_out_l4w md_reimb_l4w rtv_da_l4w rtv_mos_l4w
                        ship_fee_coll_l4w shrink_l4w site_id skuid sls_cost_l4w sls_ret_l4w
-                       sls_unit_l4w vend_supp_l4w].to_set.freeze
+                       sls_unit_l4w vend_supp_l4w cm_l52w cm_rate_l52w sls_unit_l52w sls_ret_l52w
+                       coupon_l52w sls_cost_l52w freight_in_l52w freight_out_l52w ship_fee_coll_l52w shrink_l52w
+                       rtv_da_l52w rtv_mos_l52w md_reimb_l52w vend_supp_l52w].to_set.freeze
     INBOUND_RECORD_CLASS = 'Inbound::DW::ContributionMarginFeed'.freeze
 
     def initialize(filename, col_sep:)

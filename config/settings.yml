@@ -18,8 +18,8 @@ default_settings: &defaults
   job_lock_ttl_in_seconds:
     inbound_transformation_job__okl: <%= ENV.fetch('INBOUND_TRANSFORM_JOB_LOCK_TTL_OKL', 20 * 60) %>
     inbound_transformation_job__JDA: <%= ENV.fetch('INBOUND_TRANSFORM_JOB_LOCK_TTL_JDA', 40 * 60) %>
-    inbound_transformation_job__DW: <%= ENV.fetch('INBOUND_TRANSFORM_JOB_LOCK_TTL_DW', 15 * 60) %>
     inbound_transformation_job__SALES: <%= ENV.fetch('INBOUND_TRANSFORM_JOB_LOCK_TTL_SALES', 240 * 60) %>
+    inbound_transformation_job__DW: <%= ENV.fetch('INBOUND_TRANSFORM_JOB_LOCK_TTL_DW', 240 * 60) %>
 development:
   <<: *defaults
 
