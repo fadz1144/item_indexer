@@ -19,7 +19,7 @@ module External
     end
 
     def full
-      max_existing_id = restart_id
+      max_existing_id = nil
       if max_existing_id.present?
         arel = restart_from_max_id(max_existing_id)
         process(arel, direct_batch(:full, "Restart from #{max_existing_id}"))

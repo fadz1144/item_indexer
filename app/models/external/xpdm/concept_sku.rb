@@ -1,6 +1,9 @@
 module External
   module XPDM
     class ConceptSku < External::XPDM::ConceptItem
+
+      # has_one :image_relation, foreign_key: :pdm_object_id
+
       INVENTORY_PREFIXES = { 'BBBY' => 'bbb', 'CA' => 'ca', 'BABY' => 'bab' }.freeze
 
       alias_attribute :sku, :parent

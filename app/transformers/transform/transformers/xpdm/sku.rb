@@ -36,13 +36,17 @@ module Transform
         attribute :tbs_blocked_end_date, source_name: :blck_end_dt, association: :web_info
         attribute :vdc_shipping_cutoff_offset, source_name: :vdc_shp_ctoff_offst_day_cnt
         attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
+        attribute :color_group_name, source_name: :color_grp_name
+        attribute :color_group_cd, source_name: :color_grp_cd
 
         # TODO: unit of measure
         # TODO: non-taxable
-        exclude :category_id, :unit_of_measure_cd, :non_taxable, :web_status, :ecom_status, :units_sold_last_1_week_online,
+        exclude :category_id, :unit_of_measure_cd, :non_taxable, :web_status, :ecom_status,
+                :units_sold_last_1_week_online,
                 :units_sold_last_4_weeks_online, :units_sold_last_8_weeks_online, :units_sold_last_52_weeks_online,
+                # :units_sold_last_1_week, :units_sold_last_4_weeks, :units_sold_last_8_weeks, :units_sold_last_52_weeks,
                 :vendor_discontinued_at, :vendor_available_qty, :vendor_availability_status, :vendor_next_available_qty,
-                :vendor_next_available_at, :vendor_inventory_last_updated_at,
+                :vendor_next_available_at, :vendor_inventory_last_updated_at, :web_copy_complete_status,
                 allow_primary_key: true
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help
