@@ -123,6 +123,45 @@ jobs:
             docker push ${DOCKERURL}.${SAFEBRANCH}:latest && echo "Pushed successfully 1/2" || echo "Failed to push ${TAG}"
             docker push ${DOCKERURL}:${NUMERIC_TAG} && echo "Pushed successfully 2/2" || echo "Failed to push ${NUMERIC_TAG}"
 
+  build_oracle:
+    docker:
+      - image: google/cloud-sdk
+    working_directory: ~/repo
+    steps:
+      - run:
+          name: Store Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run:
+          name: Init Gcloud
+          command: |
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud auth configure-docker
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Add version and commit sha to build
+          # Note the first command uses a single > to overwrite version.rb completely. Important.
+          command: |
+            echo "ENV['BBB_CI_VERSION'] = '$CIRCLE_BRANCH:$CIRCLE_BUILD_NUM'" > config/initializers/ci_version.rb
+            echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/initializers/ci_version.rb
+            echo "ENV['CIRCLE_COMPARE_URL'] = '$CIRCLE_COMPARE_URL'" >> config/initializers/ci_version.rb
+      - run:
+          name: Build image and push to GCR
+          command: |
+            GCR_HOST=us.gcr.io
+            DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
+
+            REPO="${GCR_HOST}/${GOOGLE_PROJECT_ID}"
+            IMAGE_NAME="item_indexer_oracle"
+            VTAG="zzz-V1" # change to V1 later
+            LT="zzz-not-latest"
+
+            docker build --tag ${IMAGE_NAME}:${VTAG} -f Dockerfile.oracle .
+            docker tag ${IMAGE_NAME}:${VTAG} ${REPO}/${IMAGE_NAME}:${VTAG}
+            docker push ${REPO}/${IMAGE_NAME}:${VTAG} && echo "Pushed successfully 1/2 ${REPO}/${IMAGE_NAME}:${VTAG}" || echo "Failed to push '${VTAG}'"
+            docker tag ${IMAGE_NAME}:${VTAG} ${REPO}/${IMAGE_NAME}:${LT}
+            docker push ${REPO}/${IMAGE_NAME}:${LT} && echo "Pushed successfully 2/2 ${REPO}/${IMAGE_NAME}:${LT}" || echo "Failed to push '${LT}'"
 workflows:
   version: 2
   ci_workflow:
@@ -131,6 +170,13 @@ workflows:
       - build:
           requires:
             - test
+      - build_oracle:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - CAT-932
 
 #
 #==============
