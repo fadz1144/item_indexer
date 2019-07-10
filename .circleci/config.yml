@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  test:
     environment:
       # DATABASE_URL doesn't appear to override actually? :(
       #DATABASE_URL: postgres://circle:circle@localhost:5432/universal_catalog_test
@@ -86,7 +86,7 @@ jobs:
           path: /tmp/test-results
           destination: test-results
 
-  deploy:
+  build:
     docker:
       - image: google/cloud-sdk
     working_directory: ~/repo
@@ -112,13 +112,8 @@ jobs:
             echo "ENV['BBB_COMMIT_SHA'] = '$CIRCLE_SHA1'" >> config/initializers/ci_version.rb
             echo "ENV['CIRCLE_COMPARE_URL'] = '$CIRCLE_COMPARE_URL'" >> config/initializers/ci_version.rb
       - run:
-          name: Push container to GCR
+          name: Build image and push to GCR
           command: |
-            if [[ "master" = "$CIRCLE_BRANCH" ]] ; then
-              SHOULD_DEPLOY="true"
-            else
-              SHOULD_DEPLOY="false"
-            fi
             NUMERIC_TAG="build-${CIRCLE_BUILD_NUM}"
             GCR_HOST=us.gcr.io
             DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
@@ -127,17 +122,15 @@ jobs:
             docker build -t ${DOCKERURL}.${SAFEBRANCH} -t ${DOCKERURL}:${NUMERIC_TAG} .
             docker push ${DOCKERURL}.${SAFEBRANCH}:latest && echo "Pushed successfully 1/2" || echo "Failed to push ${TAG}"
             docker push ${DOCKERURL}:${NUMERIC_TAG} && echo "Pushed successfully 2/2" || echo "Failed to push ${NUMERIC_TAG}"
-            if [[ "true" = "$SHOULD_DEPLOY" ]] ; then
-              echo "Should-deploy was set to true - @TODO to deploy CI/CD env..."
-            fi
+
 workflows:
   version: 2
   ci_workflow:
     jobs:
-      - build
-      - deploy:
+      - test
+      - build:
           requires:
-            - build
+            - test
 
 #
 #==============
