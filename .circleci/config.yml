@@ -154,8 +154,8 @@ jobs:
 
             REPO="${GCR_HOST}/${GOOGLE_PROJECT_ID}"
             IMAGE_NAME="item_indexer_oracle"
-            VTAG="zzz-V1" # change to V1 later
-            LT="zzz-not-latest"
+            VTAG="V1"
+            LT="latest"
 
             docker build --tag ${IMAGE_NAME}:${VTAG} -f Dockerfile.oracle .
             docker tag ${IMAGE_NAME}:${VTAG} ${REPO}/${IMAGE_NAME}:${VTAG}
@@ -192,7 +192,7 @@ jobs:
             DOCKER_IMAGE_NAME=$(echo -n ${CIRCLE_PROJECT_REPONAME} | tr '[:upper:]' '[:lower:]'| sed -e 's/_/-/g' -e 's/[^a-z0-9\-]//g')
 
             REPO="${GCR_HOST}/${GOOGLE_PROJECT_ID}"
-            LT="zzz-not-latest"
+            LT="latest"
             IMAGE_NAME="item-indexer-sftp"
 
             docker build --tag "${IMAGE_NAME}:${LT}" -f Dockerfile.sftp . && \
@@ -213,14 +213,14 @@ workflows:
           filters:
             branches:
               only:
-                - CAT-932
+                - master
       - build_sftp:
           requires:
             - test
           filters:
             branches:
               only:
-                - CAT-932
+                - master
 
 #
 #==============
