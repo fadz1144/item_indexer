@@ -35,6 +35,7 @@ module Transform
         attribute :tbs_blocked_start_date, source_name: :blck_start_dt, association: :web_info
         attribute :tbs_blocked_end_date, source_name: :blck_end_dt, association: :web_info
         attribute :vdc_shipping_cutoff_offset, source_name: :vdc_shp_ctoff_offst_day_cnt
+        attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
 
         # TODO: unit of measure
         # TODO: non-taxable
