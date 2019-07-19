@@ -27,7 +27,7 @@ module Transform
 
         exclude :site_nav_tree_node_id, :web_offered, :web_disabled, :web_offer_date, :web_enable_date, :details,
                 :force_below_the_line, :pattern_cd, :pattern_name, :size_cd, :size_name, :finish, :tbs_blocked,
-                :color_group_name, :color_group_cd
+                :color_group_name, :color_group_cd, :assembly_offered, :max_assembly_time
 
         def self.target_relation
           super.where(concept_id: CONCEPT_ID)

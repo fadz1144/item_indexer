@@ -20,6 +20,8 @@ module Transform
         attribute :color_group_name, association: :sku, source_name: :color_grp_name
         attribute :color_group_cd, association: :sku, source_name: :color_grp_cd
         attribute :ltl_eligible, association: :sku, source_name: :ltl_item_ind
+        attribute :assembly_offered, association: :sku, source_name: :asmbly_offer_ind
+        attribute :max_assembly_time, association: :sku, source_name: :max_asmbly_tm_unit
 
         has_one :concept_sku_dimensions
         has_one :concept_sku_pricing

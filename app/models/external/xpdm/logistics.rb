@@ -8,7 +8,9 @@ module External
                             vdc_max_day_to_shp
                             ltl_item_ind
                             cstmzn_type_cd
-                            cstmzn_type_name].freeze
+                            cstmzn_type_name
+                            max_asmbly_tm_unit
+                            asmbly_offer_ind].freeze
 
       # CSTMZN_TYPE_CD | CSTMZN_TYPE_NAME
       # N              | Customization not available

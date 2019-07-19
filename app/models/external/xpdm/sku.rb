@@ -23,7 +23,8 @@ module External
       end
 
       delegate :pmry_vdr_part_modl_num, to: :item_vendor, allow_nil: true
-      delegate :ltl_item_ind, :personalizable?, to: :logistics, allow_nil: true
+      delegate :ltl_item_ind, :personalizable?, :max_asmbly_tm_unit, :asmbly_offer_ind,
+               to: :logistics, allow_nil: true
 
       # subset for testing
       def self.product_modulo(divisor = 10, modulus = 1)
