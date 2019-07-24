@@ -17,6 +17,7 @@ module Transform
         attribute :size_cd, association: :sku
         attribute :size_name, association: :sku
         attribute :color, association: :sku, source_name: :color_name
+        attribute :color_cd, association: :sku, source_name: :color_cd
         attribute :color_group_name, association: :sku, source_name: :color_grp_name
         attribute :color_group_cd, association: :sku, source_name: :color_grp_cd
         attribute :ltl_eligible, association: :sku, source_name: :ltl_item_ind
