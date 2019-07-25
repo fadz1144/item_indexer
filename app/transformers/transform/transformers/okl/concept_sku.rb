@@ -24,6 +24,7 @@ module Transform
         attribute :stores_avail_qty, association: :inventory
         attribute :vdc_avail_qty, association: :inventory
         attribute :on_order_qty, association: :inventory
+        attribute :actual_created_date, source_name: :source_created_at
 
         exclude :site_nav_tree_node_id, :web_offered, :web_disabled, :web_offer_date, :web_enable_date, :details,
                 :force_below_the_line, :pattern_cd, :pattern_name, :size_cd, :size_name, :finish, :tbs_blocked,

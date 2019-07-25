@@ -53,5 +53,10 @@ namespace :bridge do
     task clear_ca_inventory: %i[environment to_stdout] do
       CatalogUpdates::UpdateService.new(CatalogUpdates::XPDM::NotSellableInCanada.new).execute
     end
+
+    desc 'Update OKL actual created date from source created date'
+    task okl_concept_sku_actual_created_date: %i[environment to_stdout] do
+      CatalogUpdates::UpdateService.new(CatalogUpdates::OKL::ConceptSkuActualCreatedDate.new).execute
+    end
   end
 end
