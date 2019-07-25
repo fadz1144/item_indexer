@@ -22,6 +22,7 @@ module Transform
         attribute :ltl_eligible, association: :sku, source_name: :ltl_item_ind
         attribute :assembly_offered, association: :sku, source_name: :asmbly_offer_ind
         attribute :max_assembly_time, association: :sku, source_name: :max_asmbly_tm_unit
+        attribute :actual_created_date, association: :sku, source_name: :item_create_on
 
         has_one :concept_sku_dimensions
         has_one :concept_sku_pricing
