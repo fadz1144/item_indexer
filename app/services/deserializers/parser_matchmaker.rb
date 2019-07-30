@@ -1,7 +1,7 @@
 require 'csv'
 module Deserializers
   class ParserMatchmaker
-    PARSERS = [ContributionMarginFileParser].freeze
+    PARSERS = [ContributionMarginFileParser, DwSalesMetricsFileParser].freeze
 
     def self.init_parser(filepath)
       keys = keys(filepath)

@@ -89,10 +89,10 @@ module SOLR
     shared 'product_type', type: 'string', multiValued: true
     shared 'size', type: 'string', multiValued: true
     shared 'tbs_blocked', type: 'pint', multiValued: true
-    shared 'units_sold_last_week', type: 'pint', source_name: 'units_sold_last_1_week'
-    shared 'units_sold_last_4_weeks', type: 'pint'
-    shared 'units_sold_last_8_weeks', type: 'pint'
-    shared 'units_sold_last_year', type: 'pint', source_name: 'units_sold_last_52_weeks'
+    shared 'units_sold_last_week', type: 'pint', source_name: 'units_sold_last_1_week_online'
+    shared 'units_sold_last_4_weeks', type: 'pint', source_name: 'units_sold_last_4_weeks_online'
+    shared 'units_sold_last_8_weeks', type: 'pint', source_name: 'units_sold_last_8_weeks_online'
+    shared 'units_sold_last_year', type: 'pint', source_name: 'units_sold_last_52_weeks_online'
     shared 'vdc_flag', type: 'boolean', source_name: 'vdc_sku'
     shared 'vintage', type: 'boolean'
     shared 'chain_status', type: 'string', multiValued: true

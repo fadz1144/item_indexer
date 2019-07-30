@@ -1,14 +1,11 @@
 module Deserializers
-  class ContributionMarginFileParser
-    # Current filename of the file this parses is: "OKL_CTM.APP..."
+  class DwSalesMetricsFileParser
+    # Current filename of the file this parses is: " OKL_SALES.APP..."
     attr_writer :mod_time
 
-    FIELDS_I_NEED = %w[cm_l4w cm_rate_l4w coupon_l4w freight_in_l4w freight_out_l4w md_reimb_l4w rtv_da_l4w rtv_mos_l4w
-                       ship_fee_coll_l4w shrink_l4w site_id skuid sls_cost_l4w sls_ret_l4w
-                       sls_unit_l4w vend_supp_l4w cm_l52w cm_rate_l52w sls_unit_l52w sls_ret_l52w
-                       coupon_l52w sls_cost_l52w freight_in_l52w freight_out_l52w ship_fee_coll_l52w shrink_l52w
-                       rtv_da_l52w rtv_mos_l52w md_reimb_l52w vend_supp_l52w].to_set.freeze
-    INBOUND_RECORD_CLASS = 'Inbound::DW::ContributionMarginFeed'.freeze
+    FIELDS_I_NEED = %w[sku_id site_id total_sales_units_l1w total_sales_units_l8w
+                       total_sales_units_l52w].to_set.freeze
+    INBOUND_RECORD_CLASS = 'Inbound::DW::DwSalesMetricsFeed'.freeze
 
     def initialize(filename, col_sep:)
       @filename = filename
@@ -37,11 +34,9 @@ module Deserializers
       inbound_record_class = INBOUND_RECORD_CLASS.constantize
       fields = row.to_h.tap { |r| r.transform_keys! { |k| k.to_s.downcase } }
       data = fields.slice(*FIELDS_I_NEED)
-      data['sku_id'] = data.delete 'skuid'
       record = inbound_record_class.new(data)
       record.file_mod_time = mod_time
       record.inbound_batch = @batch
-      # Rails.logger.debug record.inspect
       record.save!
     end
 

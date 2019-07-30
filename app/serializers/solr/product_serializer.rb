@@ -34,10 +34,10 @@ module SOLR
     decorate_concepts_for_true_concept_sku_boolean 'tbs_blocked', field: 'tbs_blocked'
 
     # can't use the groupings because these are defined by the serializer (below)
-    decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week'
-    decorate_sku_uniq 'units_sold_last_4_weeks', field: 'units_sold_last_4_weeks'
-    decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks'
-    decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks'
+    decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week_online'
+    decorate_sku_uniq 'units_sold_last_4_weeks', field: 'units_sold_last_4_weeks_online'
+    decorate_sku_uniq 'units_sold_last_8_weeks', field: 'units_sold_last_8_weeks_online'
+    decorate_sku_uniq 'units_sold_last_year', field: 'units_sold_last_52_weeks_online'
     decorate_sku_uniq 'chain_status', field: 'chain_status'
     decorate_sku_uniq 'promo_attribute', field: 'unique_sorted_promo_attribute'
     decorate_sku_uniq 'promo_attribute_name', field: 'unique_sorted_promo_attribute_name'
@@ -167,20 +167,20 @@ module SOLR
     end
 
     # the sales data are not properties of the product; so we can just define them here
-    def units_sold_last_1_week
-      service.decorated_skus.map(&:units_sold_last_1_week).compact.sum
+    def units_sold_last_1_week_online
+      service.decorated_skus.map(&:units_sold_last_1_week_online).compact.sum
     end
 
-    def units_sold_last_4_weeks
-      service.decorated_skus.map(&:units_sold_last_4_weeks).compact.sum
+    def units_sold_last_4_weeks_online
+      service.decorated_skus.map(&:units_sold_last_4_weeks_online).compact.sum
     end
 
-    def units_sold_last_8_weeks
-      service.decorated_skus.map(&:units_sold_last_8_weeks).compact.sum
+    def units_sold_last_8_weeks_online
+      service.decorated_skus.map(&:units_sold_last_8_weeks_online).compact.sum
     end
 
-    def units_sold_last_52_weeks
-      service.decorated_skus.map(&:units_sold_last_8_weeks).compact.sum
+    def units_sold_last_52_weeks_online
+      service.decorated_skus.map(&:units_sold_last_52_weeks_online).compact.sum
     end
 
     def item_status

@@ -39,10 +39,11 @@ module Transform
 
         # TODO: unit of measure
         # TODO: non-taxable
-        exclude :category_id, :unit_of_measure_cd, :non_taxable, :web_status, :ecom_status, :units_sold_last_1_week,
-                :units_sold_last_4_weeks, :units_sold_last_8_weeks, :units_sold_last_52_weeks,
-                :vendor_discontinued_at, :vendor_available_qty, :vendor_availability_status, :vendor_next_available_qty,
-                :vendor_next_available_at, :vendor_inventory_last_updated_at,
+        exclude :category_id, :unit_of_measure_cd, :non_taxable, :web_status, :ecom_status,
+                :units_sold_last_1_week_online, :units_sold_last_4_weeks_online, :units_sold_last_8_weeks_online,
+                :units_sold_last_52_weeks_online, :vendor_discontinued_at, :vendor_available_qty,
+                :vendor_availability_status, :vendor_next_available_qty, :vendor_next_available_at,
+                :vendor_inventory_last_updated_at,
                 allow_primary_key: true
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help
