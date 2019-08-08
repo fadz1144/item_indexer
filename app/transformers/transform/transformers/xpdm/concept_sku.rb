@@ -18,8 +18,6 @@ module Transform
         attribute :size_name, association: :sku
         attribute :color, association: :sku, source_name: :color_name
         attribute :color_cd, association: :sku, source_name: :color_cd
-        attribute :color_group_name, association: :sku, source_name: :color_grp_name
-        attribute :color_group_cd, association: :sku, source_name: :color_grp_cd
         attribute :ltl_eligible, association: :sku, source_name: :ltl_item_ind
         attribute :assembly_offered, association: :sku, source_name: :asmbly_offer_ind
         attribute :max_assembly_time, association: :sku, source_name: :max_asmbly_tm_unit
@@ -35,7 +33,7 @@ module Transform
                 :total_avail_qty, :warehouse_avail_qty, :stores_avail_qty, :vdc_avail_qty, :on_order_qty, :limited_qty,
                 :allow_exposure, :returnable, :made_to_order, :assembly_required,
                 :exclusivity_tier, :suspended_reason,
-                :finish, :site_nav_tree_node_id
+                :finish, :site_nav_tree_node_id, :color_group_name, :color_group_cd
 
         after_transform :conditionally_load_inventory
 
