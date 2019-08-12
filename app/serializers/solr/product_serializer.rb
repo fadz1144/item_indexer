@@ -157,8 +157,11 @@ module SOLR
       ''
     end
 
+    # both color family and color group values to be indexed
     def color
-      service.decorated_skus.map(&:color_family).uniq
+      service.decorated_skus.map do |sku|
+        [sku.color_value, sku.color_group_value]
+      end.flatten.compact.uniq.map(&:downcase)
     end
 
     # TODO: implement me
