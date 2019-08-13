@@ -151,6 +151,7 @@ module SOLR
     product 'min_lead_time', type: 'pint'
     product 'max_lead_time', type: 'pint'
     product 'lead_time', type: 'pint', multiValued: true
+    product 'actual_created_date', type: 'pdate'
 
     def self.product_fields
       @shared_fields + @product_fields
