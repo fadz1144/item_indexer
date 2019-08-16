@@ -63,12 +63,12 @@ module SOLR
     shared 'pattern_name', type: 'text_general', multiValued: true
     shared 'pattern_id', type: 'string', multiValued: true
 
-    ## web flags summary fields
+    # ## web flags summary fields
     shared 'web_flags_summary', type: 'string'
-    shared 'web_flags_summary_live_on_site', type: 'pint', multiValued: true
-    shared 'web_flags_summary_in_workflow', type: 'pint', multiValued: true
-    shared 'web_flags_summary_suspended', type: 'pint', multiValued: true
-    shared 'web_flags_summary_buyer_reviewed', type: 'pint', multiValued: true
+    # shared 'web_flags_summary_live_on_site', type: 'pint', multiValued: true
+    # shared 'web_flags_summary_in_workflow', type: 'pint', multiValued: true
+    # shared 'web_flags_summary_suspended', type: 'pint', multiValued: true
+    # shared 'web_flags_summary_buyer_reviewed', type: 'pint', multiValued: true
 
     # solr_field_expansion
     shared 'allow_exposure', type: 'boolean'
@@ -144,7 +144,7 @@ module SOLR
     # sku-only concept-level field
     concept_sku 'web_enable_date', type: 'pdate'
     concept_sku 'web_status', type: 'string'
-    concept_sku 'web_flags_summary', type: 'string'
+    # concept_sku 'web_flags_summary', type: 'string'
 
     #
     # product-only fields
