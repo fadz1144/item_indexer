@@ -18,6 +18,12 @@ module SOLR
       attribute field.source_name, key: field.name
     end
 
+    delegate :source_vendor_id, to: :object
+    delegate :vdc_days_or_lead_time, to: :object
+    delegate :jda_description, to: :object
+    delegate :product_description, to: :object
+    delegate :tbs_blocked_reason_name, to: :object
+
     # these attributes do not exist
     stub_attributes :brand_code
 
@@ -37,6 +43,7 @@ module SOLR
 
     decorate_field_uniq 'concept_id', field: 'concept_id'
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
+    decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
     decorate_field_uniq 'limited_qty', field: 'limited_qty', group: 'first'
     decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
     decorate_field_uniq 'max_aad_offset_days', field: 'aad_max_offset_days', group: 'max'
@@ -47,7 +54,12 @@ module SOLR
     decorate_field_uniq 'vdc_avail_qty', field: 'vdc_avail_qty', group: 'max'
     decorate_field_uniq 'vendor_sku', field: 'vendor_sku', group: 'max'
     decorate_field_uniq 'warehouse_avail_qty', field: 'warehouse_avail_qty', group: 'max'
-
+    decorate_field_uniq 'source_vendor_id', field: 'source_vendor_id'
+    decorate_field_uniq 'tbs_blocked_reason_name', field: 'tbs_blocked_reason_name'
+    decorate_field_uniq 'all_cm_tags', field: 'all_cm_tags'
+    decorate_field_uniq 'vdc_days_or_lead_time', field: 'vdc_days_or_lead_time'
+    decorate_field_uniq 'jda_description', field: 'jda_description'
+    decorate_field_uniq 'product_description', field: 'product_description'
     decorate_pricing 'cost', field: 'cost', group: 'max'
     decorate_pricing 'cost_cents', field: 'cost', group: 'max', format: 'currency_cents'
     decorate_pricing 'margin_percent', field: 'margin_percent', group: 'max'
@@ -185,6 +197,10 @@ module SOLR
       else
         (['Suspended'] + service.field_unique_values(:suspended_reason)).flatten.uniq
       end
+    end
+
+    def all_cm_tags
+      object.all_tag_values_annotated
     end
 
     private

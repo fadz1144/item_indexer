@@ -140,6 +140,12 @@ module SOLR
     sku 'vendor_sku', type: 'text_general'
     sku 'vmf', type: 'boolean'
     sku 'warehouse_avail_qty', type: 'pint'
+    sku 'source_vendor_id', type: 'pint', multiValued: true
+    sku 'tbs_blocked_reason_name', type: 'text_general'
+    sku 'all_cm_tags', type: 'string', multiValued: true
+    sku 'vdc_days_or_lead_time', type: 'string'
+    sku 'jda_description', type: 'string'
+    sku 'product_description', type: 'string'
 
     # sku-only concept-level field
     concept_sku 'web_enable_date', type: 'pdate'
