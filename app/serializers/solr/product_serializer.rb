@@ -71,6 +71,7 @@ module SOLR
     decorate_sku_uniq 'web_status_suspended', field: 'web_status_suspended'
     decorate_sku_uniq 'buyer_name', field: 'buyer_name'
     decorate_sku_uniq 'buyer_id', field: 'buyer_cd'
+    decorate_sku_uniq 'actual_created_date', field: 'recent_created_date'
 
     # hierarchies
     %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].map(&:to_s).each do |tree|
