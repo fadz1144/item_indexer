@@ -10,7 +10,8 @@ module Transform
           qty = @source.afs_qty + @source.concept_quantity(concept_id)
 
           { 'total_avail_qty' => qty,
-            'warehouse_avail_qty' => @source.warehouse? ? qty : 0,
+            'warehouse_avail_qty' => @source.warehouse? ? @source.afs_qty : 0,
+            'stores_avail_qty' => @source.warehouse? ? @source.concept_quantity(concept_id) : 0,
             'vdc_avail_qty' => @source.vdc? ? qty : 0 }
         end
 
