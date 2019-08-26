@@ -28,6 +28,9 @@ module SOLR
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'sku_id', field: 'sku_id'
 
+    decorate_concept_sku_uniq 'pattern_name', field: 'pattern_name'
+    decorate_concept_sku_uniq 'pattern_id', field: 'pattern_cd'
+
     # return true if one or more skus for the product evaluate to true
     decorate_sku_any 'vdc_sku', field: 'vdc_sku'
 

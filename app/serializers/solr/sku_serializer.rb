@@ -27,6 +27,9 @@ module SOLR
     decorate_concept_sku_uniq 'brand_name', field: 'display_brand'
     decorate_concept_sku_uniq 'description', field: 'description'
 
+    decorate_concept_sku_uniq 'pattern_name', field: 'pattern_name'
+    decorate_concept_sku_uniq 'pattern_id', field: 'pattern_cd'
+
     decorate_concept_sku_detect 'name', field: 'name'
     decorate_concept_sku_detect 'external_image_url', field: 'primary_image'
 

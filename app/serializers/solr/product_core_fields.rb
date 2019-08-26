@@ -60,6 +60,8 @@ module SOLR
     shared 'shipping_method', type: 'string', multiValued: true
     shared 'unique_sorted_promo_attribute', type: 'string', multiValued: true
     shared 'unique_sorted_promo_attribute_name', type: 'text_general', multiValued: true
+    shared 'pattern_name', type: 'text_general', multiValued: true
+    shared 'pattern_id', type: 'string', multiValued: true
 
     ## web flags summary fields
     shared 'web_flags_summary', type: 'string'
