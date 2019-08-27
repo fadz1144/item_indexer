@@ -52,6 +52,7 @@ module SOLR
     decorate_field_uniq 'min_lead_time', field: 'lead_time', group: 'min'
     decorate_field_uniq 'max_lead_time', field: 'lead_time', group: 'max'
     decorate_field_uniq 'shipping_method', field: 'shipping_methods'
+    decorate_field_uniq 'actual_created_date', field: 'actual_created_date', group: 'max'
     decorate_field_uniq 'web_flags_summary', field: 'web_flags_summary'
 
     decorate_pricing 'margin_amount_cents', field: 'margin_amount', format: 'currency_cents'
@@ -74,7 +75,6 @@ module SOLR
     decorate_sku_uniq 'web_status_suspended', field: 'web_status_suspended'
     decorate_sku_uniq 'buyer_name', field: 'buyer_name'
     decorate_sku_uniq 'buyer_id', field: 'buyer_cd'
-    decorate_sku_uniq 'actual_created_date', field: 'recent_created_date'
 
     # hierarchies
     %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].map(&:to_s).each do |tree|
