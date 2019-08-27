@@ -16,6 +16,8 @@ module External
 
       has_many :product_memberships, class_name: 'External::XPDM::ProductMembershipLocal', primary_key: :pdm_object_id,
                                      foreign_key: :item_code_name_cd, dependent: :destroy
+      has_many :po_skus, class_name: 'External::XPDM::POSku', primary_key: :pdm_object_id, foreign_key: :inumbr,
+                         dependent: :destroy
 
       with_options primary_key: :pdm_object_id, foreign_key: :sku do
         has_one :item_picture, -> { alt_image_count_only }, class_name: 'External::ECOM::Item'

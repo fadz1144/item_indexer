@@ -8,6 +8,8 @@ module Transform
         include Transform::Transformers::XPDM::WebStatusRollup
         include Transform::Transformers::XPDM::SharedReferences
 
+        has_many :po_skus, source_name: :po_skus, transformer_name: 'Transform::Transformers::XPDM::POSku',
+                           match_keys: [:sku_id]
         has_many :concept_skus, source_name: :concept_skus, match_keys: [:concept], partial: true
         has_many :product_memberships, source_name: :product_memberships, match_keys: [:product_id], partial: true
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
@@ -45,7 +47,7 @@ module Transform
                 :units_sold_last_1_week_online, :units_sold_last_4_weeks_online, :units_sold_last_8_weeks_online,
                 :units_sold_last_52_weeks_online, :vendor_discontinued_at, :vendor_available_qty,
                 :vendor_availability_status, :vendor_next_available_qty, :vendor_next_available_at,
-                :vendor_inventory_last_updated_at,
+                :vendor_inventory_last_updated_at, :color_group_name, :color_group_cd,
                 allow_primary_key: true
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help
@@ -57,7 +59,8 @@ module Transform
            { product_memberships: :product },
            :states, :descriptions, :image_relation, :web_prices, :web_costs, :assembly_dimensions, :package_dimensions,
            { promo_attribute_attachments: :all_concept_flags },
-           :item_picture, :web_info, :web_info_sites, :logistics, :compliance, :cm_tags, :truck_shipping_methods]
+           :item_picture, :web_info, :web_info_sites, :logistics, :compliance, :cm_tags, :truck_shipping_methods,
+           :po_skus]
         end
 
         # not tested yet
