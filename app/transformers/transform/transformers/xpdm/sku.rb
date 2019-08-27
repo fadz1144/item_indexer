@@ -9,7 +9,7 @@ module Transform
         include Transform::Transformers::XPDM::SharedReferences
 
         has_many :po_skus, source_name: :po_skus, transformer_name: 'Transform::Transformers::XPDM::POSku',
-                           match_keys: [:sku_id]
+                           match_keys: [:cps_recid]
         has_many :concept_skus, source_name: :concept_skus, match_keys: [:concept], partial: true
         has_many :product_memberships, source_name: :product_memberships, match_keys: [:product_id], partial: true
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]

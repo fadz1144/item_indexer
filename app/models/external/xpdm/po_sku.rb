@@ -8,6 +8,7 @@ module External
                             inumbr
                             part_num
                             pomqty
+                            cps_recid
                             pomorg].freeze
 
       default_scope -> { select(INCLUDED_COLUMNS) }
