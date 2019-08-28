@@ -4,6 +4,7 @@ module Transform
       class ConceptProduct < CatalogTransformer::Base
         source_name 'External::XPDM::ConceptProduct'
         include Transform::Transformers::XPDM::SharedConceptReferences
+        include Transform::Transformers::XPDM::SharedConceptAttributes
 
         attribute :description, source_name: :mstr_shrt_desc
         attribute :details, source_name: :mstr_web_desc
@@ -15,6 +16,8 @@ module Transform
         exclude :product_id, :concept_category_id, :site_nav_tree_node_id
 
         module Decorations
+          include Transform::Transformers::XPDM::SharedConceptMethods
+
           def concept
             Transform::ConceptCache.fetch(concept_id)
           end

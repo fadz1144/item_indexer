@@ -13,6 +13,8 @@ module Transform
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
         has_many :promo_attributes, source_name: :promo_attribute_attachments, match_keys: [:promo_cd]
 
+        attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
+
         # manually building this because the TransformerNonActiveRecordModel's need a little help
         def self.source_includes # rubocop:disable Metrics/MethodLength
           [{ item_vendor: { concept_vendor: :vendor } }, { concept_brand: :brand },

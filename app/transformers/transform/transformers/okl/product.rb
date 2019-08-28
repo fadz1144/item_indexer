@@ -7,7 +7,8 @@ module Transform
         source_name 'Inbound::OKL::ProductRevision'
         decorator_name 'Transform::Transformers::OKL::Decorators::ProductConceptProductDecorator'
 
-        exclude :membership_hash, :eph_tree_node_id, :restock_notifiable, :vdc_min_days_to_ship, :vdc_max_days_to_ship
+        exclude :membership_hash, :eph_tree_node_id, :restock_notifiable, :vdc_min_days_to_ship,
+                :vdc_max_days_to_ship, :web_copy_complete_status
 
         references :vendor, association: :concept_vendor
         references :brand, association: :concept_brand

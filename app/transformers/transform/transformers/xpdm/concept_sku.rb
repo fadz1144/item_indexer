@@ -4,14 +4,13 @@ module Transform
       class ConceptSku < CatalogTransformer::Base
         source_name 'External::XPDM::ConceptSku'
         include Transform::Transformers::XPDM::SharedConceptReferences
+        include Transform::Transformers::XPDM::SharedConceptAttributes
 
         attribute :sku_id, association: :sku, source_name: :pdm_object_id
         attribute :source_sku_id, association: :sku, source_name: :pdm_object_id
         attribute :vendor_sku, association: :sku, source_name: :pmry_vdr_part_modl_num
         attribute :description, source_name: :mstr_shrt_desc
         attribute :details, source_name: :mstr_web_desc
-        attribute :web_offer_date, source_name: :web_offer_dt
-        attribute :web_enable_date, source_name: :web_enable_dt
         attribute :pattern_cd, association: :sku
         attribute :pattern_name, association: :sku
         attribute :size_cd, association: :sku
@@ -47,6 +46,8 @@ module Transform
         end
 
         module Decorations
+          include Transform::Transformers::XPDM::SharedConceptMethods
+
           def concept
             Transform::ConceptCache.fetch(concept_id)
           end
@@ -65,14 +66,6 @@ module Transform
 
           def status
             active ? 'Active' : 'Inactive'
-          end
-
-          def web_offered
-            web_offer_ind == 'Y'
-          end
-
-          def web_disabled
-            web_dsable_ind == 'Y'
           end
 
           def tbs_blocked

@@ -214,6 +214,20 @@ namespace :xpdm do
     External::DirectLoadService.new(External::XPDM::SkuLoader.new).individual(sku_id_ints)
   end
 
+  desc 'Fetch a single Product'
+  task :fetch_single_product, %i[product_id] => %i[verify_token environment build_concept_cache] do |_task, args|
+    product_id_ints = args.product_id.split(',').map(&:to_i)
+    Rails.logger.info "xpdm::fetch_single_sku #{product_id_ints.join(', ')}"
+    External::DirectLoadService.new(External::XPDM::ProductLoader.new).individual(product_id_ints)
+  end
+
+  desc 'Fetch a single Collection'
+  task :fetch_single_collection, %i[collection_id] => %i[verify_token environment build_concept_cache] do |_task, args|
+    collection_id_ints = args.collection_id.split(',').map(&:to_i)
+    Rails.logger.info "xpdm::fetch_single_sku #{collection_id_ints.join(', ')}"
+    External::DirectLoadService.new(External::XPDM::CollectionLoader.new).individual(collection_id_ints)
+  end
+
   desc 'Reload items with spurious vendor rows'
   task reload_items_with_spurious_vendor_rows: %i[verify_token environment build_concept_cache] do
     Rails.logger.info 'xpdm:reload_items_with_spurious_vendor_rows'
