@@ -64,11 +64,11 @@ module SOLR
     shared 'pattern_id', type: 'string', multiValued: true
 
     ## web flags summary fields
-    shared 'web_flags_summary', type: 'string'
-    shared 'web_flags_summary_live_on_site', type: 'pint', multiValued: true
-    shared 'web_flags_summary_in_workflow', type: 'pint', multiValued: true
-    shared 'web_flags_summary_suspended', type: 'pint', multiValued: true
-    shared 'web_flags_summary_buyer_reviewed', type: 'pint', multiValued: true
+    # shared 'web_flags_summary', type: 'string'
+    # shared 'web_flags_summary_live_on_site', type: 'pint', multiValued: true
+    # shared 'web_flags_summary_in_workflow', type: 'pint', multiValued: true
+    # shared 'web_flags_summary_suspended', type: 'pint', multiValued: true
+    # shared 'web_flags_summary_buyer_reviewed', type: 'pint', multiValued: true
 
     # solr_field_expansion
     shared 'allow_exposure', type: 'boolean'
@@ -98,6 +98,7 @@ module SOLR
     shared 'vdc_flag', type: 'boolean', source_name: 'vdc_sku'
     shared 'vintage', type: 'boolean'
     shared 'chain_status', type: 'string', multiValued: true
+    # shared 'vdc_quantity', type: 'pint', multiValued: true
 
     # hierarchies
     %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].each do |tree|
@@ -145,6 +146,7 @@ module SOLR
     concept_sku 'web_enable_date', type: 'pdate'
     concept_sku 'web_status', type: 'string'
     concept_sku 'web_flags_summary', type: 'string'
+    concept_sku 'vdc_quantity', type: 'pint', multiValued: true
 
     #
     # product-only fields

@@ -45,6 +45,7 @@ module SOLR
     decorate_field_uniq 'store_avail_qty', field: 'stores_avail_qty', group: 'max'
     decorate_field_uniq 'total_avail_qty', field: 'total_avail_qty', group: 'max'
     decorate_field_uniq 'vdc_avail_qty', field: 'vdc_avail_qty', group: 'max'
+    decorate_field_uniq 'vdc_quantity', field: 'vdc_quantity'
     decorate_field_uniq 'vendor_sku', field: 'vendor_sku', group: 'max'
     decorate_field_uniq 'warehouse_avail_qty', field: 'warehouse_avail_qty', group: 'max'
 

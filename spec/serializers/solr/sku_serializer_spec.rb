@@ -207,36 +207,36 @@ RSpec.describe SOLR::SkuSerializer do
     end
   end
 
-  context 'web flags summary' do
-    let(:concept_sku_models) do
-      [build(:full_concept_sku, concept_id: 1, web_flags_summary: CatModels::Constants::WebFlagsSummary::LIVE_ON_SITE),
-       build(:full_concept_sku, concept_id: 2,
-                                web_flags_summary: CatModels::Constants::WebFlagsSummary::BUYER_REVIEWED),
-       build(:full_concept_sku, concept_id: 3, web_flags_summary: CatModels::Constants::WebFlagsSummary::IN_WORKFLOW),
-       build(:full_concept_sku, concept_id: 4, web_flags_summary: CatModels::Constants::WebFlagsSummary::SUSPENDED)]
-    end
-
-    it 'reads web_flags_summary from sku' do
-      sku_model.web_flags_summary = 'oski'
-      expect(result[:web_flags_summary]).to eq 'oski'
-    end
-
-    it 'should have a web_flags_summary_buyer_reviewed' do
-      expect(result[:web_flags_summary_buyer_reviewed]).to contain_exactly(2)
-    end
-
-    it 'should have a web_flags_summary_in_workflow' do
-      expect(result[:web_flags_summary_in_workflow]).to contain_exactly(3)
-    end
-
-    it 'should have a web_flags_summary_live_on_site' do
-      expect(result[:web_flags_summary_live_on_site]).to contain_exactly(1)
-    end
-
-    it 'should have a web_flags_summary_suspended' do
-      expect(result[:web_flags_summary_suspended]).to contain_exactly(4)
-    end
-  end
+  # context 'web flags summary' do
+  #   let(:concept_sku_models) do
+  #    [build(:full_concept_sku, concept_id: 1, web_flags_summary: CatModels::Constants::WebFlagsSummary::LIVE_ON_SITE),
+  #      build(:full_concept_sku, concept_id: 2,
+  #                               web_flags_summary: CatModels::Constants::WebFlagsSummary::BUYER_REVIEWED),
+  #      build(:full_concept_sku, concept_id: 3, web_flags_summary: CatModels::Constants::WebFlagsSummary::IN_WORKFLOW),
+  #      build(:full_concept_sku, concept_id: 4, web_flags_summary: CatModels::Constants::WebFlagsSummary::SUSPENDED)]
+  #   end
+  #
+  #   it 'reads web_flags_summary from sku' do
+  #     sku_model.web_flags_summary = 'oski'
+  #     expect(result[:web_flags_summary]).to eq 'oski'
+  #   end
+  #
+  #   it 'should have a web_flags_summary_buyer_reviewed' do
+  #     expect(result[:web_flags_summary_buyer_reviewed]).to contain_exactly(2)
+  #   end
+  #
+  #   it 'should have a web_flags_summary_in_workflow' do
+  #     expect(result[:web_flags_summary_in_workflow]).to contain_exactly(3)
+  #   end
+  #
+  #   it 'should have a web_flags_summary_live_on_site' do
+  #     expect(result[:web_flags_summary_live_on_site]).to contain_exactly(1)
+  #   end
+  #
+  #   it 'should have a web_flags_summary_suspended' do
+  #     expect(result[:web_flags_summary_suspended]).to contain_exactly(4)
+  #   end
+  # end
 
   context 'shipping_method' do
     let(:concept_sku_models) do

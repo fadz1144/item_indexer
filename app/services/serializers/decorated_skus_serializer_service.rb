@@ -57,10 +57,11 @@ module Serializers
       end
     end
 
+    # Some values are NaN in concept sku pricing, eg margin_percent for concept_sku_pricing_id: 8616411 is NaN
     def sku_pricing_field_values(field_sym)
       concept_skus_iterator do |cs|
         cs.concept_sku_pricing&.public_send(field_sym) unless cs.concept_id == 2 # exclude amounts on the CA concept sku
-      end.sort
+      end.reject(&:nan?).sort
     end
 
     SKU_LEVEL_TREE_NODES = %i[eph merch].freeze

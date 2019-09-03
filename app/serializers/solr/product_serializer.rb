@@ -48,6 +48,8 @@ module SOLR
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'
     decorate_field_uniq 'min_aad_offset_days', field: 'aad_min_offset_days', group: 'min'
     decorate_field_uniq 'max_aad_offset_days', field: 'aad_max_offset_days', group: 'max'
+    decorate_field_uniq 'vdc_quantity', field: 'vdc_quantity'
+
     decorate_field_uniq 'lead_time', field: 'lead_time'
     decorate_field_uniq 'min_lead_time', field: 'lead_time', group: 'min'
     decorate_field_uniq 'max_lead_time', field: 'lead_time', group: 'max'
@@ -87,6 +89,10 @@ module SOLR
 
     def id
       "P#{object.product_id}"
+    end
+
+    def vdc_quantity
+      service.decorated_skus.map(&:vdc_quantity).flatten.compact.uniq
     end
 
     def concept_id

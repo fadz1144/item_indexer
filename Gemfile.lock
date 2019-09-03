@@ -16,8 +16,8 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 0a295d7b9baf537b66a0b077c7e40db32e159473
-  branch: master
+  revision: e4477b5151e058ce2e80a5141a9e11f3d4cf68b0
+  branch: CAT-1237-vendor-inventory
   specs:
     cat_models (0.1.0)
       pg
