@@ -24,19 +24,29 @@ if [[ $(basename $PWD) != 'item_indexer' ]] ; then
     exit 2
 fi
 
-# Get the PDMADMIN_URL (it has the password in it)
-if [[ ! -z "$PDMADMIN_URL" ]] ; then
-    echo "Detected PDMADMIN_URL from your environment:"
-    echo "$PDMADMIN_URL"
+# Get the PDMADMIN_USER, PDMADMIN_PASSWORD, PDMADMIN_DB
+if [[ ! -z "$PDMADMIN_USER" ]] ; then
+    echo "Detected PDMADMIN_USER from your environment:"
+    echo PDMADMIN_USER = $PDMADMIN_USER
+    echo PDMADMIN_PASSWORD = $PDMADMIN_PASSWORD
+    echo PDMADMIN_DB = $PDMADMIN_DB
 elif [[ -r `secretsfile prod` ]] ; then
-    eval $(fgrep 'PDMADMIN_URL=' $(secretsfile prod) | sed -e 's/^/export /')
-    echo "Detected PDMADMIN_URL from a downloaded secrets file:"
-    echo "$PDMADMIN_URL"
+    eval $(fgrep 'PDMADMIN_USER=' $(secretsfile prod) | sed -e 's/^/export /')
+    eval $(fgrep 'PDMADMIN_PASSWORD=' $(secretsfile prod) | sed -e 's/^/export /')
+    eval $(fgrep 'PDMADMIN_DB=' $(secretsfile prod) | sed -e 's/^/export /')
+    echo "Detected PDMADMIN_USER from a downloaded secrets file:"
+    echo PDMADMIN_USER = $PDMADMIN_USER
+    echo PDMADMIN_PASSWORD = $PDMADMIN_PASSWORD
+    echo PDMADMIN_DB = $PDMADMIN_DB
 else
     secretsdown prod
-    eval $(fgrep 'PDMADMIN_URL=' $(secretsfile prod) | sed -e 's/^/export /')
-    echo "Downloaded the prod secrets file and fetched PDMADMIN_URL from that:"
-    echo "$PDMADMIN_URL"
+    eval $(fgrep 'PDMADMIN_USER=' $(secretsfile prod) | sed -e 's/^/export /')
+    eval $(fgrep 'PDMADMIN_PASSWORD=' $(secretsfile prod) | sed -e 's/^/export /')
+    eval $(fgrep 'PDMADMIN_DB=' $(secretsfile prod) | sed -e 's/^/export /')
+    echo "Downloaded the prod secrets file and fetched PDMADMIN_USER from that:"
+    echo PDMADMIN_USER = $PDMADMIN_USER
+    echo PDMADMIN_PASSWORD = $PDMADMIN_PASSWORD
+    echo PDMADMIN_DB = $PDMADMIN_DB
 fi
 
 echo ${BRIDGE_DEPLOY:=$PWD/../bridge-deploy} >/dev/null
@@ -75,7 +85,7 @@ echo '**** RUNNING! ****'
 cd $BRIDGE_DEPLOY/docker
 pwd
 # This command mimics what docker-compose does when running the webapps locally, configuring it for local use and allowing this one-off container to talk to your DB.
-docker run $DASHIT --name=${II_CONTAINER_NAME} -e PDMADMIN_URL --entrypoint '/bbb/app/docker/bin/docker-entrypoint.sh' -v "$PWD/bin:/bbb/app/docker/bin:ro" -v "$PWD/config:/bbb/app/docker/config:ro"  --network=docker_default ${II_TEMP_IMAGE_NAME}:latest $COMMAND
+docker run $DASHIT --name=${II_CONTAINER_NAME} -e PDMADMIN_USER -e PDMADMIN_PASSWORD -e PDMADMIN_DB --entrypoint '/bbb/app/docker/bin/docker-entrypoint.sh' -v "$PWD/bin:/bbb/app/docker/bin:ro" -v "$PWD/config:/bbb/app/docker/config:ro"  --network=docker_default ${II_TEMP_IMAGE_NAME}:latest $COMMAND
 
 cd -
 

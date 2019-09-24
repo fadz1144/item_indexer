@@ -77,11 +77,29 @@ module Transform
           end
 
           def warehouse_avail_qty
-            warehouse_inventory? ? total_avail_qty : 0
+            # warehouse_inventory? ? total_avail_qty : 0
+            warehouse_inventory? ? afs_qty : 0
           end
 
           def vdc_avail_qty
             vdc_inventory? ? total_avail_qty : 0
+          end
+
+          def stores_avail_qty
+            warehouse_inventory ? concept_quantity(concept_id) : 0
+          end
+
+          def concept_quantity(concept_id)
+            case concept_id
+            when 1
+              bbb_alt_afs_qty
+            when 2
+              ca_alt_afs_qty
+            when 4
+              bab_alt_afs_qty
+            else
+              raise "Unknown concept_id (#{concept_id}) for ECOM Inventory"
+            end
           end
 
           def canadian_sku_not_sellable_there?

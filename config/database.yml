@@ -36,7 +36,10 @@ external_pdm_development: &external_development
   adapter: oracle_enhanced
   statement_limit: 300
   schema: 'PDMADMIN'
-  url: "<%= ENV.fetch('PDMADMIN_URL', 'no-oracle-present://lalala') %>"
+#  url: "<%= ENV.fetch('PDMADMIN_URL', 'no-oracle-present://lalala') %>"
+  username: "<%= ENV.fetch('PDMADMIN_USER', '') %>"
+  password: "<%= ENV.fetch('PDMADMIN_PASSWORD', '') %>"
+  database: "<%= ENV.fetch('PDMADMIN_DB', '') %>"
 
 external_pdm_test: &external_pdm_test
   adapter: oracle_enhanced

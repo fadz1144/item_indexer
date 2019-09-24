@@ -18,7 +18,9 @@ external_pdm_production: &external_production
   adapter: oracle_enhanced
   statement_limit: 100
   schema: 'PDMADMIN'
-  url: "<%= ENV.fetch('PDMADMIN_URL') %>"
+  username: "<%= ENV.fetch('PDMADMIN_USER') %>"
+  password: "<%= ENV.fetch('PDMADMIN_PASSWORD') %>"
+  database: "<%= ENV.fetch('PDMADMIN_DB') %>"
 
 external_ecom_production:
   <<: *external_production
