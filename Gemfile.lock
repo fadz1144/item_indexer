@@ -16,8 +16,8 @@ GIT
 
 GIT
   remote: git@github.com:okl/cat_models.git
-  revision: 41f34e4a99e9b699bef0063b74e07e5f572ef0e1
-  branch: master
+  revision: 102b29fbf4e176ec0109b774740c50316a21394c
+  branch: po-sku-cost
   specs:
     cat_models (0.1.0)
       pg

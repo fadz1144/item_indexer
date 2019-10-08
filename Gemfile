@@ -10,7 +10,7 @@ git_source(:github_ssh) do |repo_name|
   "git@github.com:#{repo_name}.git"
 end
 
-gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'master', require: true
+gem 'cat_models', github_ssh: 'okl/cat_models', branch: 'po-sku-cost', require: true
 # gem 'cat_models', path: "../cat_models", require: true
 
 # For interpreting JWT auth tokens from auth_svc
