@@ -41,10 +41,20 @@ namespace :xpdm do
       .full
   end
 
+  desc 'Load All'
+  task load_all: %i[load_skus load_products load_collections]
+
   desc 'Load skus'
   task load_skus: %i[verify_token environment build_concept_cache] do
     External::DirectLoadService
       .new(External::XPDM::SkuLoader.new(true))
+      .full
+  end
+
+  desc 'Load inventory'
+  task load_inventory: %i[verify_token environment build_concept_cache] do
+    External::DirectLoadService
+      .new(External::ECOM::InventoryLoader.new)
       .full
   end
 
