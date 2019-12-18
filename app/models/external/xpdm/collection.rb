@@ -19,6 +19,8 @@ module External
       end
 
       has_many :collection_memberships, foreign_key: :pdm_object_id, primary_key: :pdm_object_id, dependent: :destroy
+      has_many :related_items, class_name: 'External::XPDM::RelatedItem', primary_key: :pdm_object_id,
+                               foreign_key: :sku, dependent: :destroy
 
       def concept_collections
         @concept_collections ||= External::XPDM::ConceptCollection.from_parent(self)

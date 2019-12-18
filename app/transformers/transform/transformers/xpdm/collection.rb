@@ -12,10 +12,12 @@ module Transform
         has_many :collection_memberships, source_name: :collection_memberships, match_keys: [:product_id]
         has_many :tags, source_name: :cm_tags, match_keys: [:tag_value]
         has_many :promo_attributes, source_name: :promo_attribute_attachments, match_keys: [:promo_cd]
+        has_many :related_items, source_name: :related_items, match_keys: [:related_sku_id]
 
         attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
         attribute :map_price, source_name: :map_prc_amt, association: :cost
 
+        exclude :map_price
         # manually building this because the TransformerNonActiveRecordModel's need a little help
         def self.source_includes # rubocop:disable Metrics/MethodLength
           [{ item_vendor: { concept_vendor: :vendor } }, { concept_brand: :brand },
@@ -28,7 +30,7 @@ module Transform
            :web_info_sites,
            { collection_memberships: { concept_product: :product } },
            { promo_attribute_attachments: :all_concept_flags },
-           :cm_tags]
+           :cm_tags, :related_items]
         end
 
         def assign_web_flags_summary(target)
