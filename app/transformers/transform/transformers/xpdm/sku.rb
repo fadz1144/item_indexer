@@ -40,6 +40,7 @@ module Transform
         attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
         attribute :color_group_name, source_name: :color_grp_name
         attribute :color_group_cd, source_name: :color_grp_cd
+        attribute :map_price, source_name: :map_prc_amt, association: :cost
 
         # TODO: unit of measure
         # TODO: non-taxable
@@ -60,7 +61,7 @@ module Transform
            :states, :descriptions, :image_relation, :web_prices, :web_costs, :assembly_dimensions, :package_dimensions,
            { promo_attribute_attachments: :all_concept_flags },
            :item_picture, :web_info, :web_info_sites, :logistics, :compliance, :cm_tags, :truck_shipping_methods,
-           :po_skus]
+           :po_skus, :cost]
         end
 
         # not tested yet

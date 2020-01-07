@@ -13,9 +13,11 @@ module External
         has_many :states
         has_many :web_info_sites
         has_many :descriptions
+        has_many :web_descriptions
         has_many :promo_attribute_attachments
         has_one :image_relation
         has_many :cm_tags
+        has_one :cost
       end
 
       belongs_to :concept_brand, -> { where(concept_id: 99) },

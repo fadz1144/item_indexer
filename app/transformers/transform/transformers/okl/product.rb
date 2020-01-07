@@ -8,7 +8,7 @@ module Transform
         decorator_name 'Transform::Transformers::OKL::Decorators::ProductConceptProductDecorator'
 
         exclude :membership_hash, :eph_tree_node_id, :restock_notifiable, :vdc_min_days_to_ship,
-                :vdc_max_days_to_ship, :web_copy_complete_status
+                :vdc_max_days_to_ship, :web_copy_complete_status, :map_price
 
         references :vendor, association: :concept_vendor
         references :brand, association: :concept_brand

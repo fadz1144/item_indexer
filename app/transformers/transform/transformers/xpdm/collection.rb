@@ -14,6 +14,7 @@ module Transform
         has_many :promo_attributes, source_name: :promo_attribute_attachments, match_keys: [:promo_cd]
 
         attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
+        attribute :map_price, source_name: :map_prc_amt, association: :cost
 
         # manually building this because the TransformerNonActiveRecordModel's need a little help
         def self.source_includes # rubocop:disable Metrics/MethodLength
