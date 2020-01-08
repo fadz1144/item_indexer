@@ -16,6 +16,7 @@ module External
       delegate :blck_status_ind, :web_enable_dt, :web_status_flg, to: :@web_info_site, allow_nil: true
       delegate :mstr_prod_desc, :mstr_shrt_desc, :mstr_web_desc, :prod_desc, :vdr_web_prod_desc,
                to: :@description, allow_nil: true
+      delegate :web_prc_str_desc, to: :@web_description, allow_nil: true
       delegate :concept_vendor, :concept_brand, :source_created_by, :source_created_at, :source_updated_by, to: :parent
 
       def self.from_parent(parent)
@@ -32,6 +33,7 @@ module External
       def initialize(parent, state, additional_associations)
         @parent = parent
         @state = state
+        @web_description = parent.concept_web_description(web_site_cd)
         @description = parent.concept_description(web_site_cd)
 
         additional_associations.each do |name, value|

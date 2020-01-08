@@ -40,6 +40,10 @@ module External
         description
       end
 
+      def concept_web_description(web_site_cd)
+        web_descriptions.find { |web_description| web_site_cd == web_description.web_site_cd }
+      end
+
       def chain_status
         PDM::SystemStatusMapper.value(chain_status_cd)
       end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe External::XPDM::ConceptItem do
-  let(:parent) { double('parent', concept_description: 'foo') }
+  let(:parent) { double('parent', concept_description: 'foo', concept_web_description: 'foo2') }
   let(:state) { double('state', web_site_cd: 'bar') }
   let(:web_info_site) { double('web_info_site', web_status_flg: web_status_flg) }
   let(:additional_associations) { { web_info_site: web_info_site } }

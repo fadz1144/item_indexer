@@ -11,6 +11,7 @@ module Transform
         attribute :vendor_sku, association: :sku, source_name: :pmry_vdr_part_modl_num
         attribute :description, source_name: :mstr_shrt_desc
         attribute :details, source_name: :mstr_web_desc
+        attribute :price_string, source_name: :web_prc_str_desc
         attribute :pattern_cd, association: :sku
         attribute :pattern_name, association: :sku
         attribute :size_cd, association: :sku

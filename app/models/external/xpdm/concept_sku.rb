@@ -9,6 +9,7 @@ module External
                :shipping_length, :shipping_height, :shipping_width, :shipping_diameter, :shipping_weight,
                :shipping_dimension_shape, to: :sku
       delegate :jda_desc, :pos_desc, to: :@description, allow_nil: true
+      delegate :web_prc_str_desc, to: :@web_description, allow_nil: true
       attr_reader :afs_qty, :alt_afs_qty, :igr_qty, :inv_source
 
       def self.parent_associations
