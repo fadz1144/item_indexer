@@ -80,7 +80,6 @@ module Transform
 
           def warehouse_avail_qty
             # warehouse_inventory? ? total_avail_qty : 0
-            # warehouse_inventory? ? afs_qty : 0
             warehouse_inventory? ? afs_qty : 0
           end
 
@@ -95,11 +94,11 @@ module Transform
           def concept_quantity(concept_id)
             case concept_id
             when 1
-              bbb_alt_afs_qty
+              sku.inventory.bbb_alt_afs_qty
             when 2
-              ca_alt_afs_qty
+              sku.inventory.ca_alt_afs_qty
             when 4
-              bab_alt_afs_qty
+              sku.inventory.bab_alt_afs_qty
             else
               raise "Unknown concept_id (#{concept_id}) (#{sku_id}) for ECOM Inventory"
             end
@@ -108,11 +107,11 @@ module Transform
           def concept_igr_qty(concept_id)
             case concept_id
             when 1
-              bbb_igr_qty
+              sku.inventory.bbb_igr_qty
             when 2
-              ca_igr_qty
+              sku.inventory.ca_igr_qty
             when 4
-              bab_igr_qty
+              sku.inventory.bab_igr_qty
             else
               raise "Unknown concept_id (#{concept_id}) for ECOM Inventory"
             end
