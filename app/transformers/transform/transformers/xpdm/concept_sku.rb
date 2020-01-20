@@ -72,6 +72,10 @@ module Transform
             blck_status_ind == 'Y'
           end
 
+          def prop_65_compliant
+            blck_status_ind == 'Y'
+          end
+
           def total_avail_qty
             afs_qty + alt_afs_qty
           end

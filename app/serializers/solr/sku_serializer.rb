@@ -34,6 +34,7 @@ module SOLR
     decorate_concept_sku_detect 'external_image_url', field: 'primary_image'
 
     decorate_concepts_for_true_concept_sku_boolean 'tbs_blocked', field: 'tbs_blocked'
+    decorate_concepts_for_true_concept_sku_boolean 'prop_65_compliant', field: 'prop_65_compliant'
 
     decorate_field_uniq 'concept_id', field: 'concept_id'
     decorate_field_uniq 'exclusivity_tier', field: 'exclusivity_tier'

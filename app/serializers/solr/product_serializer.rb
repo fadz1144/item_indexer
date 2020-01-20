@@ -35,6 +35,7 @@ module SOLR
     decorate_sku_any 'vdc_sku', field: 'vdc_sku'
 
     decorate_concepts_for_true_concept_sku_boolean 'tbs_blocked', field: 'tbs_blocked'
+    decorate_concepts_for_true_concept_sku_boolean 'prop_65_compliant', field: 'prop_65_compliant'
 
     # can't use the groupings because these are defined by the serializer (below)
     decorate_sku_uniq 'units_sold_last_week', field: 'units_sold_last_1_week_online'

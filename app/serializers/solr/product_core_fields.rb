@@ -98,6 +98,7 @@ module SOLR
     shared 'vdc_flag', type: 'boolean', source_name: 'vdc_sku'
     shared 'vintage', type: 'boolean'
     shared 'chain_status', type: 'string', multiValued: true
+    shared 'prop_65_compliant', type: 'pint', multiValued: true
 
     # hierarchies
     %w[eph merch bbby_site_nav ca_site_nav baby_site_nav].each do |tree|

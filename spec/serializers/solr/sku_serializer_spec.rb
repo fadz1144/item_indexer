@@ -88,7 +88,8 @@ RSpec.describe SOLR::SkuSerializer do
       live: true,
       allow_exposure: true,
       exclusivity_tier: 'Not Exclusive',
-      tbs_blocked: true
+      tbs_blocked: true,
+      prop_65_compliant: true
     )
     cs.concept_sku_images = [concept_sku_image_model]
     cs.concept_sku_dimensions = concept_sku_dimensions_model
