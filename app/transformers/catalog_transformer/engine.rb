@@ -34,6 +34,8 @@ module CatalogTransformer
       if target.valid?
         transformer.save_target!(target) if target.changed_for_autosave?
       else
+        Rails.logger.error target.list_associations
+        Rails.logger.error target.errors.full_messages
         record_errors(source, target.errors.full_messages)
       end
     rescue => e
@@ -45,6 +47,18 @@ module CatalogTransformer
       error_messages.each do |error_message|
         @batch.batch_errors.build(source_item: source, message: error_message)
       end
+    end
+  end
+end
+module CatModels
+  class Sku
+    def list_associations
+      associations = []
+      CatModels::Sku.reflect_on_all_associations.map(&:name).each do |assoc|
+        association = send assoc
+        associations << association if association.present?
+      end
+      associations.map{|a| a.class.name == "ActiveRecord::Associations::CollectionProxy" ? a.to_a : a}.flatten.map(&:attributes)
     end
   end
 end

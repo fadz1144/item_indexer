@@ -8,7 +8,7 @@ class JobLock
 
   def with_lock
     lock_acquired = false
-
+    
     if @mutex.lock
       lock_acquired = true
       yield self

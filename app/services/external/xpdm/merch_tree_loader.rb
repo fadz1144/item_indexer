@@ -2,12 +2,13 @@ module External
   module XPDM
     class MerchTreeLoader
       def self.perform
-        new.load
+        new(CatModels::Tree.find(2)).load
       end
 
       def initialize(tree = nil)
-        @tree = tree || CatModels::Tree.new(name: 'Merchandising Hierarchy', source_created_at: Time.zone.now,
-                                            source_updated_at: Time.zone.now)
+        #@tree = tree || CatModels::Tree.new(name: 'Merchandising Hierarchy', source_created_at: Time.zone.now,
+                                            #source_updated_at: Time.zone.now)
+        @tree = tree
       end
 
       def load
@@ -24,9 +25,10 @@ module External
 
       def build_dept(node)
         return if node.dept_cd.to_s == @current_dept&.source_code
-
+        Rails.logger.info ("dept_name------- #{format_name(node.dept_name)}")
+        Rails.logger.info ("source_dept_code------- #{node.dept_cd}")
         @current_dept = build(node,
-                              name: node.dept_name,
+                              name: format_name(node.dept_name),
                               level: 1,
                               source_code: node.dept_cd,
                               leaf: false)
@@ -34,9 +36,10 @@ module External
 
       def build_sub_dept(node)
         return if node.full_sub_dept_cd.to_s == @current_sub_dept&.source_code
-
+        Rails.logger.info ("sub_dept_name------- #{format_name(node.sub_dept_name)}")
+        Rails.logger.info ("source_sub_dept_code------- #{node.full_sub_dept_cd}")
         @current_sub_dept = build(node,
-                                  name: node.sub_dept_name,
+                                  name: format_name(node.sub_dept_name),
                                   level: 2,
                                   source_code: node.full_sub_dept_cd,
                                   parent: @current_dept,
@@ -44,8 +47,10 @@ module External
       end
 
       def build_class(node)
+        Rails.logger.info ("class_name------- #{format_name(node.class_name)}")
+        Rails.logger.info ("source_class_code------- #{node.full_class_cd}")
         build(node,
-              name: node.class_name,
+              name: format_name(node.class_name),
               level: 3,
               source_code: node.full_class_cd,
               parent: @current_sub_dept,
@@ -55,6 +60,10 @@ module External
       def build(node, attributes)
         @tree.tree_nodes.build(attributes.merge(source_created_at: node.source_created_at,
                                                 source_updated_at: node.source_updated_at))
+      end
+
+      def format_name(value)
+        value.force_encoding('iso8859-1').encode('utf-8').gsub("\u0000", '') if value.present?
       end
     end
   end

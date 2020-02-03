@@ -10,11 +10,12 @@ module External
       private
 
       def load_catalog_tables
-        [External::XPDM::ProductTreeLoader,
-         External::XPDM::MerchTreeLoader,
-         External::XPDM::SiteNavigationTreeLoader,
-         External::XPDM::BrandLoader,
-         External::XPDM::VendorLoader].each do |klass|
+        # [External::XPDM::ProductTreeLoader,
+        #  External::XPDM::MerchTreeLoader,
+        #  External::XPDM::SiteNavigationTreeLoader,
+        #  External::XPDM::BrandLoader,
+        #  External::XPDM::VendorLoader].each do |klass|
+        [External::XPDM::MerchTreeLoader].each do |klass|
           Rails.logger.info "Starting #{klass.name}"
           klass.perform
         end
