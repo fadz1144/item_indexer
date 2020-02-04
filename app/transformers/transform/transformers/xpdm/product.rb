@@ -17,6 +17,7 @@ module Transform
         attribute :vdc_max_days_to_ship, association: :logistics, source_name: :vdc_max_day_to_shp
         attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
         attribute :map_price, source_name: :map_prc_amt, association: :cost
+        attribute :rollup_type_name, source_name: :rlup_type_name
 
         exclude :category_id, :membership_hash
 
