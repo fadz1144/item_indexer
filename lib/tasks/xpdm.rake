@@ -16,6 +16,11 @@ namespace :xpdm do
     External::MissingBrandService.no_brand_assigned
   end
 
+  desc 'Create Vendor with zero id'
+  task create_zero_vendor: %i[environment] do
+    External::XPDM::VendorView.create_zero_vendor
+  end
+
   desc 'Load support data'
   task load_support_data: %i[verify_token environment build_concept_cache] do
     External::XPDM::SupportDataExport.new.perform(false)
@@ -110,9 +115,17 @@ namespace :xpdm do
       .full
   end
 
+  desc 'Load Missing data'
+  task load_missing_data: %i[load_missing_vendors incremental_brand_updates]
+
   desc 'Load missing vendors'
   task load_missing_vendors: %i[verify_token environment] do
     External::XPDM::VendorLoader.new.load_missing
+  end
+
+  desc 'Get missing vendors'
+  task get_missing_vendors: %i[verify_token environment] do
+    External::XPDM::VendorView.get_missing
   end
 
   desc 'Truncate and reload local product membership'
@@ -185,7 +198,8 @@ namespace :xpdm do
   desc 'Incremental updates with ' \
        'optional last updated timestamp (`rails xpdm:incremental_updates[2018-10-27T00:00]`)'
   task :incremental_updates, %i[updates_since] =>
-    %i[incremental_brand_updates incremental_product_updates incremental_collection_updates incremental_sku_updates]
+    %i[load_missing_vendors incremental_brand_updates incremental_product_updates incremental_collection_updates
+       incremental_sku_updates]
 
   desc 'Updates for items without a brand'
   task update_items_without_brand: %i[verify_token environment build_concept_cache] do

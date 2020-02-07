@@ -16,6 +16,29 @@ module External
         where(pmry_vdr_num: [MISSING_VENDORS])
       end
 
+      def self.current_missing
+        where(pmry_vdr_num: [missing_vendor_ids])
+      end
+
+      # returns vendor ids which are currently missing in our system
+      def self.missing_vendor_ids
+        curr = CatModels::ConceptVendor.pluck(:source_vendor_id)
+        total = External::XPDM::VendorView.pluck(:pmry_vdr_num)
+        res = total - curr
+        Rails.logger.info "Missing vendors: #{res}"
+        res
+      end
+
+      def self.create_zero_vendor
+        return if CatModels::ConceptVendor.where(source_vendor_id: 0).exists?
+        dummy_name = 'DUMMY VENDOR ASSIGNED'
+        vendor = CatModels::Vendor.find_or_create_by!(name: dummy_name)
+        CatModels::ConceptVendor.create!(source_vendor_id: 0, concept_id: 99, vendor: vendor,
+                                         source_created_by: 0, name: dummy_name,
+                                         source_created_at: Time.zone.now,
+                                         source_updated_at: Time.zone.now)
+      end
+
       def vendor_num
         pmry_vdr_num
       end

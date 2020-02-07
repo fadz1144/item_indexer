@@ -29,8 +29,7 @@ module External
 
       def load_missing
         @vendor_cache = init_vendor_cache
-
-        External::XPDM::VendorView.missing.each do |pdm_vendor|
+        External::XPDM::VendorView.current_missing.each do |pdm_vendor|
           vendor = build_concept_vendor(pdm_vendor)
           if vendor.valid?
             vendor.save

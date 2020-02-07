@@ -30,16 +30,19 @@ module CatalogTransformer
 
     private
 
+    # rubocop:disable Metrics/AbcSize
     def save_item(transformer, source, target)
       if target.valid?
         transformer.save_target!(target) if target.changed_for_autosave?
       else
         record_errors(source, target.errors.full_messages)
+        Rails.logger.error target.errors.full_messages
       end
     rescue => e
       Rails.logger.error "[#{target.class}] Unexpected error saving item: #{e.message}\n\t#{e.backtrace}"
       record_errors(source, [e.message])
     end
+    # rubocop:enable Metrics/AbcSize
 
     def record_errors(source, error_messages)
       error_messages.each do |error_message|
@@ -48,3 +51,18 @@ module CatalogTransformer
     end
   end
 end
+
+# To see sku attributes along with assosiations uncomment this code and call list_associations method on sku object
+# module CatModels
+# class Sku
+#   def list_associations
+#     associations = []
+#     CatModels::Sku.reflect_on_all_associations.map(&:name).each do |assoc|
+#       association = send assoc
+#       associations << association if association.present?
+#     end
+#     associations.map { |a| a.class.name == 'ActiveRecord::Associations::CollectionProxy' ? a.to_a : a }
+#                 .flatten.map(&:attributes)
+#   end
+# end
+# end

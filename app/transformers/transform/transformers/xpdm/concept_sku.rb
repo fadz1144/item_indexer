@@ -18,7 +18,7 @@ module Transform
         attribute :size_name, association: :sku
         attribute :color, association: :sku, source_name: :color_name
         attribute :color_cd, association: :sku, source_name: :color_cd
-        attribute :ltl_eligible, association: :sku, source_name: :ltl_item_ind
+        attribute :ltl_eligible, association: :sku, source_name: :ltl_item_ind, default_value: false
         attribute :assembly_offered, association: :sku, source_name: :asmbly_offer_ind
         attribute :max_assembly_time, association: :sku, source_name: :max_asmbly_tm_unit
         attribute :actual_created_date, association: :sku, source_name: :item_create_on
