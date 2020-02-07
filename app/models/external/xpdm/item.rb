@@ -37,7 +37,10 @@ module External
 
       # this allows concept-specific description instances to be created if needed
       def concept_description(_web_site_id)
-        description
+        @default_description = descriptions.find do |description|
+          description.country_cd == 'ALL' &&
+            description.web_site_id == 'ALL' && description.language_cd == 'ALL'
+        end || descriptions.first
       end
 
       def concept_web_description(web_site_cd)

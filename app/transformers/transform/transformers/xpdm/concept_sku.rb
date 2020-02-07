@@ -54,7 +54,7 @@ module Transform
           end
 
           def name
-            mstr_prod_desc.presence || prod_desc.presence || vdr_web_prod_desc
+            mstr_prod_desc.presence || prod_desc.presence || vdr_web_prod_desc.presence || jda_desc
           end
 
           def active
