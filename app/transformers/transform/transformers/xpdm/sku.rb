@@ -40,6 +40,7 @@ module Transform
         attribute :web_copy_complete_status, source_name: :web_copy_cmplt_ind, association: :web_info
         attribute :color_group_name, source_name: :color_grp_name
         attribute :color_group_cd, source_name: :color_grp_cd
+        attribute :swatch_file_name, source_name: :swatch_file_name
         attribute :map_price, source_name: :map_prc_amt, association: :cost
 
         # TODO: unit of measure

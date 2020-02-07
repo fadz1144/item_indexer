@@ -30,7 +30,7 @@ module Transform
                 :vendor_next_available_qty, :vendor_next_available_at, :vendor_inventory_last_updated_at,
                 :prop_65_compliant, :prop_65_chemicals, :personalization_cd, :personalization_name,
                 :tbs_blocked_start_date, :tbs_blocked_end_date, :vdc_shipping_cutoff_offset,
-                :web_copy_complete_status, :color_group_name, :color_group_cd, :map_price,
+                :web_copy_complete_status, :color_group_name, :color_group_cd, :map_price, :swatch_file_name,
                 allow_primary_key: true
 
         module Decorations
