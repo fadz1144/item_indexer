@@ -10,7 +10,6 @@ module External
       # instantiate an image via the contructor
       def self.from_sku(sku)
         return [] if sku.image_relation.nil?
-
         [new(sku.image_relation)] +
           sku.alt_image_suffixes.map { |suffix| new(sku.image_relation, suffix) }
       end

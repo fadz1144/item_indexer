@@ -3,7 +3,7 @@ module External
     class ImageRelation < External::XPDM::ItemRelation
       # this appears to be both Product and Sku, despite the rltn_type
       # some do have more than one row with data, but the site only seems to show one.
-      default_scope { where(rltn_type: 'Product_WebImage_Reference') }
+      default_scope { where(rltn_type: 'Product_WebImage_Reference').order(create_ts: :desc)  }
       belongs_to :item, foreign_key: :pdm_object_id, primary_key: :pdm_object_id, inverse_of: :image_relation
 
       # the digital asset is not currently used; it's a lookup table that is missing data
