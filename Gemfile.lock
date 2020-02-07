@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git@github.com:okl/bridge-cloud.git
-  revision: 39210385d6632bbbabbf7e6952b71a47965b9042
+  revision: 74f0faaca223a4c1ec44a5b954a64bd4d1fd3b1c
   branch: master
   specs:
     bridge-cloud (0.1.0)
