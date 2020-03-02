@@ -31,7 +31,7 @@ module Transform
            { ca_site_navigations: { root_tree_node: :tree, branch_tree_node: :tree, leaf_tree_node: :tree } },
            { baby_site_navigations: { root_tree_node: :tree, branch_tree_node: :tree, leaf_tree_node: :tree } },
            { promo_attribute_attachments: :all_concept_flags },
-           :cm_tags, :web_info, :web_info_sites, :logistics]
+           :cm_tags, :web_info, :web_info_sites, :logistics, :image_relation, :item_picture]
         end
 
         def assign_web_flags_summary(target)

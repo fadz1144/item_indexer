@@ -14,6 +14,7 @@ RSpec.describe Transform::Transformers::XPDM::Collection,
       end
       collection.build_item_vendor(concept_vendor: concept_vendor)
       collection.build_concept_brand(concept_id: 99, brand: CatModels::Brand.new)
+      allow(collection).to receive(:item_picture).and_return(double('item_picture', zoom_indexes: '1,2'))
     end
   end
 
@@ -38,6 +39,18 @@ RSpec.describe Transform::Transformers::XPDM::Collection,
 
     it 'builds two product memberships' do
       expect(target.collection_memberships.map(&:product_id)).to contain_exactly(123, 456)
+    end
+  end
+
+  context 'images' do
+    before do
+      source.image_relation =
+        External::XPDM::ImageRelation.new(item_code_name_cd: 'IMG_123', item_code_name: 'oski.jpg')
+      transformer.apply_transformation(target)
+    end
+
+    it 'generates three concept collection images' do
+      expect(target.concept_collections.first.concept_collection_images.size).to eq 3
     end
   end
 end

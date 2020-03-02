@@ -23,4 +23,16 @@ RSpec.describe Transform::Transformers::XPDM::Product, skip: !Rails.configuratio
   it_behaves_like 'valid transformer'
   it_behaves_like 'transformation includes tags'
   it_behaves_like 'transformation includes promo attributes'
+
+  context 'images' do
+    before do
+      source.image_relation =
+        External::XPDM::ImageRelation.new(item_code_name_cd: 'IMG_123', item_code_name: 'oski.jpg')
+      transformer.apply_transformation(target)
+    end
+
+    it 'generates three concept product images' do
+      expect(target.concept_products.first.concept_product_images.size).to eq 3
+    end
+  end
 end

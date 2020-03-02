@@ -8,6 +8,10 @@ module External
         has_many :baby_site_navigations
       end
 
+      with_options primary_key: :pdm_object_id, foreign_key: :sku do
+        has_one :item_picture, -> { alt_image_count_only }, class_name: 'External::ECOM::Item'
+      end
+
       # this is not a default scope, because it's not needed when in_batches fetches by id
       # for all other queries, it does need to be included
       scope :web_collection, -> { where(pdm_object_type: %w[WebCollection WEBCOLLECTION]) }
@@ -22,6 +26,10 @@ module External
 
       def concept_collections
         @concept_collections ||= External::XPDM::ConceptCollection.from_parent(self)
+      end
+
+      def alt_image_suffixes
+        @alt_image_suffixes ||= item_picture&.zoom_indexes&.split(',') || []
       end
     end
   end

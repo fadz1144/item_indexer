@@ -8,6 +8,10 @@ module External
       end
 
       alias_attribute :collection, :parent
+
+      def concept_collection_images
+        External::XPDM::Image.from_object(collection)
+      end
     end
   end
 end

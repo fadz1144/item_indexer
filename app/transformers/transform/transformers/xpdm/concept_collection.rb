@@ -11,6 +11,7 @@ module Transform
         attribute :details, source_name: :mstr_web_desc
         attribute :source_collection_id, association: :collection, source_name: :pdm_object_id
         attribute :price_string, source_name: :web_prc_str_desc
+        has_many :concept_collection_images, source_name: :concept_collection_images, match_keys: [:image_url]
 
         has_many :site_navigations, source_name: :site_navigations,
                                     match_keys: %i[root_tree_node branch_tree_node leaf_tree_node]

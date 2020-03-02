@@ -13,6 +13,7 @@ module Transform
 
         has_many :site_navigations, source_name: :site_navigations,
                                     match_keys: %i[root_tree_node branch_tree_node leaf_tree_node]
+        has_many :concept_product_images, source_name: :concept_product_images, match_keys: [:image_url]
 
         exclude :product_id, :concept_category_id, :site_nav_tree_node_id
 

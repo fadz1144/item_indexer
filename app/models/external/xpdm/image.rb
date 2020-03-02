@@ -14,6 +14,12 @@ module External
           sku.alt_image_suffixes.map { |suffix| new(sku.image_relation, suffix) }
       end
 
+      def self.from_object(obj)
+        return [] if obj.image_relation.nil?
+        [new(obj.image_relation)] +
+          obj.alt_image_suffixes.map { |suffix| new(obj.image_relation, suffix) }
+      end
+
       # the transformation batch records errors with the primary_key, so pretend this class has one
       def self.primary_key
         :image_asset_id

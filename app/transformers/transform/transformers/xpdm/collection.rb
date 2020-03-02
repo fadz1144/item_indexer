@@ -28,7 +28,7 @@ module Transform
            :web_info_sites,
            { collection_memberships: { concept_product: :product } },
            { promo_attribute_attachments: :all_concept_flags },
-           :cm_tags]
+           :cm_tags, :image_relation, :item_picture]
         end
 
         def assign_web_flags_summary(target)

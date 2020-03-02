@@ -8,6 +8,10 @@ module External
       end
 
       alias_attribute :product, :parent
+
+      def concept_product_images
+        External::XPDM::Image.from_object(product)
+      end
     end
   end
 end
