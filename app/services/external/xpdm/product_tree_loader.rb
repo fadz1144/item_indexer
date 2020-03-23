@@ -2,7 +2,7 @@ module External
   module XPDM
     class ProductTreeLoader
       def self.perform
-        new.load
+        new(CatModels::Tree.find(1)).load
       end
 
       def initialize(tree = nil)
@@ -22,16 +22,22 @@ module External
 
       private
 
+      # rubocop:disable Metrics/AbcSize
       def build_tree_node(product_node, parent = nil)
         level = parent.present? ? parent.level + 1 : 1
         node_children = @by_parent.fetch(product_node.eph_prod_node_id, [])
 
-        tree_node = @tree.tree_nodes.build(name: product_node.node_name, parent: parent, level: level,
+        tree_node = @tree.tree_nodes.build(name: format_name(product_node.node_name), parent: parent, level: level,
                                            source_code: product_node.eph_prod_node_id, leaf: node_children.empty?,
                                            source_created_at: product_node.source_created_at,
                                            source_updated_at: product_node.source_updated_at)
 
         node_children.each { |child| build_tree_node(child, tree_node) }
+      end
+      # rubocop:enable Metrics/AbcSize
+
+      def format_name(value)
+        value.force_encoding('iso8859-1').encode('utf-8').delete("\u0000") if value.present?
       end
     end
   end

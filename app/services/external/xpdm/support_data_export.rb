@@ -7,7 +7,22 @@ module External
         generate_scripts if generate_insert_scripts
       end
 
+      def load_tree_hierarchy_support_data(generate_insert_scripts)
+        @start = Time.zone.now
+        load_tree_tables
+        generate_scripts if generate_insert_scripts
+      end
+
       private
+
+      def load_tree_tables
+        [External::XPDM::ProductTreeLoader,
+         External::XPDM::MerchTreeLoader,
+         External::XPDM::SiteNavigationTreeLoader].each do |klass|
+          Rails.logger.info "Starting #{klass.name}"
+          klass.perform
+        end
+      end
 
       def load_catalog_tables
         [External::XPDM::ProductTreeLoader,
