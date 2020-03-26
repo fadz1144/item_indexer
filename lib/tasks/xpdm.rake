@@ -26,6 +26,11 @@ namespace :xpdm do
     External::XPDM::SupportDataExport.new.perform(false)
   end
 
+  desc 'Load tree support data'
+  task load_tree_support_data: %i[verify_token environment build_concept_cache] do
+    External::XPDM::SupportDataExport.new.load_tree_hierarchy_support_data(false)
+  end
+
   desc 'Load products, optionally pass divisor and modulu (`xpdm:load_products[5,3]` for the 20% in the middle)'
   task :load_products, %i[divisor modulus] =>
     %i[verify_token verify_dummy_brand environment build_concept_cache] do |_task, args|
@@ -198,8 +203,8 @@ namespace :xpdm do
   desc 'Incremental updates with ' \
        'optional last updated timestamp (`rails xpdm:incremental_updates[2018-10-27T00:00]`)'
   task :incremental_updates, %i[updates_since] =>
-    %i[load_missing_vendors incremental_brand_updates incremental_product_updates incremental_collection_updates
-       incremental_sku_updates]
+    %i[load_missing_vendors incremental_brand_updates load_tree_support_data incremental_product_updates
+       incremental_collection_updates incremental_sku_updates]
 
   desc 'Updates for items without a brand'
   task update_items_without_brand: %i[verify_token environment build_concept_cache] do

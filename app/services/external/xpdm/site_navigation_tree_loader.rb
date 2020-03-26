@@ -7,9 +7,9 @@ module External
 
       def initialize(trees = nil)
         @trees = trees || {
-          BBBY: build_tree('Bed Bath Site Navigation'),
-          CA: build_tree('Canada Site Navigation'),
-          BABY: build_tree('Baby Site Navigation')
+          BBBY: build_tree('Bed Bath Site Navigation', 3),
+          CA: build_tree('Canada Site Navigation', 4),
+          BABY: build_tree('Baby Site Navigation', 5)
         }
       end
 
@@ -27,8 +27,9 @@ module External
 
       private
 
-      def build_tree(name)
-        CatModels::Tree.new(name: name, source_created_at: Time.zone.now, source_updated_at: Time.zone.now)
+      def build_tree(name, tree_id)
+        # CatModels::Tree.new(name: name, source_created_at: Time.zone.now, source_updated_at: Time.zone.now)
+        CatModels::Tree.where(tree_id: tree_id, name: name).first
       end
 
       def build_tree_nodes(web_site_cd)
