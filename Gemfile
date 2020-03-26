@@ -18,6 +18,7 @@ gem 'auth_plugin', git: 'git@github.com:okl/auth_plugin.git', branch: 'master', 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1'
+
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.18'
 # Use Puma as the app server
@@ -99,3 +100,12 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# gem 'activerecord-jdbcas400-adapter'
+
+gem 'dbd-odbc'
+
+gem 'dbi'
+
+gem 'ruby-odbc'
+gem 'ibm_db'

@@ -25,3 +25,13 @@ external_pdm_production: &external_production
 external_ecom_production:
   <<: *external_production
   schema: 'ECOMADMIN'
+
+
+external_jda_development:
+  <<: *external_production
+  adapter: jdbc
+  url: "jdbc:as400://BEYOND/;"
+  driver: com.ibm.as400.access.AS400JDBCDriver
+  schema: jdbc:as400
+  username: EW_BEYND
+  password: Ww2hpATy
