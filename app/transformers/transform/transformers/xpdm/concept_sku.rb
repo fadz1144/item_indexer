@@ -41,7 +41,7 @@ module Transform
           return unless @source.sku.association(:inventory).loaded? && @source.sku.inventory.present?
           return if @source.canadian_sku_not_sellable_there?
 
-          %w[total_avail_qty warehouse_avail_qty vdc_avail_qty].each do |name|
+          %w[total_avail_qty warehouse_avail_qty vdc_avail_qty stores_avail_qty].each do |name|
             target.public_send("#{name}=", @source.public_send(name))
           end
         end
@@ -75,7 +75,11 @@ module Transform
 
           def total_avail_qty
             # afs_qty + alt_afs_qty
-            warehouse_inventory? ? afs_qty + concept_quantity(concept_id) + concept_igr_qty(concept_id) : afs_qty
+            afs_qty + concept_quantity(concept_id) + concept_igr_qty(concept_id)
+          end
+
+          def stores_avail_qty
+            concept_quantity(concept_id) + concept_igr_qty(concept_id)
           end
 
           def warehouse_avail_qty
@@ -85,10 +89,6 @@ module Transform
 
           def vdc_avail_qty
             vdc_inventory? ? afs_qty : 0
-          end
-
-          def stores_avail_qty
-            warehouse_inventory ? concept_quantity(concept_id) + concept_igr_qty(concept_id) : 0
           end
 
           def concept_quantity(concept_id)
