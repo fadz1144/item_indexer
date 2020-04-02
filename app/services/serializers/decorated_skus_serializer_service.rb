@@ -60,7 +60,7 @@ module Serializers
     def sku_pricing_field_values(field_sym)
       concept_skus_iterator do |cs|
         cs.concept_sku_pricing&.public_send(field_sym) unless cs.concept_id == 2 # exclude amounts on the CA concept sku
-      end.sort
+      end.reject(&:nan?).sort
     end
 
     SKU_LEVEL_TREE_NODES = %i[eph merch].freeze
